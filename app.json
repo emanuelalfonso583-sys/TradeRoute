@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "TradeRoute",
+    "slug": "traderoute",
+    "scheme": "traderoute",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFFFFF",
+    "splash": {
+      "backgroundColor": "#0A2A66",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.traderoute.app"
+    },
+    "android": {
+      "package": "com.traderoute.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0A2A66"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
