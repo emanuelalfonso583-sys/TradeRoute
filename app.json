@@ -4,6 +4,9 @@
     "slug": "traderoute",
     "scheme": "traderoute",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "backgroundColor": "#FFFFFF",

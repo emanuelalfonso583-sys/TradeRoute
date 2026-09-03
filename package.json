@@ -21,7 +21,8 @@
     "react-native-safe-area-context": "~5.7.0",
     "react-native-gesture-handler": "~2.32.0",
     "@expo/vector-icons": "^15.0.2",
-    "@react-native-picker/picker": "2.11.4"
+    "@react-native-picker/picker": "2.11.4",
+    "expo-updates": "~57.0.20"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
