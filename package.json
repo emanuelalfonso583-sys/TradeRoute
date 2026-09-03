@@ -22,7 +22,10 @@
     "react-native-gesture-handler": "~2.32.0",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-picker/picker": "2.11.4",
-    "expo-updates": "~57.0.20"
+    "expo-updates": "~57.0.20",
+    "react-dom": "19.2.3",
+    "react-native-web": "~0.21.0",
+    "@expo/metro-runtime": "~57.0.15"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
