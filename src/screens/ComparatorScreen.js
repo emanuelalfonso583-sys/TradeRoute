@@ -26,7 +26,7 @@ export default function ComparatorScreen({ navigation }) {
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Comparación de Rutas</Text>
       <Text style={styles.ruta}>
-        {envio.origen} → {envio.destino}
+        {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
       </Text>
       <Text style={styles.detalle}>
         {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} unidades

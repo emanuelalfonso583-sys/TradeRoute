@@ -1,64 +1,36 @@
-// Agrupación simplificada de países por "bloque continental conectado por tierra".
-// Es una aproximación académica: se usa solo para decidir si, en teoría,
-// existe una posible ruta terrestre entre origen y destino (mismo bloque)
-// o si el envío obligatoriamente debe cruzar un océano (bloques distintos).
-const COUNTRY_GROUPS = {
-  sudamerica: [
-    'colombia', 'argentina', 'brasil', 'brazil', 'chile', 'peru', 'ecuador',
-    'venezuela', 'bolivia', 'paraguay', 'uruguay', 'guyana', 'surinam',
-  ],
-  norteamerica: [
-    'mexico', 'estados unidos', 'usa', 'eeuu', 'canada', 'guatemala',
-    'honduras', 'el salvador', 'nicaragua', 'costa rica', 'panama', 'belice',
-  ],
-  europa: [
-    'espana', 'francia', 'alemania', 'italia', 'portugal', 'holanda',
-    'paises bajos', 'belgica', 'suiza', 'reino unido', 'polonia', 'austria',
-    'suecia', 'noruega', 'dinamarca', 'irlanda', 'grecia',
-  ],
-  asia: [
-    'china', 'japon', 'india', 'corea del sur', 'corea', 'tailandia',
-    'vietnam', 'indonesia', 'singapur', 'malasia', 'emiratos arabes unidos',
-    'arabia saudita', 'turquia', 'filipinas',
-  ],
-  africa: [
-    'sudafrica', 'egipto', 'nigeria', 'marruecos', 'kenia', 'ghana', 'tunez',
-  ],
-  oceania: ['australia', 'nueva zelanda'],
-};
+import { COUNTRIES } from '../data/countries';
 
-function normalizar(texto) {
-  return (texto || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .trim();
-}
+// Grafo real de fronteras terrestres: cada país apunta a los países con los
+// que limita físicamente por tierra (dataset world-countries / restcountries).
+const BORDERS_BY_CODE = COUNTRIES.reduce((acc, country) => {
+  acc[country.code] = country.borders;
+  return acc;
+}, {});
 
-// Devuelve el bloque continental detectado dentro de un texto tipo "Bogotá, Colombia".
-export function detectarGrupo(textoUbicacion) {
-  const normalizado = normalizar(textoUbicacion);
-  if (!normalizado) return null;
+// Determina si existe una posible ruta terrestre entre dos países,
+// recorriendo el grafo real de fronteras (BFS). Un país isla sin fronteras
+// (ej. Japón, Australia, Filipinas, Reino Unido respecto al continente)
+// queda correctamente aislado, sin importar en qué "continente" esté.
+export function hayConexionTerrestreEntrePaises(codigoOrigen, codigoDestino) {
+  if (!codigoOrigen || !codigoDestino) return false;
+  if (codigoOrigen === codigoDestino) return true;
+  if (!BORDERS_BY_CODE[codigoOrigen] || !BORDERS_BY_CODE[codigoDestino]) return false;
 
-  const paises = Object.entries(COUNTRY_GROUPS).flatMap(([grupo, lista]) =>
-    lista.map((pais) => ({ pais, grupo }))
-  );
-  // Se ordena por longitud descendente para priorizar coincidencias
-  // de nombres compuestos ("estados unidos" antes que "unidos").
-  paises.sort((a, b) => b.pais.length - a.pais.length);
+  const visitados = new Set([codigoOrigen]);
+  const pendientes = [codigoOrigen];
 
-  const encontrado = paises.find(({ pais }) => normalizado.includes(pais));
-  return encontrado ? encontrado.grupo : null;
-}
+  while (pendientes.length > 0) {
+    const actual = pendientes.shift();
+    const vecinos = BORDERS_BY_CODE[actual] || [];
 
-// Determina si, para efectos del MVP, existe conexión terrestre entre origen y destino.
-export function hayConexionTerrestre(origen, destino) {
-  const grupoOrigen = detectarGrupo(origen);
-  const grupoDestino = detectarGrupo(destino);
+    for (const vecino of vecinos) {
+      if (vecino === codigoDestino) return true;
+      if (!visitados.has(vecino)) {
+        visitados.add(vecino);
+        pendientes.push(vecino);
+      }
+    }
+  }
 
-  // Si no se reconoce el país en el texto, se asume disponible por defecto
-  // (no hay suficiente información para descartarlo).
-  if (!grupoOrigen || !grupoDestino) return true;
-
-  return grupoOrigen === grupoDestino;
+  return false;
 }

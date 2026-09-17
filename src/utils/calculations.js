@@ -1,4 +1,4 @@
-import { hayConexionTerrestre } from './routeGroups';
+import { hayConexionTerrestreEntrePaises } from './routeGroups';
 
 // ---------------------------------------------------------------------------
 // Fórmulas académicas simplificadas del MVP (no representan cotizaciones reales).
@@ -47,7 +47,7 @@ export function calcularAlternativas(envio) {
     terrestre: calcularTerrestre(peso),
   };
 
-  const terrestreDisponible = hayConexionTerrestre(envio.origen, envio.destino);
+  const terrestreDisponible = hayConexionTerrestreEntrePaises(envio.origenPais, envio.destinoPais);
 
   return MODALIDADES.map(({ key, label, icono }) => {
     const disponible = key !== 'terrestre' || terrestreDisponible;

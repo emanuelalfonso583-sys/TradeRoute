@@ -3,8 +3,12 @@ import React, { createContext, useContext, useState, useMemo } from 'react';
 const ShipmentContext = createContext(null);
 
 const ENVIO_VACIO = {
-  origen: '',
-  destino: '',
+  origenPais: '',
+  origenPaisNombre: '',
+  origenCiudad: '',
+  destinoPais: '',
+  destinoPaisNombre: '',
+  destinoCiudad: '',
   tipoMercancia: '',
   peso: '',
   volumen: '',

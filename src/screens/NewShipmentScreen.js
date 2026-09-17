@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import PrimaryButton from '../components/PrimaryButton';
+import LocationPicker from '../components/LocationPicker';
 import { useShipment } from '../context/ShipmentContext';
 import { colors, radius } from '../theme/colors';
 
@@ -39,8 +40,8 @@ function parseNumero(texto) {
 function validar(form) {
   const errores = {};
 
-  if (!form.origen.trim()) errores.origen = 'Ingresa el origen del envío.';
-  if (!form.destino.trim()) errores.destino = 'Ingresa el destino del envío.';
+  if (!form.origen?.city) errores.origen = 'Selecciona el país y la ciudad de origen.';
+  if (!form.destino?.city) errores.destino = 'Selecciona el país y la ciudad de destino.';
   if (!form.tipoMercancia) errores.tipoMercancia = 'Selecciona el tipo de mercancía.';
 
   const peso = parseNumero(form.peso);
@@ -77,9 +78,13 @@ function validar(form) {
 export default function NewShipmentScreen({ navigation }) {
   const { envio, guardarEnvio } = useShipment();
   const [form, setForm] = useState({
-    origen: envio.origen,
-    destino: envio.destino,
-    tipoMercancia: envio.tipoMercancia,
+    origen: envio.origenPais
+      ? { countryCode: envio.origenPais, countryName: envio.origenPaisNombre, city: envio.origenCiudad }
+      : null,
+    destino: envio.destinoPais
+      ? { countryCode: envio.destinoPais, countryName: envio.destinoPaisNombre, city: envio.destinoCiudad }
+      : null,
+    tipoMercancia: envio.tipoMercancia || '',
     peso: envio.peso ? String(envio.peso) : '',
     volumen: envio.volumen ? String(envio.volumen) : '',
     unidades: envio.unidades ? String(envio.unidades) : '',
@@ -104,8 +109,12 @@ export default function NewShipmentScreen({ navigation }) {
 
     setErrorGeneral('');
     guardarEnvio({
-      origen: form.origen.trim(),
-      destino: form.destino.trim(),
+      origenPais: form.origen.countryCode,
+      origenPaisNombre: form.origen.countryName,
+      origenCiudad: form.origen.city,
+      destinoPais: form.destino.countryCode,
+      destinoPaisNombre: form.destino.countryName,
+      destinoCiudad: form.destino.city,
       tipoMercancia: form.tipoMercancia,
       peso: parseNumero(form.peso),
       volumen: parseNumero(form.volumen),
@@ -133,19 +142,17 @@ export default function NewShipmentScreen({ navigation }) {
           </View>
         ) : null}
 
-        <Campo
+        <LocationPicker
           label="Origen"
-          placeholder="Ej: Bogotá, Colombia"
           value={form.origen}
-          onChangeText={(t) => actualizarCampo('origen', t)}
+          onChange={(v) => actualizarCampo('origen', v)}
           error={errores.origen}
         />
 
-        <Campo
+        <LocationPicker
           label="Destino"
-          placeholder="Ej: Madrid, España"
           value={form.destino}
-          onChangeText={(t) => actualizarCampo('destino', t)}
+          onChange={(v) => actualizarCampo('destino', v)}
           error={errores.destino}
         />
 

@@ -49,7 +49,7 @@ export default function RecommendationScreen({ navigation }) {
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Recomendación de Ruta</Text>
       <Text style={styles.ruta}>
-        {envio.origen} → {envio.destino}
+        {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
       </Text>
 
       <View style={styles.tarjetaPrincipal}>
