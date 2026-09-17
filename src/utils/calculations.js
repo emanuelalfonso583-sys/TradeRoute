@@ -49,7 +49,14 @@ export function calcularAlternativas(envio) {
 
   const terrestreDisponible = hayConexionTerrestreEntrePaises(envio.origenPais, envio.destinoPais);
 
-  return MODALIDADES.map(({ key, label, icono }) => {
+  // Si el usuario eligió una modalidad específica (no "Comparar todas"),
+  // solo se calcula y muestra esa modalidad.
+  const modalidadesAMostrar =
+    envio.modalidad && envio.modalidad !== 'todas'
+      ? MODALIDADES.filter((m) => m.key === envio.modalidad)
+      : MODALIDADES;
+
+  return modalidadesAMostrar.map(({ key, label, icono }) => {
     const disponible = key !== 'terrestre' || terrestreDisponible;
 
     if (!disponible) {

@@ -17,6 +17,7 @@ export default function ComparatorScreen({ navigation }) {
 
   const alternativas = useMemo(() => compararEnvio(envio), [envio]);
   const recomendacion = useMemo(() => obtenerRecomendacion(alternativas), [alternativas]);
+  const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
 
   if (!envio.peso) {
     return null;
@@ -24,7 +25,9 @@ export default function ComparatorScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
-      <Text style={styles.titulo}>Comparación de Rutas</Text>
+      <Text style={styles.titulo}>
+        {comparandoTodas ? 'Comparación de Rutas' : 'Detalle de la Ruta'}
+      </Text>
       <Text style={styles.ruta}>
         {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
       </Text>
