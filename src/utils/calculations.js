@@ -179,10 +179,22 @@ export function obtenerRecomendacion(alternativasConScore) {
   return disponibles.reduce((mejor, actual) => (actual.score > mejor.score ? actual : mejor));
 }
 
+// El TradeRoute Score solo tiene sentido cuando hay al menos 2 alternativas
+// disponibles para comparar entre sí; con una sola, el score sale 100/100
+// en todo por definición (no perdió contra nada), lo cual sería engañoso
+// mostrar como si fuera un puntaje real.
+export function hayComparacionReal(alternativasConScore) {
+  return alternativasConScore.filter((a) => a.disponible).length > 1;
+}
+
 // Genera una explicación breve y dinámica de por qué se recomendó una
 // alternativa, según en qué métricas se destacó frente a las demás disponibles.
 export function generarExplicacion(recomendacion, alternativasConScore) {
   if (!recomendacion) return '';
+
+  if (!hayComparacionReal(alternativasConScore)) {
+    return `${recomendacion.label} es la única alternativa disponible para esta ruta con los datos ingresados, así que no hay otras opciones con las que compararla.`;
+  }
 
   const disponibles = alternativasConScore.filter((a) => a.disponible);
   const esMejorEn = (campo, comparador) =>

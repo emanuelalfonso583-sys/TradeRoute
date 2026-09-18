@@ -3,7 +3,12 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-nat
 import PrimaryButton from '../components/PrimaryButton';
 import { useShipment } from '../context/ShipmentContext';
 import { useAuth } from '../context/AuthContext';
-import { compararEnvio, obtenerRecomendacion, generarExplicacion } from '../utils/calculations';
+import {
+  compararEnvio,
+  obtenerRecomendacion,
+  generarExplicacion,
+  hayComparacionReal,
+} from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { guardarEnvioEnHistorial } from '../firebase/historial';
 import { formatearUsd } from '../utils/format';
@@ -49,6 +54,7 @@ export default function RecommendationScreen({ navigation }) {
     () => generarExplicacion(recomendacion, alternativas),
     [recomendacion, alternativas]
   );
+  const conComparacion = useMemo(() => hayComparacionReal(alternativas), [alternativas]);
 
   // Guarda el resultado en el historial del usuario una sola vez por envío
   // (se identifica por sus datos + la modalidad elegida).
@@ -84,14 +90,16 @@ export default function RecommendationScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
-      <Text style={styles.titulo}>Recomendación de Ruta</Text>
+      <Text style={styles.titulo}>{conComparacion ? 'Recomendación de Ruta' : 'Detalle de la Ruta'}</Text>
       <Text style={styles.ruta}>
         {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
       </Text>
 
       <View style={styles.tarjetaPrincipal}>
-        <Text style={styles.trofeo}>🏆</Text>
-        <Text style={styles.rutaRecomendadaLabel}>Ruta recomendada</Text>
+        <Text style={styles.trofeo}>{conComparacion ? '🏆' : recomendacion.icono}</Text>
+        <Text style={styles.rutaRecomendadaLabel}>
+          {conComparacion ? 'Ruta recomendada' : 'Modalidad seleccionada'}
+        </Text>
         <Text style={styles.rutaRecomendadaValor}>
           {recomendacion.icono} {recomendacion.label}
         </Text>
@@ -99,21 +107,29 @@ export default function RecommendationScreen({ navigation }) {
         <Text style={styles.costoRecomendadoValor}>US$ {formatearUsd(recomendacion.costoUsd)}</Text>
         <Text style={styles.costoRecomendadoLabel}>Costo del flete (USD)</Text>
 
-        <View style={styles.scoreCircle}>
-          <Text style={styles.scoreNumero}>{recomendacion.score}</Text>
-          <Text style={styles.scoreSobre}>/100</Text>
-        </View>
-        <Text style={styles.scoreCaption}>TradeRoute Score</Text>
+        {conComparacion && (
+          <>
+            <View style={styles.scoreCircle}>
+              <Text style={styles.scoreNumero}>{recomendacion.score}</Text>
+              <Text style={styles.scoreSobre}>/100</Text>
+            </View>
+            <Text style={styles.scoreCaption}>TradeRoute Score</Text>
+          </>
+        )}
       </View>
 
       <Text style={styles.explicacion}>{explicacion}</Text>
 
-      <Text style={styles.seccionTitulo}>Composición del Score</Text>
-      <View style={styles.desgloseCard}>
-        <BarraContribucion label="Costo" porcentaje="55%" valor={recomendacion.scoreCosto} />
-        <BarraContribucion label="Tiempo" porcentaje="30%" valor={recomendacion.scoreTiempo} />
-        <BarraContribucion label="CO₂" porcentaje="15%" valor={recomendacion.scoreCo2} />
-      </View>
+      {conComparacion && (
+        <>
+          <Text style={styles.seccionTitulo}>Composición del Score</Text>
+          <View style={styles.desgloseCard}>
+            <BarraContribucion label="Costo" porcentaje="55%" valor={recomendacion.scoreCosto} />
+            <BarraContribucion label="Tiempo" porcentaje="30%" valor={recomendacion.scoreTiempo} />
+            <BarraContribucion label="CO₂" porcentaje="15%" valor={recomendacion.scoreCo2} />
+          </View>
+        </>
+      )}
 
       <Text style={styles.disclaimer}>
         Los valores son estimaciones académicas y no representan cotizaciones reales. La

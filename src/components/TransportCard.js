@@ -12,7 +12,7 @@ function Metric({ label, value }) {
   );
 }
 
-export default function TransportCard({ alternativa, destacada = false }) {
+export default function TransportCard({ alternativa, destacada = false, mostrarScore = true }) {
   const { icono, label, disponible } = alternativa;
 
   return (
@@ -48,11 +48,15 @@ export default function TransportCard({ alternativa, destacada = false }) {
           <Metric label="Distancia real" value={`${alternativa.distanciaKm.toLocaleString('es')} km`} />
           <Metric label="Huella de CO₂" value={`${alternativa.co2Kg.toFixed(2)} kg`} />
           <Metric label="Peso facturable" value={`${alternativa.pesoFacturableKg} kg`} />
-          <View style={styles.divider} />
-          <View style={styles.scoreRow}>
-            <Text style={styles.scoreLabel}>TradeRoute Score</Text>
-            <Text style={styles.scoreValue}>{alternativa.score}/100</Text>
-          </View>
+          {mostrarScore && (
+            <>
+              <View style={styles.divider} />
+              <View style={styles.scoreRow}>
+                <Text style={styles.scoreLabel}>TradeRoute Score</Text>
+                <Text style={styles.scoreValue}>{alternativa.score}/100</Text>
+              </View>
+            </>
+          )}
         </View>
       )}
     </View>
