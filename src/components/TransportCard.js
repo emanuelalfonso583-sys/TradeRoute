@@ -36,10 +36,10 @@ export default function TransportCard({ alternativa, destacada = false }) {
       ) : (
         <View>
           <View style={styles.costoDestacadoBox}>
-            <Text style={styles.costoDestacadoLabel}>Costo del flete</Text>
-            <Text style={styles.costoDestacadoValor}>${alternativa.costoUsd.toFixed(2)}</Text>
+            <Text style={styles.costoDestacadoLabel}>Costo del flete (USD)</Text>
+            <Text style={styles.costoDestacadoValor}>US$ {alternativa.costoUsd.toFixed(2)}</Text>
             <Text style={styles.costoDestacadoSubtexto}>
-              ${alternativa.costoPorKg.toFixed(2)} por kg
+              US$ {alternativa.costoPorKg.toFixed(2)} por kg
             </Text>
           </View>
 

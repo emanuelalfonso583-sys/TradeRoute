@@ -18,7 +18,14 @@ export async function guardarEnvioEnHistorial(uid, envio, alternativas, recomend
   await addDoc(coleccionHistorial(uid), {
     envio,
     alternativas,
-    recomendacion: recomendacion ? { key: recomendacion.key, label: recomendacion.label, score: recomendacion.score } : null,
+    recomendacion: recomendacion
+      ? {
+          key: recomendacion.key,
+          label: recomendacion.label,
+          score: recomendacion.score,
+          costoUsd: recomendacion.costoUsd,
+        }
+      : null,
     creadoEn: serverTimestamp(),
   });
 }

@@ -25,6 +25,7 @@ function TarjetaHistorial({ item }) {
       </Text>
       {recomendacion ? (
         <View style={styles.recomendacionBox}>
+          <Text style={styles.recomendacionCosto}>US$ {recomendacion.costoUsd?.toFixed(2)}</Text>
           <Text style={styles.recomendacionTexto}>
             🏆 {recomendacion.label} · Score {recomendacion.score}/100
           </Text>
@@ -137,6 +138,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     alignSelf: 'flex-start',
+  },
+  recomendacionCosto: {
+    color: colors.primaryDark,
+    fontWeight: '800',
+    fontSize: 16,
+    marginBottom: 2,
   },
   recomendacionTexto: {
     color: colors.success,

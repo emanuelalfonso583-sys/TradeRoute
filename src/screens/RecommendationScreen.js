@@ -95,8 +95,8 @@ export default function RecommendationScreen({ navigation }) {
           {recomendacion.icono} {recomendacion.label}
         </Text>
 
-        <Text style={styles.costoRecomendadoValor}>${recomendacion.costoUsd.toFixed(2)}</Text>
-        <Text style={styles.costoRecomendadoLabel}>Costo del flete</Text>
+        <Text style={styles.costoRecomendadoValor}>US$ {recomendacion.costoUsd.toFixed(2)}</Text>
+        <Text style={styles.costoRecomendadoLabel}>Costo del flete (USD)</Text>
 
         <View style={styles.scoreCircle}>
           <Text style={styles.scoreNumero}>{recomendacion.score}</Text>
