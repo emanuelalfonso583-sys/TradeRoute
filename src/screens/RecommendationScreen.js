@@ -159,7 +159,12 @@ export default function RecommendationScreen({ navigation }) {
         recomendación se recalcula automáticamente si cambian los datos del envío.
       </Text>
 
-      <PrimaryButton title="Comparar de nuevo" onPress={() => navigation.navigate('Comparador')} />
+      <PrimaryButton
+        title="Ver análisis detallado (puertos, aeropuertos y mapas)"
+        onPress={() => navigation.navigate('MainTabs', { screen: 'Analisis' })}
+      />
+      <View style={styles.espacioBoton} />
+      <PrimaryButton title="Comparar de nuevo" onPress={() => navigation.navigate('Comparador')} variant="outline" />
       <View style={styles.espacioBoton} />
       <PrimaryButton title="Nuevo envío" onPress={handleNuevoEnvio} variant="outline" />
     </ScrollView>
