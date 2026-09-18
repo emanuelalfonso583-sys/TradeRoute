@@ -3,6 +3,7 @@ import { View, Text, Pressable, Image, ActivityIndicator, Linking, StyleSheet } 
 import { Ionicons } from '@expo/vector-icons';
 import { obtenerInfoWiki } from '../utils/wikiInfo';
 import { COUNTRIES } from '../data/countries';
+import { useLanguage } from '../context/LanguageContext';
 import { colors, radius } from '../theme/colors';
 
 const NOMBRE_PAIS_POR_CODIGO = COUNTRIES.reduce((acc, pais) => {
@@ -38,6 +39,7 @@ function consultasWikipedia(hub) {
 // Tarjeta de un puerto o aeropuerto. Cualquiera se puede abrir para ver
 // una foto real (Wikipedia) y una descripción más amplia del lugar.
 export default function HubCard({ hub }) {
+  const { t, idioma } = useLanguage();
   const [abierto, setAbierto] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [info, setInfo] = useState(null);
@@ -65,7 +67,7 @@ export default function HubCard({ hub }) {
         <View style={styles.hubBadgeRow}>
           {hub.recomendado && (
             <View style={styles.hubBadge}>
-              <Text style={styles.hubBadgeText}>Recomendado</Text>
+              <Text style={styles.hubBadgeText}>{t('analisis.hub.recomendado')}</Text>
             </View>
           )}
           <Ionicons
@@ -77,8 +79,8 @@ export default function HubCard({ hub }) {
         </View>
       </View>
       <Text style={styles.hubDetalle}>
-        Código {hub.code} · {hub.city && hub.city !== hub.name ? `${hub.city} · ` : ''}
-        {hub.distanciaCiudadKm.toLocaleString('es')} km de la ciudad ingresada
+        {t('analisis.hub.codigo', { codigo: hub.code })} · {hub.city && hub.city !== hub.name ? `${hub.city} · ` : ''}
+        {t('analisis.hub.distancia', { km: hub.distanciaCiudadKm.toLocaleString(idioma) })}
       </Text>
 
       {abierto && (
@@ -90,13 +92,13 @@ export default function HubCard({ hub }) {
               <Image source={{ uri: info.imagenUrl }} style={styles.foto} resizeMode="cover" />
               {info.extracto ? <Text style={styles.extracto}>{info.extracto}</Text> : null}
               <Pressable onPress={() => Linking.openURL(info.urlPagina)}>
-                <Text style={styles.enlace}>Ver más en Wikipedia →</Text>
+                <Text style={styles.enlace}>{t('analisis.hub.verWikipedia')}</Text>
               </Pressable>
             </>
           ) : info?.extracto ? (
             <Text style={styles.extracto}>{info.extracto}</Text>
           ) : (
-            <Text style={styles.sinFoto}>No se encontró una foto ni información adicional para este lugar.</Text>
+            <Text style={styles.sinFoto}>{t('analisis.hub.sinFoto')}</Text>
           )}
         </View>
       )}

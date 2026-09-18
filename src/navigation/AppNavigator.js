@@ -16,6 +16,8 @@ import AccountScreen from '../screens/AccountScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import { useAuth } from '../context/AuthContext';
+import { useAppTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { colors } from '../theme/colors';
 
 const Stack = createNativeStackNavigator();
@@ -30,11 +32,14 @@ const ICONOS_TAB = {
 };
 
 function MainTabs() {
+  const { acento } = useAppTheme();
+  const { t } = useLanguage();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: colors.action,
+        tabBarActiveTintColor: acento,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
           backgroundColor: colors.background,
@@ -52,15 +57,17 @@ function MainTabs() {
         ),
       })}
     >
-      <Tab.Screen name="Inicio" component={HomeScreen} />
-      <Tab.Screen name="Analisis" component={AnalysisScreen} options={{ title: 'Análisis' }} />
-      <Tab.Screen name="Historial" component={HistorialScreen} />
-      <Tab.Screen name="Cuenta" component={AccountScreen} />
+      <Tab.Screen name="Inicio" component={HomeScreen} options={{ title: t('tab.inicio') }} />
+      <Tab.Screen name="Analisis" component={AnalysisScreen} options={{ title: t('tab.analisis') }} />
+      <Tab.Screen name="Historial" component={HistorialScreen} options={{ title: t('tab.historial') }} />
+      <Tab.Screen name="Cuenta" component={AccountScreen} options={{ title: t('tab.cuenta') }} />
     </Tab.Navigator>
   );
 }
 
 function AppStack() {
+  const { t } = useLanguage();
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -73,22 +80,22 @@ function AppStack() {
       <Stack.Screen
         name="NuevoEnvio"
         component={NewShipmentScreen}
-        options={{ title: 'Nuevo Envío' }}
+        options={{ title: t('header.nuevoEnvio') }}
       />
       <Stack.Screen
         name="Comparador"
         component={ComparatorScreen}
-        options={{ title: 'Comparador' }}
+        options={{ title: t('header.comparador') }}
       />
       <Stack.Screen
         name="Recomendacion"
         component={RecommendationScreen}
-        options={{ title: 'Recomendación' }}
+        options={{ title: t('header.recomendacion') }}
       />
       <Stack.Screen
         name="HistorialDetalle"
         component={HistorialDetailScreen}
-        options={{ title: 'Envío guardado' }}
+        options={{ title: t('header.historialDetalle') }}
       />
     </Stack.Navigator>
   );

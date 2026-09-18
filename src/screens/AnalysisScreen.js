@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import { useShipment } from '../context/ShipmentContext';
+import { useLanguage } from '../context/LanguageContext';
 import { compararEnvio } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { puertosCercanos, aeropuertosCercanos } from '../utils/nearestHubs';
@@ -12,11 +13,12 @@ import { colors, radius, shadow } from '../theme/colors';
 const CANTIDAD_HUBS = 3;
 
 function SeccionHubs({ titulo, hubs }) {
+  const { t } = useLanguage();
   return (
     <View style={styles.seccionHubs}>
       <Text style={styles.subtitulo}>{titulo}</Text>
       {hubs.length === 0 ? (
-        <Text style={styles.sinDatos}>No se encontraron opciones registradas cerca de esta ciudad.</Text>
+        <Text style={styles.sinDatos}>{t('analisis.sinHubs')}</Text>
       ) : (
         hubs.map((hub) => <HubCard key={hub.code} hub={hub} />)
       )}
@@ -25,6 +27,7 @@ function SeccionHubs({ titulo, hubs }) {
 }
 
 function AnalisisMaritimo({ alternativa, envio }) {
+  const { t, idioma } = useLanguage();
   const puertosOrigen = useMemo(
     () => puertosCercanos(envio.origenLat, envio.origenLng, CANTIDAD_HUBS),
     [envio.origenLat, envio.origenLng]
@@ -43,18 +46,17 @@ function AnalisisMaritimo({ alternativa, envio }) {
 
   return (
     <View>
-      <SeccionHubs titulo="Puertos de salida (origen)" hubs={puertosOrigen} />
-      <SeccionHubs titulo="Puertos de llegada (destino)" hubs={puertosDestino} />
+      <SeccionHubs titulo={t('analisis.puertosOrigen')} hubs={puertosOrigen} />
+      <SeccionHubs titulo={t('analisis.puertosDestino')} hubs={puertosDestino} />
 
       {origenRecomendado && destinoRecomendado && (
         <>
           <Text style={styles.subtitulo}>
-            Ruta marítima real: {origenRecomendado.name} → {destinoRecomendado.name}
+            {t('analisis.rutaMaritima', { origen: origenRecomendado.name, destino: destinoRecomendado.name })}
           </Text>
           {rutaMaritima && (
             <Text style={styles.rutaDetalle}>
-              Distancia navegable estimada: {rutaMaritima.distanciaKm.toLocaleString('es')} km por la ruta
-              marítima real (siguiendo estrechos y canales, no en línea recta).
+              {t('analisis.distanciaNavegable', { km: rutaMaritima.distanciaKm.toLocaleString(idioma) })}
             </Text>
           )}
           <RouteMap
@@ -71,6 +73,7 @@ function AnalisisMaritimo({ alternativa, envio }) {
 }
 
 function AnalisisAereo({ envio }) {
+  const { t } = useLanguage();
   const aeropuertosOrigen = useMemo(
     () => aeropuertosCercanos(envio.origenLat, envio.origenLng, CANTIDAD_HUBS),
     [envio.origenLat, envio.origenLng]
@@ -84,13 +87,13 @@ function AnalisisAereo({ envio }) {
 
   return (
     <View>
-      <SeccionHubs titulo="Aeropuertos de salida (origen)" hubs={aeropuertosOrigen} />
-      <SeccionHubs titulo="Aeropuertos de llegada (destino)" hubs={aeropuertosDestino} />
+      <SeccionHubs titulo={t('analisis.aeropuertosOrigen')} hubs={aeropuertosOrigen} />
+      <SeccionHubs titulo={t('analisis.aeropuertosDestino')} hubs={aeropuertosDestino} />
 
       {origenRecomendado && destinoRecomendado && (
         <>
           <Text style={styles.subtitulo}>
-            Ruta aérea: {origenRecomendado.name} → {destinoRecomendado.name}
+            {t('analisis.rutaAerea', { origen: origenRecomendado.name, destino: destinoRecomendado.name })}
           </Text>
           <RouteMap
             origen={{ lat: origenRecomendado.lat, lng: origenRecomendado.lng, label: origenRecomendado.name }}
@@ -104,14 +107,13 @@ function AnalisisAereo({ envio }) {
 }
 
 function AnalisisTerrestre({ envio }) {
+  const { t } = useLanguage();
   return (
     <View>
       <Text style={styles.subtitulo}>
-        Ruta por carretera: {envio.origenCiudad} → {envio.destinoCiudad}
+        {t('analisis.rutaCarretera', { origen: envio.origenCiudad, destino: envio.destinoCiudad })}
       </Text>
-      <Text style={styles.rutaDetalle}>
-        Trazado real sobre las carreteras existentes entre las dos ciudades (no una línea recta).
-      </Text>
+      <Text style={styles.rutaDetalle}>{t('analisis.rutaCarreteraDetalle')}</Text>
       <RouteMap
         origen={{ lat: envio.origenLat, lng: envio.origenLng, label: envio.origenCiudad }}
         destino={{ lat: envio.destinoLat, lng: envio.destinoLng, label: envio.destinoCiudad }}
@@ -129,27 +131,26 @@ function AnalisisModalidad({ alternativa, envio }) {
 }
 
 function EstadoVacio() {
+  const { t } = useLanguage();
   return (
     <View style={styles.vacioContainer}>
       <Text style={styles.vacioIcono}>📊</Text>
-      <Text style={styles.vacioTitulo}>Todavía no hay nada que analizar</Text>
-      <Text style={styles.vacioTexto}>
-        Calcula un envío desde "Nuevo Envío" y aquí verás el análisis detallado: puertos o aeropuertos
-        reales de salida y llegada, cuál es el recomendado, y el mapa real de la ruta.
-      </Text>
+      <Text style={styles.vacioTitulo}>{t('analisis.vacioTitulo')}</Text>
+      <Text style={styles.vacioTexto}>{t('analisis.vacioTexto')}</Text>
     </View>
   );
 }
 
 export default function AnalysisScreen() {
   const { envio } = useShipment();
+  const { t } = useLanguage();
   const [tarifas, setTarifas] = useState(null);
 
   useEffect(() => {
     obtenerTarifas().then(setTarifas);
   }, []);
 
-  const alternativas = useMemo(() => (tarifas ? compararEnvio(envio, tarifas) : []), [envio, tarifas]);
+  const alternativas = useMemo(() => (tarifas ? compararEnvio(envio, tarifas, t) : []), [envio, tarifas, t]);
   const principales = useMemo(
     () =>
       alternativas
@@ -171,7 +172,7 @@ export default function AnalysisScreen() {
     return (
       <View style={styles.cargandoContainer}>
         <ActivityIndicator size="large" color={colors.action} />
-        <Text style={styles.cargandoTexto}>Cargando análisis...</Text>
+        <Text style={styles.cargandoTexto}>{t('analisis.cargando')}</Text>
       </View>
     );
   }
@@ -179,13 +180,13 @@ export default function AnalysisScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.titulo}>Análisis de Ruta</Text>
+        <Text style={styles.titulo}>{t('analisis.titulo')}</Text>
         <Text style={styles.ruta}>
           {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
         </Text>
 
         {principales.length === 0 ? (
-          <Text style={styles.sinDatos}>No hay alternativas disponibles para analizar en esta ruta.</Text>
+          <Text style={styles.sinDatos}>{t('analisis.sinDatos')}</Text>
         ) : (
           principales.map((alt, index) => (
             <View key={alt.key} style={styles.bloqueModalidad}>
@@ -193,7 +194,7 @@ export default function AnalysisScreen() {
                 <Text style={styles.encabezadoIcono}>{alt.icono}</Text>
                 <View style={styles.flex}>
                   <Text style={styles.encabezadoEtiqueta}>
-                    {index === 0 ? '🏆 Opción recomendada' : 'Segunda opción recomendada'}
+                    {index === 0 ? `🏆 ${t('analisis.opcionRecomendada')}` : t('analisis.segundaOpcion')}
                   </Text>
                   <Text style={styles.encabezadoModalidadTexto}>{alt.label}</Text>
                 </View>
@@ -203,12 +204,7 @@ export default function AnalysisScreen() {
           ))
         )}
 
-        <Text style={styles.disclaimer}>
-          Puertos y aeropuertos son datos reales (UN/LOCODE y OurAirports); toca el recomendado para ver
-          una foto real y más información (Wikipedia). La ruta marítima se calcula sobre la red de
-          navegación real; la ruta terrestre usa carreteras reales. Los tiempos y costos siguen siendo
-          estimaciones académicas.
-        </Text>
+        <Text style={styles.disclaimer}>{t('analisis.disclaimer')}</Text>
       </ScrollView>
     </SafeAreaView>
   );

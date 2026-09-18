@@ -1,49 +1,319 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
-import { colors, radius } from '../theme/colors';
+import { useLanguage } from '../context/LanguageContext';
+import { useAppTheme } from '../context/ThemeContext';
+import { obtenerPerfil } from '../firebase/perfil';
+import { PALETAS_ACENTO } from '../theme/paletas';
+import { FUENTES } from '../theme/fuentes';
+import { colors, radius, shadow } from '../theme/colors';
+
+function SeccionDesplegable({ icono, titulo, abierta, onPress, children, acento }) {
+  return (
+    <View style={styles.seccion}>
+      <Pressable style={styles.seccionHeader} onPress={onPress}>
+        <View style={[styles.seccionIconoBox, { backgroundColor: acento + '1A' }]}>
+          <Ionicons name={icono} size={18} color={acento} />
+        </View>
+        <Text style={styles.seccionTitulo}>{titulo}</Text>
+        <Ionicons
+          name={abierta ? 'chevron-up' : 'chevron-down'}
+          size={18}
+          color={colors.textMuted}
+        />
+      </Pressable>
+      {abierta && <View style={styles.seccionContenido}>{children}</View>}
+    </View>
+  );
+}
+
+function Fila({ etiqueta, valor }) {
+  return (
+    <View style={styles.fila}>
+      <Text style={styles.filaEtiqueta}>{etiqueta}</Text>
+      <Text style={styles.filaValor}>{valor}</Text>
+    </View>
+  );
+}
 
 export default function AccountScreen() {
   const { usuario, cerrarSesion } = useAuth();
+  const { t, idioma, setIdioma } = useLanguage();
+  const { acento, claveAcento, setClaveAcento, claveFuente, setClaveFuente } = useAppTheme();
+  const [perfil, setPerfil] = useState(null);
+  const [seccionAbierta, setSeccionAbierta] = useState(null);
+
+  useEffect(() => {
+    if (usuario?.uid) obtenerPerfil(usuario.uid).then(setPerfil);
+  }, [usuario?.uid]);
+
+  function alternarSeccion(clave) {
+    setSeccionAbierta((actual) => (actual === clave ? null : clave));
+  }
+
+  const sinDato = t('cuenta.info.sinDato');
+  const fechaCreacion = usuario?.metadata?.creationTime
+    ? new Date(usuario.metadata.creationTime).toLocaleDateString(idioma, {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      })
+    : sinDato;
+  const ultimoIngreso = usuario?.metadata?.lastSignInTime
+    ? new Date(usuario.metadata.lastSignInTime).toLocaleDateString(idioma, {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }) +
+      ' · ' +
+      new Date(usuario.metadata.lastSignInTime).toLocaleTimeString(idioma, {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : sinDato;
+
+  const TIPO_DOCUMENTO_LABEL = {
+    cc: t('registro.tipoDocumento.cc'),
+    ce: t('registro.tipoDocumento.ce'),
+    ti: t('registro.tipoDocumento.ti'),
+    pasaporte: t('registro.tipoDocumento.pasaporte'),
+    otro: t('registro.tipoDocumento.otro'),
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={36} color="#FFFFFF" />
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.perfilBox}>
+          <View style={[styles.avatar, { backgroundColor: acento }]}>
+            <Ionicons name="person" size={32} color="#FFFFFF" />
+          </View>
+          <Text style={styles.nombre}>{usuario?.displayName || t('cuenta.usuarioDefault')}</Text>
+          <Text style={styles.correo}>{usuario?.email}</Text>
         </View>
 
-        <Text style={styles.nombre}>{usuario?.displayName || 'Usuario TradeRoute'}</Text>
-        <Text style={styles.correo}>{usuario?.email}</Text>
+        <SeccionDesplegable
+          icono="information-circle-outline"
+          titulo={t('cuenta.seccion.info')}
+          abierta={seccionAbierta === 'info'}
+          onPress={() => alternarSeccion('info')}
+          acento={acento}
+        >
+          <Fila etiqueta={t('cuenta.info.correo')} valor={usuario?.email || sinDato} />
+          <Fila
+            etiqueta={t('cuenta.info.tipoDocumento')}
+            valor={perfil?.tipoDocumento ? TIPO_DOCUMENTO_LABEL[perfil.tipoDocumento] || perfil.tipoDocumento : sinDato}
+          />
+          <Fila etiqueta={t('cuenta.info.numeroDocumento')} valor={perfil?.numeroDocumento || sinDato} />
+          <Fila etiqueta={t('cuenta.info.telefono')} valor={perfil?.telefono || sinDato} />
+          <Fila etiqueta={t('cuenta.info.creadaEl')} valor={fechaCreacion} />
+          <Fila etiqueta={t('cuenta.info.ultimoIngreso')} valor={ultimoIngreso} />
+        </SeccionDesplegable>
 
-        <View style={styles.spacer} />
+        <SeccionDesplegable
+          icono="settings-outline"
+          titulo={t('cuenta.seccion.configuracion')}
+          abierta={seccionAbierta === 'configuracion'}
+          onPress={() => alternarSeccion('configuracion')}
+          acento={acento}
+        >
+          <Text style={styles.campoEtiqueta}>{t('cuenta.config.idioma')}</Text>
+          <Text style={styles.campoDescripcion}>{t('cuenta.config.idiomaDescripcion')}</Text>
+          <View style={styles.opcionesFila}>
+            <OpcionChip label="Español" activo={idioma === 'es'} acento={acento} onPress={() => setIdioma('es')} />
+            <OpcionChip label="English" activo={idioma === 'en'} acento={acento} onPress={() => setIdioma('en')} />
+          </View>
+        </SeccionDesplegable>
 
-        <View style={styles.botonWrapper}>
-          <PrimaryButton title="Cerrar sesión" onPress={cerrarSesion} variant="outline" />
-        </View>
-      </View>
+        <SeccionDesplegable
+          icono="color-palette-outline"
+          titulo={t('cuenta.seccion.personalizacion')}
+          abierta={seccionAbierta === 'personalizacion'}
+          onPress={() => alternarSeccion('personalizacion')}
+          acento={acento}
+        >
+          <Text style={styles.campoEtiqueta}>{t('cuenta.personalizacion.color')}</Text>
+          <Text style={styles.campoDescripcion}>{t('cuenta.personalizacion.colorDescripcion')}</Text>
+          <View style={styles.coloresFila}>
+            {PALETAS_ACENTO.map((paleta) => (
+              <Pressable
+                key={paleta.key}
+                onPress={() => setClaveAcento(paleta.key)}
+                style={[
+                  styles.colorSwatch,
+                  { backgroundColor: paleta.color },
+                  claveAcento === paleta.key && styles.colorSwatchActivo,
+                ]}
+              >
+                {claveAcento === paleta.key && <Ionicons name="checkmark" size={16} color="#FFFFFF" />}
+              </Pressable>
+            ))}
+          </View>
+
+          <View style={styles.espacioMedio} />
+
+          <Text style={styles.campoEtiqueta}>{t('cuenta.personalizacion.fuente')}</Text>
+          <Text style={styles.campoDescripcion}>{t('cuenta.personalizacion.fuenteDescripcion')}</Text>
+          <View style={styles.opcionesFila}>
+            {FUENTES.map((fuente) => (
+              <OpcionChip
+                key={fuente.key}
+                label={t(`fuente.${fuente.key}`)}
+                activo={claveFuente === fuente.key}
+                acento={acento}
+                onPress={() => setClaveFuente(fuente.key)}
+              />
+            ))}
+          </View>
+        </SeccionDesplegable>
+
+        <SeccionDesplegable
+          icono="extension-puzzle-outline"
+          titulo={t('cuenta.seccion.complementos')}
+          abierta={seccionAbierta === 'complementos'}
+          onPress={() => alternarSeccion('complementos')}
+          acento={acento}
+        >
+          <Text style={styles.campoDescripcion}>{t('cuenta.complementos.descripcion')}</Text>
+          <View style={styles.espacioChico} />
+          <ComplementoFila nombre="Firebase (Google)" descripcion={t('cuenta.complementos.firebase')} />
+          <ComplementoFila nombre="Mapbox" descripcion={t('cuenta.complementos.mapbox')} />
+          <ComplementoFila nombre="Wikipedia" descripcion={t('cuenta.complementos.wikipedia')} />
+          <ComplementoFila nombre="UN/LOCODE (UNECE)" descripcion={t('cuenta.complementos.unlocode')} />
+          <ComplementoFila nombre="OurAirports" descripcion={t('cuenta.complementos.ourairports')} />
+          <ComplementoFila nombre="searoute-js (Eurostat)" descripcion={t('cuenta.complementos.searoute')} />
+          <ComplementoFila nombre="world-countries" descripcion={t('cuenta.complementos.worldcountries')} />
+        </SeccionDesplegable>
+
+        <SeccionDesplegable
+          icono="shield-checkmark-outline"
+          titulo={t('cuenta.seccion.privacidad')}
+          abierta={seccionAbierta === 'privacidad'}
+          onPress={() => alternarSeccion('privacidad')}
+          acento={acento}
+        >
+          <PoliticaPrivacidad />
+        </SeccionDesplegable>
+
+        <View style={styles.espacioGrande} />
+        <PrimaryButton title={t('cuenta.cerrarSesion')} onPress={cerrarSesion} variant="outline" />
+      </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function OpcionChip({ label, activo, acento, onPress }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.chip,
+        activo && { backgroundColor: acento, borderColor: acento },
+      ]}
+    >
+      <Text style={[styles.chipTexto, activo && styles.chipTextoActivo]}>{label}</Text>
+    </Pressable>
+  );
+}
+
+function ComplementoFila({ nombre, descripcion }) {
+  return (
+    <View style={styles.complementoFila}>
+      <Text style={styles.complementoNombre}>{nombre}</Text>
+      <Text style={styles.complementoDescripcion}>{descripcion}</Text>
+    </View>
+  );
+}
+
+function PoliticaPrivacidad() {
+  return (
+    <View>
+      <Text style={styles.privacidadFecha}>Última actualización: septiembre de 2026</Text>
+      <Text style={styles.privacidadParrafo}>
+        TradeRoute es un proyecto académico (Comercio Internacional) que compara rutas de envío
+        internacional. Esta página explica, en términos simples, qué información recopila la app,
+        para qué la usa y qué no hace con ella.
+      </Text>
+
+      <Text style={styles.privacidadSubtitulo}>Qué información recopilamos</Text>
+      <Text style={styles.privacidadParrafo}>
+        <Text style={styles.privacidadNegrita}>Al registrarte: </Text>
+        tu nombre y tu correo electrónico, para crear tu cuenta (usamos Firebase Authentication, de
+        Google).
+      </Text>
+      <Text style={styles.privacidadParrafo}>
+        <Text style={styles.privacidadNegrita}>Al calcular un envío: </Text>
+        origen, destino, peso, volumen, unidades y valor declarado de la mercancía que ingresas,
+        junto con el resultado de la comparación. Se guarda en tu historial para que puedas
+        consultarlo después.
+      </Text>
+      <Text style={styles.privacidadParrafo}>
+        No recopilamos ubicación en tiempo real, contactos, fotos de tu dispositivo ni ningún otro
+        dato que no hayas escrito tú mismo en el formulario.
+      </Text>
+
+      <Text style={styles.privacidadSubtitulo}>Para qué la usamos</Text>
+      <Text style={styles.privacidadParrafo}>
+        • Identificarte al iniciar sesión.{'\n'}
+        • Mostrarte tu propio historial de envíos calculados.{'\n'}
+        • Calcular estimaciones de costo, tiempo y CO₂ de cada ruta.
+      </Text>
+      <Text style={styles.privacidadParrafo}>
+        No usamos tus datos para publicidad, no hacemos perfilamiento comercial y no los vendemos.
+      </Text>
+
+      <Text style={styles.privacidadSubtitulo}>Dónde se almacena</Text>
+      <Text style={styles.privacidadParrafo}>
+        Tu cuenta y tu historial se guardan en Firestore (la base de datos de Firebase/Google
+        Cloud). Las reglas de seguridad de la base de datos están configuradas para que solo tú
+        puedas leer tu propio historial; ningún otro usuario de la app puede verlo.
+      </Text>
+
+      <Text style={styles.privacidadSubtitulo}>Servicios de terceros que usa la app</Text>
+      <Text style={styles.privacidadParrafo}>
+        Firebase (Google) — cuenta e historial. Mapbox — mapas de las rutas. Wikipedia — fotos de
+        puertos y aeropuertos.
+      </Text>
+      <Text style={styles.privacidadParrafo}>
+        Estos servicios pueden recibir información técnica estándar de cualquier app (como la
+        dirección IP) para poder funcionar, según sus propias políticas de privacidad. TradeRoute
+        no les envía tu nombre, correo ni el contenido de tu historial más allá de lo necesario
+        para mostrar el mapa o la foto correspondiente.
+      </Text>
+
+      <Text style={styles.privacidadSubtitulo}>Tus derechos</Text>
+      <Text style={styles.privacidadParrafo}>
+        Puedes pedir en cualquier momento que eliminemos tu cuenta y tu historial. También puedes
+        simplemente dejar de usar la app: los datos no se comparten con nadie más mientras tanto.
+      </Text>
+
+      <Text style={styles.privacidadSubtitulo}>Cambios a esta política</Text>
+      <Text style={styles.privacidadParrafo}>
+        Si esta política cambia, se actualizará la fecha al inicio de la página. Como es un
+        proyecto académico, no se prevén cambios frecuentes.
+      </Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.background },
   container: {
-    flex: 1,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  perfilBox: {
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
+    marginBottom: 24,
   },
   avatar: {
-    width: 80,
-    height: 80,
+    width: 76,
+    height: 76,
     borderRadius: radius.xl,
-    backgroundColor: colors.primaryDark,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   nombre: {
     fontSize: 18,
@@ -51,14 +321,156 @@ const styles = StyleSheet.create({
     color: colors.primaryDark,
   },
   correo: {
-    fontSize: 14,
+    fontSize: 13,
     color: colors.textMuted,
+    marginTop: 2,
+  },
+  seccion: {
+    backgroundColor: colors.background,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 12,
+    overflow: 'hidden',
+    ...shadow.card,
+  },
+  seccionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+  },
+  seccionIconoBox: {
+    width: 34,
+    height: 34,
+    borderRadius: radius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  seccionTitulo: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  seccionContenido: {
+    paddingHorizontal: 14,
+    paddingBottom: 16,
+  },
+  fila: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  filaEtiqueta: {
+    fontSize: 12,
+    color: colors.textMuted,
+    flex: 1,
+  },
+  filaValor: {
+    fontSize: 13,
+    color: colors.text,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'right',
+  },
+  campoEtiqueta: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.primaryDark,
     marginTop: 4,
   },
-  spacer: {
-    height: 32,
+  campoDescripcion: {
+    fontSize: 12,
+    color: colors.textMuted,
+    marginTop: 2,
+    marginBottom: 10,
+    lineHeight: 16,
   },
-  botonWrapper: {
-    width: '100%',
+  opcionesFila: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  chip: {
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  chipTexto: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  chipTextoActivo: {
+    color: '#FFFFFF',
+  },
+  coloresFila: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  colorSwatch: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  colorSwatchActivo: {
+    borderColor: colors.text,
+  },
+  espacioMedio: {
+    height: 16,
+  },
+  espacioChico: {
+    height: 6,
+  },
+  espacioGrande: {
+    height: 12,
+  },
+  complementoFila: {
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  complementoNombre: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  complementoDescripcion: {
+    fontSize: 12,
+    color: colors.textMuted,
+    marginTop: 2,
+    lineHeight: 16,
+  },
+  privacidadFecha: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginBottom: 8,
+  },
+  privacidadSubtitulo: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.primaryDark,
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  privacidadParrafo: {
+    fontSize: 12.5,
+    color: colors.text,
+    lineHeight: 18,
+    marginBottom: 4,
+  },
+  privacidadNegrita: {
+    fontWeight: '700',
   },
 });

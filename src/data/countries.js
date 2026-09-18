@@ -1,6 +1,7 @@
-// Datos reales de países: nombre (es), región/subregión y fronteras terrestres
-// (código ISO 3166-1 alpha-3 de los países con los que limita por tierra).
-// Fuente: dataset "world-countries" (basado en restcountries.com / Wikipedia).
+// Datos reales de países: nombre (es/en), región/subregión y fronteras
+// terrestres (código ISO 3166-1 alpha-3 de los países con los que limita por
+// tierra). Fuente: dataset "world-countries" (basado en restcountries.com /
+// Wikipedia).
 export const COUNTRIES = [
   {
     "code": "AFG",
@@ -16,7 +17,8 @@ export const COUNTRIES = [
       "UZB",
       "TJK",
       "CHN"
-    ]
+    ],
+    "nameEn": "Afghanistan"
   },
   {
     "code": "ALB",
@@ -30,7 +32,8 @@ export const COUNTRIES = [
       "GRC",
       "MKD",
       "UNK"
-    ]
+    ],
+    "nameEn": "Albania"
   },
   {
     "code": "DEU",
@@ -49,7 +52,8 @@ export const COUNTRIES = [
       "NLD",
       "POL",
       "CHE"
-    ]
+    ],
+    "nameEn": "Germany"
   },
   {
     "code": "AND",
@@ -61,7 +65,8 @@ export const COUNTRIES = [
     "borders": [
       "FRA",
       "ESP"
-    ]
+    ],
+    "nameEn": "Andorra"
   },
   {
     "code": "AGO",
@@ -75,7 +80,8 @@ export const COUNTRIES = [
       "COD",
       "ZMB",
       "NAM"
-    ]
+    ],
+    "nameEn": "Angola"
   },
   {
     "code": "ATG",
@@ -84,7 +90,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 17.05,
     "lng": -61.8,
-    "borders": []
+    "borders": [],
+    "nameEn": "Antigua and Barbuda"
   },
   {
     "code": "SAU",
@@ -101,7 +108,8 @@ export const COUNTRIES = [
       "QAT",
       "ARE",
       "YEM"
-    ]
+    ],
+    "nameEn": "Saudi Arabia"
   },
   {
     "code": "DZA",
@@ -118,7 +126,8 @@ export const COUNTRIES = [
       "MRT",
       "MLI",
       "MAR"
-    ]
+    ],
+    "nameEn": "Algeria"
   },
   {
     "code": "ARG",
@@ -133,7 +142,8 @@ export const COUNTRIES = [
       "CHL",
       "PRY",
       "URY"
-    ]
+    ],
+    "nameEn": "Argentina"
   },
   {
     "code": "ARM",
@@ -147,7 +157,8 @@ export const COUNTRIES = [
       "GEO",
       "IRN",
       "TUR"
-    ]
+    ],
+    "nameEn": "Armenia"
   },
   {
     "code": "AUS",
@@ -156,7 +167,8 @@ export const COUNTRIES = [
     "subregion": "Australia and New Zealand",
     "lat": -27,
     "lng": 133,
-    "borders": []
+    "borders": [],
+    "nameEn": "Australia"
   },
   {
     "code": "AUT",
@@ -174,7 +186,8 @@ export const COUNTRIES = [
       "SVK",
       "SVN",
       "CHE"
-    ]
+    ],
+    "nameEn": "Austria"
   },
   {
     "code": "AZE",
@@ -189,7 +202,8 @@ export const COUNTRIES = [
       "IRN",
       "RUS",
       "TUR"
-    ]
+    ],
+    "nameEn": "Azerbaijan"
   },
   {
     "code": "BHS",
@@ -198,7 +212,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 24.25,
     "lng": -76,
-    "borders": []
+    "borders": [],
+    "nameEn": "Bahamas"
   },
   {
     "code": "BHR",
@@ -207,7 +222,8 @@ export const COUNTRIES = [
     "subregion": "Western Asia",
     "lat": 26,
     "lng": 50.55,
-    "borders": []
+    "borders": [],
+    "nameEn": "Bahrain"
   },
   {
     "code": "BGD",
@@ -219,7 +235,8 @@ export const COUNTRIES = [
     "borders": [
       "MMR",
       "IND"
-    ]
+    ],
+    "nameEn": "Bangladesh"
   },
   {
     "code": "BRB",
@@ -228,7 +245,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 13.16666666,
     "lng": -59.53333333,
-    "borders": []
+    "borders": [],
+    "nameEn": "Barbados"
   },
   {
     "code": "BEL",
@@ -242,7 +260,8 @@ export const COUNTRIES = [
       "DEU",
       "LUX",
       "NLD"
-    ]
+    ],
+    "nameEn": "Belgium"
   },
   {
     "code": "BLZ",
@@ -254,7 +273,8 @@ export const COUNTRIES = [
     "borders": [
       "GTM",
       "MEX"
-    ]
+    ],
+    "nameEn": "Belize"
   },
   {
     "code": "BEN",
@@ -268,7 +288,8 @@ export const COUNTRIES = [
       "NER",
       "NGA",
       "TGO"
-    ]
+    ],
+    "nameEn": "Benin"
   },
   {
     "code": "BLR",
@@ -283,7 +304,8 @@ export const COUNTRIES = [
       "POL",
       "RUS",
       "UKR"
-    ]
+    ],
+    "nameEn": "Belarus"
   },
   {
     "code": "BOL",
@@ -298,7 +320,8 @@ export const COUNTRIES = [
       "CHL",
       "PRY",
       "PER"
-    ]
+    ],
+    "nameEn": "Bolivia"
   },
   {
     "code": "BIH",
@@ -311,7 +334,8 @@ export const COUNTRIES = [
       "HRV",
       "MNE",
       "SRB"
-    ]
+    ],
+    "nameEn": "Bosnia and Herzegovina"
   },
   {
     "code": "BWA",
@@ -325,7 +349,8 @@ export const COUNTRIES = [
       "ZAF",
       "ZMB",
       "ZWE"
-    ]
+    ],
+    "nameEn": "Botswana"
   },
   {
     "code": "BRA",
@@ -345,7 +370,8 @@ export const COUNTRIES = [
       "SUR",
       "URY",
       "VEN"
-    ]
+    ],
+    "nameEn": "Brazil"
   },
   {
     "code": "BRN",
@@ -356,7 +382,8 @@ export const COUNTRIES = [
     "lng": 114.66666666,
     "borders": [
       "MYS"
-    ]
+    ],
+    "nameEn": "Brunei"
   },
   {
     "code": "BGR",
@@ -371,7 +398,8 @@ export const COUNTRIES = [
       "ROU",
       "SRB",
       "TUR"
-    ]
+    ],
+    "nameEn": "Bulgaria"
   },
   {
     "code": "BFA",
@@ -387,7 +415,8 @@ export const COUNTRIES = [
       "MLI",
       "NER",
       "TGO"
-    ]
+    ],
+    "nameEn": "Burkina Faso"
   },
   {
     "code": "BDI",
@@ -400,7 +429,8 @@ export const COUNTRIES = [
       "COD",
       "RWA",
       "TZA"
-    ]
+    ],
+    "nameEn": "Burundi"
   },
   {
     "code": "BTN",
@@ -412,7 +442,8 @@ export const COUNTRIES = [
     "borders": [
       "CHN",
       "IND"
-    ]
+    ],
+    "nameEn": "Bhutan"
   },
   {
     "code": "CPV",
@@ -421,7 +452,8 @@ export const COUNTRIES = [
     "subregion": "Western Africa",
     "lat": 16,
     "lng": -24,
-    "borders": []
+    "borders": [],
+    "nameEn": "Cape Verde"
   },
   {
     "code": "KHM",
@@ -434,7 +466,8 @@ export const COUNTRIES = [
       "LAO",
       "THA",
       "VNM"
-    ]
+    ],
+    "nameEn": "Cambodia"
   },
   {
     "code": "CMR",
@@ -450,7 +483,8 @@ export const COUNTRIES = [
       "GNQ",
       "GAB",
       "NGA"
-    ]
+    ],
+    "nameEn": "Cameroon"
   },
   {
     "code": "CAN",
@@ -461,7 +495,8 @@ export const COUNTRIES = [
     "lng": -95,
     "borders": [
       "USA"
-    ]
+    ],
+    "nameEn": "Canada"
   },
   {
     "code": "QAT",
@@ -472,7 +507,8 @@ export const COUNTRIES = [
     "lng": 51.25,
     "borders": [
       "SAU"
-    ]
+    ],
+    "nameEn": "Qatar"
   },
   {
     "code": "TCD",
@@ -488,7 +524,8 @@ export const COUNTRIES = [
       "NER",
       "NGA",
       "SDN"
-    ]
+    ],
+    "nameEn": "Chad"
   },
   {
     "code": "CZE",
@@ -502,7 +539,8 @@ export const COUNTRIES = [
       "DEU",
       "POL",
       "SVK"
-    ]
+    ],
+    "nameEn": "Czechia"
   },
   {
     "code": "CHL",
@@ -515,7 +553,8 @@ export const COUNTRIES = [
       "ARG",
       "BOL",
       "PER"
-    ]
+    ],
+    "nameEn": "Chile"
   },
   {
     "code": "CHN",
@@ -541,7 +580,8 @@ export const COUNTRIES = [
       "RUS",
       "TJK",
       "VNM"
-    ]
+    ],
+    "nameEn": "China"
   },
   {
     "code": "CYP",
@@ -550,7 +590,8 @@ export const COUNTRIES = [
     "subregion": "Southern Europe",
     "lat": 35,
     "lng": 33,
-    "borders": []
+    "borders": [],
+    "nameEn": "Cyprus"
   },
   {
     "code": "VAT",
@@ -561,7 +602,8 @@ export const COUNTRIES = [
     "lng": 12.45,
     "borders": [
       "ITA"
-    ]
+    ],
+    "nameEn": "Vatican City"
   },
   {
     "code": "COL",
@@ -576,7 +618,8 @@ export const COUNTRIES = [
       "PAN",
       "PER",
       "VEN"
-    ]
+    ],
+    "nameEn": "Colombia"
   },
   {
     "code": "COM",
@@ -585,7 +628,8 @@ export const COUNTRIES = [
     "subregion": "Eastern Africa",
     "lat": -12.16666666,
     "lng": 44.25,
-    "borders": []
+    "borders": [],
+    "nameEn": "Comoros"
   },
   {
     "code": "COG",
@@ -600,7 +644,8 @@ export const COUNTRIES = [
       "CAF",
       "COD",
       "GAB"
-    ]
+    ],
+    "nameEn": "Republic of the Congo"
   },
   {
     "code": "COD",
@@ -619,7 +664,8 @@ export const COUNTRIES = [
       "TZA",
       "UGA",
       "ZMB"
-    ]
+    ],
+    "nameEn": "DR Congo"
   },
   {
     "code": "PRK",
@@ -632,7 +678,8 @@ export const COUNTRIES = [
       "CHN",
       "KOR",
       "RUS"
-    ]
+    ],
+    "nameEn": "North Korea"
   },
   {
     "code": "KOR",
@@ -643,7 +690,8 @@ export const COUNTRIES = [
     "lng": 127.5,
     "borders": [
       "PRK"
-    ]
+    ],
+    "nameEn": "South Korea"
   },
   {
     "code": "CIV",
@@ -658,7 +706,8 @@ export const COUNTRIES = [
       "GIN",
       "LBR",
       "MLI"
-    ]
+    ],
+    "nameEn": "Ivory Coast"
   },
   {
     "code": "CRI",
@@ -670,7 +719,8 @@ export const COUNTRIES = [
     "borders": [
       "NIC",
       "PAN"
-    ]
+    ],
+    "nameEn": "Costa Rica"
   },
   {
     "code": "HRV",
@@ -685,7 +735,8 @@ export const COUNTRIES = [
       "MNE",
       "SRB",
       "SVN"
-    ]
+    ],
+    "nameEn": "Croatia"
   },
   {
     "code": "CUB",
@@ -694,7 +745,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 21.5,
     "lng": -80,
-    "borders": []
+    "borders": [],
+    "nameEn": "Cuba"
   },
   {
     "code": "DNK",
@@ -705,7 +757,8 @@ export const COUNTRIES = [
     "lng": 10,
     "borders": [
       "DEU"
-    ]
+    ],
+    "nameEn": "Denmark"
   },
   {
     "code": "DJI",
@@ -718,7 +771,8 @@ export const COUNTRIES = [
       "ERI",
       "ETH",
       "SOM"
-    ]
+    ],
+    "nameEn": "Djibouti"
   },
   {
     "code": "DMA",
@@ -727,7 +781,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 15.41666666,
     "lng": -61.33333333,
-    "borders": []
+    "borders": [],
+    "nameEn": "Dominica"
   },
   {
     "code": "ECU",
@@ -739,7 +794,8 @@ export const COUNTRIES = [
     "borders": [
       "COL",
       "PER"
-    ]
+    ],
+    "nameEn": "Ecuador"
   },
   {
     "code": "EGY",
@@ -753,7 +809,8 @@ export const COUNTRIES = [
       "LBY",
       "PSE",
       "SDN"
-    ]
+    ],
+    "nameEn": "Egypt"
   },
   {
     "code": "SLV",
@@ -765,7 +822,8 @@ export const COUNTRIES = [
     "borders": [
       "GTM",
       "HND"
-    ]
+    ],
+    "nameEn": "El Salvador"
   },
   {
     "code": "ARE",
@@ -777,7 +835,8 @@ export const COUNTRIES = [
     "borders": [
       "OMN",
       "SAU"
-    ]
+    ],
+    "nameEn": "United Arab Emirates"
   },
   {
     "code": "ERI",
@@ -790,7 +849,8 @@ export const COUNTRIES = [
       "DJI",
       "ETH",
       "SDN"
-    ]
+    ],
+    "nameEn": "Eritrea"
   },
   {
     "code": "SVK",
@@ -805,7 +865,8 @@ export const COUNTRIES = [
       "HUN",
       "POL",
       "UKR"
-    ]
+    ],
+    "nameEn": "Slovakia"
   },
   {
     "code": "SVN",
@@ -819,7 +880,8 @@ export const COUNTRIES = [
       "HRV",
       "ITA",
       "HUN"
-    ]
+    ],
+    "nameEn": "Slovenia"
   },
   {
     "code": "ESP",
@@ -834,7 +896,8 @@ export const COUNTRIES = [
       "GIB",
       "PRT",
       "MAR"
-    ]
+    ],
+    "nameEn": "Spain"
   },
   {
     "code": "USA",
@@ -846,7 +909,8 @@ export const COUNTRIES = [
     "borders": [
       "CAN",
       "MEX"
-    ]
+    ],
+    "nameEn": "United States"
   },
   {
     "code": "EST",
@@ -858,7 +922,8 @@ export const COUNTRIES = [
     "borders": [
       "LVA",
       "RUS"
-    ]
+    ],
+    "nameEn": "Estonia"
   },
   {
     "code": "ETH",
@@ -874,7 +939,8 @@ export const COUNTRIES = [
       "SOM",
       "SSD",
       "SDN"
-    ]
+    ],
+    "nameEn": "Ethiopia"
   },
   {
     "code": "PHL",
@@ -883,7 +949,8 @@ export const COUNTRIES = [
     "subregion": "South-Eastern Asia",
     "lat": 13,
     "lng": 122,
-    "borders": []
+    "borders": [],
+    "nameEn": "Philippines"
   },
   {
     "code": "FIN",
@@ -896,7 +963,8 @@ export const COUNTRIES = [
       "NOR",
       "SWE",
       "RUS"
-    ]
+    ],
+    "nameEn": "Finland"
   },
   {
     "code": "FJI",
@@ -905,7 +973,8 @@ export const COUNTRIES = [
     "subregion": "Melanesia",
     "lat": -18,
     "lng": 175,
-    "borders": []
+    "borders": [],
+    "nameEn": "Fiji"
   },
   {
     "code": "FRA",
@@ -923,7 +992,8 @@ export const COUNTRIES = [
       "MCO",
       "ESP",
       "CHE"
-    ]
+    ],
+    "nameEn": "France"
   },
   {
     "code": "GAB",
@@ -936,7 +1006,8 @@ export const COUNTRIES = [
       "CMR",
       "COG",
       "GNQ"
-    ]
+    ],
+    "nameEn": "Gabon"
   },
   {
     "code": "GMB",
@@ -947,7 +1018,8 @@ export const COUNTRIES = [
     "lng": -16.56666666,
     "borders": [
       "SEN"
-    ]
+    ],
+    "nameEn": "Gambia"
   },
   {
     "code": "GEO",
@@ -961,7 +1033,8 @@ export const COUNTRIES = [
       "AZE",
       "RUS",
       "TUR"
-    ]
+    ],
+    "nameEn": "Georgia"
   },
   {
     "code": "GHA",
@@ -974,7 +1047,8 @@ export const COUNTRIES = [
       "BFA",
       "CIV",
       "TGO"
-    ]
+    ],
+    "nameEn": "Ghana"
   },
   {
     "code": "GRC",
@@ -988,7 +1062,8 @@ export const COUNTRIES = [
       "BGR",
       "TUR",
       "MKD"
-    ]
+    ],
+    "nameEn": "Greece"
   },
   {
     "code": "GRD",
@@ -997,7 +1072,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 12.11666666,
     "lng": -61.66666666,
-    "borders": []
+    "borders": [],
+    "nameEn": "Grenada"
   },
   {
     "code": "GTM",
@@ -1011,7 +1087,8 @@ export const COUNTRIES = [
       "SLV",
       "HND",
       "MEX"
-    ]
+    ],
+    "nameEn": "Guatemala"
   },
   {
     "code": "GIN",
@@ -1027,7 +1104,8 @@ export const COUNTRIES = [
       "MLI",
       "SEN",
       "SLE"
-    ]
+    ],
+    "nameEn": "Guinea"
   },
   {
     "code": "GNQ",
@@ -1039,7 +1117,8 @@ export const COUNTRIES = [
     "borders": [
       "CMR",
       "GAB"
-    ]
+    ],
+    "nameEn": "Equatorial Guinea"
   },
   {
     "code": "GNB",
@@ -1051,7 +1130,8 @@ export const COUNTRIES = [
     "borders": [
       "GIN",
       "SEN"
-    ]
+    ],
+    "nameEn": "Guinea-Bissau"
   },
   {
     "code": "GUY",
@@ -1064,7 +1144,8 @@ export const COUNTRIES = [
       "BRA",
       "SUR",
       "VEN"
-    ]
+    ],
+    "nameEn": "Guyana"
   },
   {
     "code": "HTI",
@@ -1075,7 +1156,8 @@ export const COUNTRIES = [
     "lng": -72.41666666,
     "borders": [
       "DOM"
-    ]
+    ],
+    "nameEn": "Haiti"
   },
   {
     "code": "HND",
@@ -1088,7 +1170,8 @@ export const COUNTRIES = [
       "GTM",
       "SLV",
       "NIC"
-    ]
+    ],
+    "nameEn": "Honduras"
   },
   {
     "code": "HUN",
@@ -1105,7 +1188,8 @@ export const COUNTRIES = [
       "SVK",
       "SVN",
       "UKR"
-    ]
+    ],
+    "nameEn": "Hungary"
   },
   {
     "code": "IND",
@@ -1121,7 +1205,8 @@ export const COUNTRIES = [
       "CHN",
       "NPL",
       "PAK"
-    ]
+    ],
+    "nameEn": "India"
   },
   {
     "code": "IDN",
@@ -1134,7 +1219,8 @@ export const COUNTRIES = [
       "TLS",
       "MYS",
       "PNG"
-    ]
+    ],
+    "nameEn": "Indonesia"
   },
   {
     "code": "IRQ",
@@ -1150,7 +1236,8 @@ export const COUNTRIES = [
       "SAU",
       "SYR",
       "TUR"
-    ]
+    ],
+    "nameEn": "Iraq"
   },
   {
     "code": "IRN",
@@ -1167,7 +1254,8 @@ export const COUNTRIES = [
       "PAK",
       "TUR",
       "TKM"
-    ]
+    ],
+    "nameEn": "Iran"
   },
   {
     "code": "IRL",
@@ -1178,7 +1266,8 @@ export const COUNTRIES = [
     "lng": -8,
     "borders": [
       "GBR"
-    ]
+    ],
+    "nameEn": "Ireland"
   },
   {
     "code": "ISL",
@@ -1187,7 +1276,8 @@ export const COUNTRIES = [
     "subregion": "Northern Europe",
     "lat": 65,
     "lng": -18,
-    "borders": []
+    "borders": [],
+    "nameEn": "Iceland"
   },
   {
     "code": "MHL",
@@ -1196,7 +1286,8 @@ export const COUNTRIES = [
     "subregion": "Micronesia",
     "lat": 9,
     "lng": 168,
-    "borders": []
+    "borders": [],
+    "nameEn": "Marshall Islands"
   },
   {
     "code": "SLB",
@@ -1205,7 +1296,8 @@ export const COUNTRIES = [
     "subregion": "Melanesia",
     "lat": -8,
     "lng": 159,
-    "borders": []
+    "borders": [],
+    "nameEn": "Solomon Islands"
   },
   {
     "code": "ISR",
@@ -1220,7 +1312,8 @@ export const COUNTRIES = [
       "LBN",
       "PSE",
       "SYR"
-    ]
+    ],
+    "nameEn": "Israel"
   },
   {
     "code": "ITA",
@@ -1236,7 +1329,8 @@ export const COUNTRIES = [
       "SVN",
       "CHE",
       "VAT"
-    ]
+    ],
+    "nameEn": "Italy"
   },
   {
     "code": "JAM",
@@ -1245,7 +1339,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 18.25,
     "lng": -77.5,
-    "borders": []
+    "borders": [],
+    "nameEn": "Jamaica"
   },
   {
     "code": "JPN",
@@ -1254,7 +1349,8 @@ export const COUNTRIES = [
     "subregion": "Eastern Asia",
     "lat": 36,
     "lng": 138,
-    "borders": []
+    "borders": [],
+    "nameEn": "Japan"
   },
   {
     "code": "JOR",
@@ -1269,7 +1365,8 @@ export const COUNTRIES = [
       "PSE",
       "SAU",
       "SYR"
-    ]
+    ],
+    "nameEn": "Jordan"
   },
   {
     "code": "KAZ",
@@ -1284,7 +1381,8 @@ export const COUNTRIES = [
       "RUS",
       "TKM",
       "UZB"
-    ]
+    ],
+    "nameEn": "Kazakhstan"
   },
   {
     "code": "KEN",
@@ -1299,7 +1397,8 @@ export const COUNTRIES = [
       "SSD",
       "TZA",
       "UGA"
-    ]
+    ],
+    "nameEn": "Kenya"
   },
   {
     "code": "KGZ",
@@ -1313,7 +1412,8 @@ export const COUNTRIES = [
       "KAZ",
       "TJK",
       "UZB"
-    ]
+    ],
+    "nameEn": "Kyrgyzstan"
   },
   {
     "code": "KIR",
@@ -1322,7 +1422,8 @@ export const COUNTRIES = [
     "subregion": "Micronesia",
     "lat": 1.41666666,
     "lng": 173,
-    "borders": []
+    "borders": [],
+    "nameEn": "Kiribati"
   },
   {
     "code": "UNK",
@@ -1336,7 +1437,8 @@ export const COUNTRIES = [
       "MKD",
       "MNE",
       "SRB"
-    ]
+    ],
+    "nameEn": "Kosovo"
   },
   {
     "code": "KWT",
@@ -1348,7 +1450,8 @@ export const COUNTRIES = [
     "borders": [
       "IRQ",
       "SAU"
-    ]
+    ],
+    "nameEn": "Kuwait"
   },
   {
     "code": "LAO",
@@ -1363,7 +1466,8 @@ export const COUNTRIES = [
       "CHN",
       "THA",
       "VNM"
-    ]
+    ],
+    "nameEn": "Laos"
   },
   {
     "code": "LSO",
@@ -1374,7 +1478,8 @@ export const COUNTRIES = [
     "lng": 28.5,
     "borders": [
       "ZAF"
-    ]
+    ],
+    "nameEn": "Lesotho"
   },
   {
     "code": "LVA",
@@ -1388,7 +1493,8 @@ export const COUNTRIES = [
       "EST",
       "LTU",
       "RUS"
-    ]
+    ],
+    "nameEn": "Latvia"
   },
   {
     "code": "LBN",
@@ -1400,7 +1506,8 @@ export const COUNTRIES = [
     "borders": [
       "ISR",
       "SYR"
-    ]
+    ],
+    "nameEn": "Lebanon"
   },
   {
     "code": "LBR",
@@ -1413,7 +1520,8 @@ export const COUNTRIES = [
       "GIN",
       "CIV",
       "SLE"
-    ]
+    ],
+    "nameEn": "Liberia"
   },
   {
     "code": "LBY",
@@ -1429,7 +1537,8 @@ export const COUNTRIES = [
       "NER",
       "SDN",
       "TUN"
-    ]
+    ],
+    "nameEn": "Libya"
   },
   {
     "code": "LIE",
@@ -1441,7 +1550,8 @@ export const COUNTRIES = [
     "borders": [
       "AUT",
       "CHE"
-    ]
+    ],
+    "nameEn": "Liechtenstein"
   },
   {
     "code": "LTU",
@@ -1455,7 +1565,8 @@ export const COUNTRIES = [
       "LVA",
       "POL",
       "RUS"
-    ]
+    ],
+    "nameEn": "Lithuania"
   },
   {
     "code": "LUX",
@@ -1468,7 +1579,8 @@ export const COUNTRIES = [
       "BEL",
       "FRA",
       "DEU"
-    ]
+    ],
+    "nameEn": "Luxembourg"
   },
   {
     "code": "MKD",
@@ -1483,7 +1595,8 @@ export const COUNTRIES = [
       "GRC",
       "UNK",
       "SRB"
-    ]
+    ],
+    "nameEn": "North Macedonia"
   },
   {
     "code": "MDG",
@@ -1492,7 +1605,8 @@ export const COUNTRIES = [
     "subregion": "Eastern Africa",
     "lat": -20,
     "lng": 47,
-    "borders": []
+    "borders": [],
+    "nameEn": "Madagascar"
   },
   {
     "code": "MYS",
@@ -1505,7 +1619,8 @@ export const COUNTRIES = [
       "BRN",
       "IDN",
       "THA"
-    ]
+    ],
+    "nameEn": "Malaysia"
   },
   {
     "code": "MWI",
@@ -1518,7 +1633,8 @@ export const COUNTRIES = [
       "MOZ",
       "TZA",
       "ZMB"
-    ]
+    ],
+    "nameEn": "Malawi"
   },
   {
     "code": "MDV",
@@ -1527,7 +1643,8 @@ export const COUNTRIES = [
     "subregion": "Southern Asia",
     "lat": 3.25,
     "lng": 73,
-    "borders": []
+    "borders": [],
+    "nameEn": "Maldives"
   },
   {
     "code": "MLI",
@@ -1544,7 +1661,8 @@ export const COUNTRIES = [
       "MRT",
       "NER",
       "SEN"
-    ]
+    ],
+    "nameEn": "Mali"
   },
   {
     "code": "MLT",
@@ -1553,7 +1671,8 @@ export const COUNTRIES = [
     "subregion": "Southern Europe",
     "lat": 35.83333333,
     "lng": 14.58333333,
-    "borders": []
+    "borders": [],
+    "nameEn": "Malta"
   },
   {
     "code": "MAR",
@@ -1566,7 +1685,8 @@ export const COUNTRIES = [
       "DZA",
       "ESH",
       "ESP"
-    ]
+    ],
+    "nameEn": "Morocco"
   },
   {
     "code": "MUS",
@@ -1575,7 +1695,8 @@ export const COUNTRIES = [
     "subregion": "Eastern Africa",
     "lat": -20.28333333,
     "lng": 57.55,
-    "borders": []
+    "borders": [],
+    "nameEn": "Mauritius"
   },
   {
     "code": "MRT",
@@ -1589,7 +1710,8 @@ export const COUNTRIES = [
       "MLI",
       "SEN",
       "ESH"
-    ]
+    ],
+    "nameEn": "Mauritania"
   },
   {
     "code": "MEX",
@@ -1602,7 +1724,8 @@ export const COUNTRIES = [
       "BLZ",
       "GTM",
       "USA"
-    ]
+    ],
+    "nameEn": "Mexico"
   },
   {
     "code": "FSM",
@@ -1611,7 +1734,8 @@ export const COUNTRIES = [
     "subregion": "Micronesia",
     "lat": 6.91666666,
     "lng": 158.25,
-    "borders": []
+    "borders": [],
+    "nameEn": "Micronesia"
   },
   {
     "code": "MDA",
@@ -1623,7 +1747,8 @@ export const COUNTRIES = [
     "borders": [
       "ROU",
       "UKR"
-    ]
+    ],
+    "nameEn": "Moldova"
   },
   {
     "code": "MCO",
@@ -1634,7 +1759,8 @@ export const COUNTRIES = [
     "lng": 7.4,
     "borders": [
       "FRA"
-    ]
+    ],
+    "nameEn": "Monaco"
   },
   {
     "code": "MNG",
@@ -1646,7 +1772,8 @@ export const COUNTRIES = [
     "borders": [
       "CHN",
       "RUS"
-    ]
+    ],
+    "nameEn": "Mongolia"
   },
   {
     "code": "MNE",
@@ -1661,7 +1788,8 @@ export const COUNTRIES = [
       "HRV",
       "UNK",
       "SRB"
-    ]
+    ],
+    "nameEn": "Montenegro"
   },
   {
     "code": "MOZ",
@@ -1677,7 +1805,8 @@ export const COUNTRIES = [
       "TZA",
       "ZMB",
       "ZWE"
-    ]
+    ],
+    "nameEn": "Mozambique"
   },
   {
     "code": "MMR",
@@ -1692,7 +1821,8 @@ export const COUNTRIES = [
       "IND",
       "LAO",
       "THA"
-    ]
+    ],
+    "nameEn": "Myanmar"
   },
   {
     "code": "NAM",
@@ -1706,7 +1836,8 @@ export const COUNTRIES = [
       "BWA",
       "ZAF",
       "ZMB"
-    ]
+    ],
+    "nameEn": "Namibia"
   },
   {
     "code": "NRU",
@@ -1715,7 +1846,8 @@ export const COUNTRIES = [
     "subregion": "Micronesia",
     "lat": -0.53333333,
     "lng": 166.91666666,
-    "borders": []
+    "borders": [],
+    "nameEn": "Nauru"
   },
   {
     "code": "NPL",
@@ -1727,7 +1859,8 @@ export const COUNTRIES = [
     "borders": [
       "CHN",
       "IND"
-    ]
+    ],
+    "nameEn": "Nepal"
   },
   {
     "code": "NIC",
@@ -1739,7 +1872,8 @@ export const COUNTRIES = [
     "borders": [
       "CRI",
       "HND"
-    ]
+    ],
+    "nameEn": "Nicaragua"
   },
   {
     "code": "NER",
@@ -1756,7 +1890,8 @@ export const COUNTRIES = [
       "LBY",
       "MLI",
       "NGA"
-    ]
+    ],
+    "nameEn": "Niger"
   },
   {
     "code": "NGA",
@@ -1770,7 +1905,8 @@ export const COUNTRIES = [
       "CMR",
       "TCD",
       "NER"
-    ]
+    ],
+    "nameEn": "Nigeria"
   },
   {
     "code": "NOR",
@@ -1783,7 +1919,8 @@ export const COUNTRIES = [
       "FIN",
       "SWE",
       "RUS"
-    ]
+    ],
+    "nameEn": "Norway"
   },
   {
     "code": "NZL",
@@ -1792,7 +1929,8 @@ export const COUNTRIES = [
     "subregion": "Australia and New Zealand",
     "lat": -41,
     "lng": 174,
-    "borders": []
+    "borders": [],
+    "nameEn": "New Zealand"
   },
   {
     "code": "OMN",
@@ -1805,7 +1943,8 @@ export const COUNTRIES = [
       "SAU",
       "ARE",
       "YEM"
-    ]
+    ],
+    "nameEn": "Oman"
   },
   {
     "code": "NLD",
@@ -1817,7 +1956,8 @@ export const COUNTRIES = [
     "borders": [
       "BEL",
       "DEU"
-    ]
+    ],
+    "nameEn": "Netherlands"
   },
   {
     "code": "PAK",
@@ -1831,7 +1971,8 @@ export const COUNTRIES = [
       "CHN",
       "IND",
       "IRN"
-    ]
+    ],
+    "nameEn": "Pakistan"
   },
   {
     "code": "PLW",
@@ -1840,7 +1981,8 @@ export const COUNTRIES = [
     "subregion": "Micronesia",
     "lat": 7.5,
     "lng": 134.5,
-    "borders": []
+    "borders": [],
+    "nameEn": "Palau"
   },
   {
     "code": "PAN",
@@ -1852,7 +1994,8 @@ export const COUNTRIES = [
     "borders": [
       "COL",
       "CRI"
-    ]
+    ],
+    "nameEn": "Panama"
   },
   {
     "code": "PNG",
@@ -1863,7 +2006,8 @@ export const COUNTRIES = [
     "lng": 147,
     "borders": [
       "IDN"
-    ]
+    ],
+    "nameEn": "Papua New Guinea"
   },
   {
     "code": "PRY",
@@ -1876,7 +2020,8 @@ export const COUNTRIES = [
       "ARG",
       "BOL",
       "BRA"
-    ]
+    ],
+    "nameEn": "Paraguay"
   },
   {
     "code": "PER",
@@ -1891,7 +2036,8 @@ export const COUNTRIES = [
       "CHL",
       "COL",
       "ECU"
-    ]
+    ],
+    "nameEn": "Peru"
   },
   {
     "code": "POL",
@@ -1908,7 +2054,8 @@ export const COUNTRIES = [
       "RUS",
       "SVK",
       "UKR"
-    ]
+    ],
+    "nameEn": "Poland"
   },
   {
     "code": "PRT",
@@ -1919,7 +2066,8 @@ export const COUNTRIES = [
     "lng": -8,
     "borders": [
       "ESP"
-    ]
+    ],
+    "nameEn": "Portugal"
   },
   {
     "code": "GBR",
@@ -1930,7 +2078,8 @@ export const COUNTRIES = [
     "lng": -2,
     "borders": [
       "IRL"
-    ]
+    ],
+    "nameEn": "United Kingdom"
   },
   {
     "code": "CAF",
@@ -1946,7 +2095,8 @@ export const COUNTRIES = [
       "COG",
       "SSD",
       "SDN"
-    ]
+    ],
+    "nameEn": "Central African Republic"
   },
   {
     "code": "DOM",
@@ -1957,7 +2107,8 @@ export const COUNTRIES = [
     "lng": -70.66666666,
     "borders": [
       "HTI"
-    ]
+    ],
+    "nameEn": "Dominican Republic"
   },
   {
     "code": "RWA",
@@ -1971,7 +2122,8 @@ export const COUNTRIES = [
       "COD",
       "TZA",
       "UGA"
-    ]
+    ],
+    "nameEn": "Rwanda"
   },
   {
     "code": "ROU",
@@ -1986,7 +2138,8 @@ export const COUNTRIES = [
       "MDA",
       "SRB",
       "UKR"
-    ]
+    ],
+    "nameEn": "Romania"
   },
   {
     "code": "RUS",
@@ -2010,7 +2163,8 @@ export const COUNTRIES = [
       "NOR",
       "POL",
       "UKR"
-    ]
+    ],
+    "nameEn": "Russia"
   },
   {
     "code": "WSM",
@@ -2019,7 +2173,8 @@ export const COUNTRIES = [
     "subregion": "Polynesia",
     "lat": -13.58333333,
     "lng": -172.33333333,
-    "borders": []
+    "borders": [],
+    "nameEn": "Samoa"
   },
   {
     "code": "KNA",
@@ -2028,7 +2183,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 17.33333333,
     "lng": -62.75,
-    "borders": []
+    "borders": [],
+    "nameEn": "Saint Kitts and Nevis"
   },
   {
     "code": "SMR",
@@ -2039,7 +2195,8 @@ export const COUNTRIES = [
     "lng": 12.41666666,
     "borders": [
       "ITA"
-    ]
+    ],
+    "nameEn": "San Marino"
   },
   {
     "code": "VCT",
@@ -2048,7 +2205,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 13.25,
     "lng": -61.2,
-    "borders": []
+    "borders": [],
+    "nameEn": "Saint Vincent and the Grenadines"
   },
   {
     "code": "LCA",
@@ -2057,7 +2215,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 13.88333333,
     "lng": -60.96666666,
-    "borders": []
+    "borders": [],
+    "nameEn": "Saint Lucia"
   },
   {
     "code": "STP",
@@ -2066,7 +2225,8 @@ export const COUNTRIES = [
     "subregion": "Middle Africa",
     "lat": 1,
     "lng": 7,
-    "borders": []
+    "borders": [],
+    "nameEn": "São Tomé and Príncipe"
   },
   {
     "code": "SEN",
@@ -2081,7 +2241,8 @@ export const COUNTRIES = [
       "GNB",
       "MLI",
       "MRT"
-    ]
+    ],
+    "nameEn": "Senegal"
   },
   {
     "code": "SRB",
@@ -2099,7 +2260,8 @@ export const COUNTRIES = [
       "MKD",
       "MNE",
       "ROU"
-    ]
+    ],
+    "nameEn": "Serbia"
   },
   {
     "code": "SYC",
@@ -2108,7 +2270,8 @@ export const COUNTRIES = [
     "subregion": "Eastern Africa",
     "lat": -4.58333333,
     "lng": 55.66666666,
-    "borders": []
+    "borders": [],
+    "nameEn": "Seychelles"
   },
   {
     "code": "SLE",
@@ -2120,7 +2283,8 @@ export const COUNTRIES = [
     "borders": [
       "GIN",
       "LBR"
-    ]
+    ],
+    "nameEn": "Sierra Leone"
   },
   {
     "code": "SGP",
@@ -2129,7 +2293,8 @@ export const COUNTRIES = [
     "subregion": "South-Eastern Asia",
     "lat": 1.36666666,
     "lng": 103.8,
-    "borders": []
+    "borders": [],
+    "nameEn": "Singapore"
   },
   {
     "code": "SYR",
@@ -2144,7 +2309,8 @@ export const COUNTRIES = [
       "JOR",
       "LBN",
       "TUR"
-    ]
+    ],
+    "nameEn": "Syria"
   },
   {
     "code": "SOM",
@@ -2157,7 +2323,8 @@ export const COUNTRIES = [
       "DJI",
       "ETH",
       "KEN"
-    ]
+    ],
+    "nameEn": "Somalia"
   },
   {
     "code": "LKA",
@@ -2168,7 +2335,8 @@ export const COUNTRIES = [
     "lng": 81,
     "borders": [
       "IND"
-    ]
+    ],
+    "nameEn": "Sri Lanka"
   },
   {
     "code": "SWZ",
@@ -2180,7 +2348,8 @@ export const COUNTRIES = [
     "borders": [
       "MOZ",
       "ZAF"
-    ]
+    ],
+    "nameEn": "Eswatini"
   },
   {
     "code": "ZAF",
@@ -2196,7 +2365,8 @@ export const COUNTRIES = [
       "NAM",
       "SWZ",
       "ZWE"
-    ]
+    ],
+    "nameEn": "South Africa"
   },
   {
     "code": "SDN",
@@ -2213,7 +2383,8 @@ export const COUNTRIES = [
       "ETH",
       "LBY",
       "SSD"
-    ]
+    ],
+    "nameEn": "Sudan"
   },
   {
     "code": "SSD",
@@ -2229,7 +2400,8 @@ export const COUNTRIES = [
       "KEN",
       "SDN",
       "UGA"
-    ]
+    ],
+    "nameEn": "South Sudan"
   },
   {
     "code": "SWE",
@@ -2241,7 +2413,8 @@ export const COUNTRIES = [
     "borders": [
       "FIN",
       "NOR"
-    ]
+    ],
+    "nameEn": "Sweden"
   },
   {
     "code": "CHE",
@@ -2256,7 +2429,8 @@ export const COUNTRIES = [
       "ITA",
       "LIE",
       "DEU"
-    ]
+    ],
+    "nameEn": "Switzerland"
   },
   {
     "code": "SUR",
@@ -2269,7 +2443,8 @@ export const COUNTRIES = [
       "BRA",
       "GUF",
       "GUY"
-    ]
+    ],
+    "nameEn": "Suriname"
   },
   {
     "code": "THA",
@@ -2283,7 +2458,8 @@ export const COUNTRIES = [
       "KHM",
       "LAO",
       "MYS"
-    ]
+    ],
+    "nameEn": "Thailand"
   },
   {
     "code": "TZA",
@@ -2301,7 +2477,8 @@ export const COUNTRIES = [
       "RWA",
       "UGA",
       "ZMB"
-    ]
+    ],
+    "nameEn": "Tanzania"
   },
   {
     "code": "TJK",
@@ -2315,7 +2492,8 @@ export const COUNTRIES = [
       "CHN",
       "KGZ",
       "UZB"
-    ]
+    ],
+    "nameEn": "Tajikistan"
   },
   {
     "code": "TLS",
@@ -2326,7 +2504,8 @@ export const COUNTRIES = [
     "lng": 125.91666666,
     "borders": [
       "IDN"
-    ]
+    ],
+    "nameEn": "Timor-Leste"
   },
   {
     "code": "TGO",
@@ -2339,7 +2518,8 @@ export const COUNTRIES = [
       "BEN",
       "BFA",
       "GHA"
-    ]
+    ],
+    "nameEn": "Togo"
   },
   {
     "code": "TON",
@@ -2348,7 +2528,8 @@ export const COUNTRIES = [
     "subregion": "Polynesia",
     "lat": -20,
     "lng": -175,
-    "borders": []
+    "borders": [],
+    "nameEn": "Tonga"
   },
   {
     "code": "TTO",
@@ -2357,7 +2538,8 @@ export const COUNTRIES = [
     "subregion": "Caribbean",
     "lat": 11,
     "lng": -61,
-    "borders": []
+    "borders": [],
+    "nameEn": "Trinidad and Tobago"
   },
   {
     "code": "TUN",
@@ -2369,7 +2551,8 @@ export const COUNTRIES = [
     "borders": [
       "DZA",
       "LBY"
-    ]
+    ],
+    "nameEn": "Tunisia"
   },
   {
     "code": "TKM",
@@ -2383,7 +2566,8 @@ export const COUNTRIES = [
       "IRN",
       "KAZ",
       "UZB"
-    ]
+    ],
+    "nameEn": "Turkmenistan"
   },
   {
     "code": "TUR",
@@ -2401,7 +2585,8 @@ export const COUNTRIES = [
       "IRN",
       "IRQ",
       "SYR"
-    ]
+    ],
+    "nameEn": "Türkiye"
   },
   {
     "code": "TUV",
@@ -2410,7 +2595,8 @@ export const COUNTRIES = [
     "subregion": "Polynesia",
     "lat": -8,
     "lng": 178,
-    "borders": []
+    "borders": [],
+    "nameEn": "Tuvalu"
   },
   {
     "code": "UKR",
@@ -2427,7 +2613,8 @@ export const COUNTRIES = [
       "ROU",
       "RUS",
       "SVK"
-    ]
+    ],
+    "nameEn": "Ukraine"
   },
   {
     "code": "UGA",
@@ -2442,7 +2629,8 @@ export const COUNTRIES = [
       "RWA",
       "SSD",
       "TZA"
-    ]
+    ],
+    "nameEn": "Uganda"
   },
   {
     "code": "URY",
@@ -2454,7 +2642,8 @@ export const COUNTRIES = [
     "borders": [
       "ARG",
       "BRA"
-    ]
+    ],
+    "nameEn": "Uruguay"
   },
   {
     "code": "UZB",
@@ -2469,7 +2658,8 @@ export const COUNTRIES = [
       "KGZ",
       "TJK",
       "TKM"
-    ]
+    ],
+    "nameEn": "Uzbekistan"
   },
   {
     "code": "VUT",
@@ -2478,7 +2668,8 @@ export const COUNTRIES = [
     "subregion": "Melanesia",
     "lat": -16,
     "lng": 167,
-    "borders": []
+    "borders": [],
+    "nameEn": "Vanuatu"
   },
   {
     "code": "VEN",
@@ -2491,7 +2682,8 @@ export const COUNTRIES = [
       "BRA",
       "COL",
       "GUY"
-    ]
+    ],
+    "nameEn": "Venezuela"
   },
   {
     "code": "VNM",
@@ -2504,7 +2696,8 @@ export const COUNTRIES = [
       "KHM",
       "CHN",
       "LAO"
-    ]
+    ],
+    "nameEn": "Vietnam"
   },
   {
     "code": "YEM",
@@ -2516,7 +2709,8 @@ export const COUNTRIES = [
     "borders": [
       "OMN",
       "SAU"
-    ]
+    ],
+    "nameEn": "Yemen"
   },
   {
     "code": "ZMB",
@@ -2534,7 +2728,8 @@ export const COUNTRIES = [
       "NAM",
       "TZA",
       "ZWE"
-    ]
+    ],
+    "nameEn": "Zambia"
   },
   {
     "code": "ZWE",
@@ -2548,6 +2743,7 @@ export const COUNTRIES = [
       "MOZ",
       "ZAF",
       "ZMB"
-    ]
+    ],
+    "nameEn": "Zimbabwe"
   }
 ];

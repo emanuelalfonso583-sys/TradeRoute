@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COUNTRIES } from '../data/countries';
 import { CITIES_BY_COUNTRY } from '../data/cities';
+import { useLanguage } from '../context/LanguageContext';
 import { colors, radius } from '../theme/colors';
 
 function normalizar(texto) {
@@ -22,6 +23,7 @@ function normalizar(texto) {
 }
 
 function ListaBusqueda({ visible, titulo, datos, obtenerTexto, onSeleccionar, onCerrar }) {
+  const { t } = useLanguage();
   const [busqueda, setBusqueda] = useState('');
 
   const filtrados = useMemo(() => {
@@ -44,7 +46,7 @@ function ListaBusqueda({ visible, titulo, datos, obtenerTexto, onSeleccionar, on
           <Ionicons name="search" size={18} color={colors.textMuted} />
           <TextInput
             style={styles.buscadorInput}
-            placeholder="Buscar..."
+            placeholder={t('ubicacion.buscar')}
             placeholderTextColor={colors.textMuted}
             value={busqueda}
             onChangeText={setBusqueda}
@@ -69,7 +71,7 @@ function ListaBusqueda({ visible, titulo, datos, obtenerTexto, onSeleccionar, on
             </Pressable>
           )}
           ListEmptyComponent={
-            <Text style={styles.sinResultados}>No se encontraron resultados.</Text>
+            <Text style={styles.sinResultados}>{t('ubicacion.sinResultados')}</Text>
           }
         />
       </SafeAreaView>
@@ -77,7 +79,12 @@ function ListaBusqueda({ visible, titulo, datos, obtenerTexto, onSeleccionar, on
   );
 }
 
+function nombrePais(pais, idioma) {
+  return idioma === 'en' ? pais.nameEn || pais.name : pais.name;
+}
+
 export default function LocationPicker({ label, value, onChange, error }) {
+  const { t, idioma } = useLanguage();
   const [modalPaisVisible, setModalPaisVisible] = useState(false);
   const [modalCiudadVisible, setModalCiudadVisible] = useState(false);
 
@@ -85,7 +92,7 @@ export default function LocationPicker({ label, value, onChange, error }) {
 
   function seleccionarPais(pais) {
     setModalPaisVisible(false);
-    onChange({ countryCode: pais.code, countryName: pais.name, city: '' });
+    onChange({ countryCode: pais.code, countryName: nombrePais(pais, idioma), city: '' });
     setModalCiudadVisible(true);
   }
 
@@ -97,8 +104,8 @@ export default function LocationPicker({ label, value, onChange, error }) {
   const textoMostrado = value?.city
     ? `${value.city}, ${value.countryName}`
     : value?.countryName
-    ? `Selecciona la ciudad (${value.countryName})`
-    : 'Selecciona un país';
+    ? t('ubicacion.seleccionaCiudad', { pais: value.countryName })
+    : t('ubicacion.seleccionaPais');
 
   return (
     <View style={styles.container}>
@@ -117,16 +124,16 @@ export default function LocationPicker({ label, value, onChange, error }) {
 
       <ListaBusqueda
         visible={modalPaisVisible}
-        titulo="Selecciona un país"
+        titulo={t('ubicacion.seleccionaPais')}
         datos={COUNTRIES}
-        obtenerTexto={(pais) => pais.name}
+        obtenerTexto={(pais) => nombrePais(pais, idioma)}
         onSeleccionar={seleccionarPais}
         onCerrar={() => setModalPaisVisible(false)}
       />
 
       <ListaBusqueda
         visible={modalCiudadVisible}
-        titulo={`Ciudad en ${value?.countryName || ''}`}
+        titulo={t('ubicacion.cuidadEn', { pais: value?.countryName || '' })}
         datos={ciudadesDelPais}
         obtenerTexto={(ciudad) => ciudad.name}
         onSeleccionar={seleccionarCiudad}

@@ -59,7 +59,7 @@ export const MODALIDADES = [
 // específica en el formulario): así el Score de cada una refleja una
 // comparación real contra las demás, y las pantallas pueden mostrar "ver
 // otras alternativas" sin tener que recalcular nada.
-export function calcularAlternativas(envio, tarifas) {
+export function calcularAlternativas(envio, tarifas, t) {
   const peso = Number(envio.peso);
   const volumen = Number(envio.volumen);
 
@@ -75,7 +75,8 @@ export function calcularAlternativas(envio, tarifas) {
 
   const terrestreDisponible = hayConexionTerrestreEntrePaises(envio.origenPais, envio.destinoPais);
 
-  return MODALIDADES.map(({ key, label, icono }) => {
+  return MODALIDADES.map(({ key, label: labelEstatico, icono }) => {
+    const label = t ? t(`modalidad.${key}`) : labelEstatico;
     const disponible = key !== 'terrestre' || terrestreDisponible;
 
     if (!disponible) {
@@ -164,8 +165,8 @@ export function calcularScores(alternativas) {
 
 // Pipeline completo: a partir de los datos del envío y las tarifas vigentes
 // (Firestore), devuelve las alternativas con costo/tiempo/CO2/score ya calculados.
-export function compararEnvio(envio, tarifas) {
-  const alternativas = calcularAlternativas(envio, tarifas);
+export function compararEnvio(envio, tarifas, t) {
+  const alternativas = calcularAlternativas(envio, tarifas, t);
   return calcularScores(alternativas);
 }
 
@@ -187,11 +188,12 @@ export function hayComparacionReal(alternativasConScore) {
 
 // Genera una explicación breve y dinámica de por qué se recomendó una
 // alternativa, según en qué métricas se destacó frente a las demás disponibles.
-export function generarExplicacion(recomendacion, alternativasConScore) {
+// `t` es la función de traducción del idioma activo (useLanguage().t).
+export function generarExplicacion(recomendacion, alternativasConScore, t) {
   if (!recomendacion) return '';
 
   if (!hayComparacionReal(alternativasConScore)) {
-    return `${recomendacion.label} es la única alternativa disponible para esta ruta con los datos ingresados, así que no hay otras opciones con las que compararla.`;
+    return t('recomendacion.explicacion.unicaAlternativaSinComparar', { label: recomendacion.label });
   }
 
   const disponibles = alternativasConScore.filter((a) => a.disponible);
@@ -199,31 +201,27 @@ export function generarExplicacion(recomendacion, alternativasConScore) {
     disponibles.every((a) => comparador(recomendacion[campo], a[campo]));
 
   const fortalezas = [];
-  if (esMejorEn('costoUsd', (r, a) => r <= a)) fortalezas.push('el menor costo estimado');
-  if (esMejorEn('tiempoDias', (r, a) => r <= a)) fortalezas.push('el menor tiempo de tránsito');
-  if (esMejorEn('co2Kg', (r, a) => r <= a)) fortalezas.push('la menor huella de CO₂');
+  if (esMejorEn('costoUsd', (r, a) => r <= a)) fortalezas.push(t('recomendacion.explicacion.menorCosto'));
+  if (esMejorEn('tiempoDias', (r, a) => r <= a)) fortalezas.push(t('recomendacion.explicacion.menorTiempo'));
+  if (esMejorEn('co2Kg', (r, a) => r <= a)) fortalezas.push(t('recomendacion.explicacion.menorCo2'));
 
   const detalle =
     fortalezas.length > 0
-      ? `Ofrece ${fortalezas.join(', ')} entre las alternativas disponibles.`
-      : 'Presenta el mejor equilibrio general entre costo, tiempo de tránsito y emisiones de CO₂.';
+      ? t('recomendacion.explicacion.ofrece', { fortalezas: fortalezas.join(', ') })
+      : t('recomendacion.explicacion.equilibrio');
 
-  return (
-    `${recomendacion.label} es la opción recomendada para esta ruta, considerando costo, ` +
-    `tiempo de tránsito y emisiones de CO₂ (el costo es el factor que más pesa en la decisión, ` +
-    `porque es lo que más le importa a quien envía). ${detalle}`
-  );
+  return t('recomendacion.explicacion.recomendada', { label: recomendacion.label, detalle });
 }
 
 // Explicación para cuando el usuario eligió una modalidad específica en el
 // formulario (no "Comparar todas"): no dice que sea "la mejor", solo informa
 // su Score real frente a las demás alternativas disponibles para esa ruta.
-export function generarExplicacionSeleccion(seleccion, alternativasConScore) {
+export function generarExplicacionSeleccion(seleccion, alternativasConScore, t) {
   if (!seleccion) return '';
 
   if (!hayComparacionReal(alternativasConScore)) {
-    return `${seleccion.label} es la única alternativa disponible para esta ruta con los datos ingresados.`;
+    return t('recomendacion.explicacion.unicaAlternativa', { label: seleccion.label });
   }
 
-  return `Elegiste ${seleccion.label} para este envío. Estos son sus datos frente a las demás alternativas disponibles para esta ruta.`;
+  return t('recomendacion.explicacion.eligio', { label: seleccion.label });
 }

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 import { colors, radius } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
 
 export default function PrimaryButton({ title, onPress, variant = 'primary', disabled = false }) {
+  const { acento } = useAppTheme();
   const isOutline = variant === 'outline';
 
   return (
@@ -11,14 +13,14 @@ export default function PrimaryButton({ title, onPress, variant = 'primary', dis
       disabled={disabled}
       style={({ pressed }) => [
         styles.base,
-        isOutline ? styles.outline : styles.solid,
+        isOutline
+          ? { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: acento }
+          : { backgroundColor: acento },
         disabled && styles.disabled,
         pressed && !disabled && styles.pressed,
       ]}
     >
-      <Text style={[styles.text, isOutline ? styles.textOutline : styles.textSolid]}>
-        {title}
-      </Text>
+      <Text style={[styles.text, { color: isOutline ? acento : '#FFFFFF' }]}>{title}</Text>
     </Pressable>
   );
 }
@@ -30,14 +32,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  solid: {
-    backgroundColor: colors.action,
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1.5,
-    borderColor: colors.action,
-  },
   disabled: {
     backgroundColor: colors.disabled,
   },
@@ -47,11 +41,5 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: '700',
-  },
-  textSolid: {
-    color: '#FFFFFF',
-  },
-  textOutline: {
-    color: colors.action,
   },
 });

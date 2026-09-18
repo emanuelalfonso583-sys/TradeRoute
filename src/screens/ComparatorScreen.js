@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-nat
 import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
 import { useShipment } from '../context/ShipmentContext';
+import { useLanguage } from '../context/LanguageContext';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { colors } from '../theme/colors';
 
 export default function ComparatorScreen({ navigation }) {
   const { envio } = useShipment();
+  const { t } = useLanguage();
   const [tarifas, setTarifas] = useState(null);
 
   useEffect(() => {
@@ -22,8 +24,8 @@ export default function ComparatorScreen({ navigation }) {
   }, []);
 
   const todasLasAlternativas = useMemo(
-    () => (tarifas ? compararEnvio(envio, tarifas) : []),
-    [envio, tarifas]
+    () => (tarifas ? compararEnvio(envio, tarifas, t) : []),
+    [envio, tarifas, t]
   );
   const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
   const alternativas = useMemo(
@@ -49,7 +51,7 @@ export default function ComparatorScreen({ navigation }) {
     return (
       <View style={styles.cargandoContainer}>
         <ActivityIndicator size="large" color={colors.action} />
-        <Text style={styles.cargandoTexto}>Cargando tarifas...</Text>
+        <Text style={styles.cargandoTexto}>{t('comparador.cargandoTarifas')}</Text>
       </View>
     );
   }
@@ -57,13 +59,13 @@ export default function ComparatorScreen({ navigation }) {
   return (
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>
-        {comparandoTodas ? 'Comparación de Rutas' : 'Detalle de la Ruta'}
+        {comparandoTodas ? t('comparador.tituloTodas') : t('comparador.tituloUna')}
       </Text>
       <Text style={styles.ruta}>
         {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
       </Text>
       <Text style={styles.detalle}>
-        {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} unidades
+        {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} {t('comparador.unidades')}
       </Text>
 
       <View style={styles.spacer} />
@@ -76,13 +78,10 @@ export default function ComparatorScreen({ navigation }) {
         />
       ))}
 
-      <Text style={styles.disclaimer}>
-        Las tarifas se leen desde la base de datos y son estimaciones académicas para demostrar
-        el funcionamiento del MVP; NO representan cotizaciones reales.
-      </Text>
+      <Text style={styles.disclaimer}>{t('comparador.disclaimer')}</Text>
 
       <PrimaryButton
-        title="Ver recomendación"
+        title={t('comparador.verRecomendacion')}
         onPress={() => navigation.navigate('Recomendacion')}
         disabled={!recomendacion}
       />

@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
+import { useLanguage } from '../context/LanguageContext';
 import { colors } from '../theme/colors';
 
 export default function HomeScreen({ navigation }) {
+  const { t } = useLanguage();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -12,20 +15,20 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <Text style={styles.title}>TradeRoute</Text>
-        <Text style={styles.subtitle}>Comparador de rutas logísticas internacionales</Text>
+        <Text style={styles.subtitle}>{t('home.subtitulo')}</Text>
 
-        <Text style={styles.tagline}>“La ruta más eficiente para cada envío.”</Text>
+        <Text style={styles.tagline}>{t('home.frase')}</Text>
 
         <View style={styles.spacer} />
 
         <View style={styles.buttonWrapper}>
           <PrimaryButton
-            title="Comenzar nuevo envío"
+            title={t('home.comenzar')}
             onPress={() => navigation.navigate('NuevoEnvio')}
           />
         </View>
 
-        <Text style={styles.footer}>Proyecto académico — Comercio Internacional</Text>
+        <Text style={styles.footer}>{t('home.pie')}</Text>
       </View>
     </SafeAreaView>
   );

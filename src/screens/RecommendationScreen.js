@@ -4,6 +4,7 @@ import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
 import { useShipment } from '../context/ShipmentContext';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import {
   compararEnvio,
   obtenerRecomendacion,
@@ -20,6 +21,7 @@ import { colors, radius, shadow } from '../theme/colors';
 export default function RecommendationScreen({ navigation }) {
   const { envio, reiniciarEnvio } = useShipment();
   const { usuario } = useAuth();
+  const { t } = useLanguage();
   const [tarifas, setTarifas] = useState(null);
   const guardadoRef = useRef(null);
 
@@ -36,8 +38,8 @@ export default function RecommendationScreen({ navigation }) {
   const [mostrarOtras, setMostrarOtras] = useState(false);
 
   const todasLasAlternativas = useMemo(
-    () => (tarifas ? compararEnvio(envio, tarifas) : []),
-    [envio, tarifas]
+    () => (tarifas ? compararEnvio(envio, tarifas, t) : []),
+    [envio, tarifas, t]
   );
   const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
   const recomendacion = useMemo(
@@ -50,9 +52,9 @@ export default function RecommendationScreen({ navigation }) {
   const explicacion = useMemo(
     () =>
       comparandoTodas
-        ? generarExplicacion(recomendacion, todasLasAlternativas)
-        : generarExplicacionSeleccion(recomendacion, todasLasAlternativas),
-    [comparandoTodas, recomendacion, todasLasAlternativas]
+        ? generarExplicacion(recomendacion, todasLasAlternativas, t)
+        : generarExplicacionSeleccion(recomendacion, todasLasAlternativas, t),
+    [comparandoTodas, recomendacion, todasLasAlternativas, t]
   );
   const conComparacion = useMemo(
     () => hayComparacionReal(todasLasAlternativas),
@@ -81,7 +83,7 @@ export default function RecommendationScreen({ navigation }) {
     return (
       <View style={styles.cargandoContainer}>
         <ActivityIndicator size="large" color={colors.action} />
-        <Text style={styles.cargandoTexto}>Cargando recomendación...</Text>
+        <Text style={styles.cargandoTexto}>{t('recomendacion.cargando')}</Text>
       </View>
     );
   }
@@ -97,7 +99,9 @@ export default function RecommendationScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
-      <Text style={styles.titulo}>{conComparacion ? 'Recomendación de Ruta' : 'Detalle de la Ruta'}</Text>
+      <Text style={styles.titulo}>
+        {conComparacion ? t('recomendacion.tituloConComparacion') : t('recomendacion.tituloSinComparacion')}
+      </Text>
       <Text style={styles.ruta}>
         {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
       </Text>
@@ -105,17 +109,17 @@ export default function RecommendationScreen({ navigation }) {
       <View style={styles.tarjetaPrincipal}>
         <Text style={styles.trofeo}>{conComparacion ? '🏆' : recomendacion.icono}</Text>
         <Text style={styles.rutaRecomendadaLabel}>
-          {conComparacion ? 'Ruta recomendada' : 'Modalidad seleccionada'}
+          {conComparacion ? t('recomendacion.rutaRecomendada') : t('recomendacion.modalidadSeleccionada')}
         </Text>
         <Text style={styles.rutaRecomendadaValor}>
           {recomendacion.icono} {recomendacion.label}
         </Text>
 
         <Text style={styles.costoRecomendadoValor}>US$ {formatearUsd(recomendacion.costoUsd)}</Text>
-        <Text style={styles.costoRecomendadoLabel}>Costo del flete (USD)</Text>
+        <Text style={styles.costoRecomendadoLabel}>{t('tarjeta.costo')}</Text>
       </View>
 
-      <Text style={styles.seccionTitulo}>Mapa de la ruta</Text>
+      <Text style={styles.seccionTitulo}>{t('recomendacion.mapaRuta')}</Text>
       <RouteMap
         origen={{
           lat: envio.origenLat,
@@ -136,10 +140,10 @@ export default function RecommendationScreen({ navigation }) {
           <PrimaryButton
             title={
               mostrarOtras
-                ? 'Ocultar otras alternativas'
+                ? t('recomendacion.ocultarOtras')
                 : otrasDisponibles.length === 1
-                ? 'Ver segunda opción recomendada'
-                : 'Ver otras alternativas disponibles'
+                ? t('recomendacion.verSegundaOpcion')
+                : t('recomendacion.verOtras')
             }
             onPress={() => setMostrarOtras((v) => !v)}
             variant="outline"
@@ -154,19 +158,16 @@ export default function RecommendationScreen({ navigation }) {
         </View>
       )}
 
-      <Text style={styles.disclaimer}>
-        Los valores son estimaciones académicas y no representan cotizaciones reales. La
-        recomendación se recalcula automáticamente si cambian los datos del envío.
-      </Text>
+      <Text style={styles.disclaimer}>{t('recomendacion.disclaimer')}</Text>
 
       <PrimaryButton
-        title="Ver análisis detallado (puertos, aeropuertos y mapas)"
+        title={t('recomendacion.verAnalisis')}
         onPress={() => navigation.navigate('MainTabs', { screen: 'Analisis' })}
       />
       <View style={styles.espacioBoton} />
-      <PrimaryButton title="Comparar de nuevo" onPress={() => navigation.navigate('Comparador')} variant="outline" />
+      <PrimaryButton title={t('recomendacion.compararNuevo')} onPress={() => navigation.navigate('Comparador')} variant="outline" />
       <View style={styles.espacioBoton} />
-      <PrimaryButton title="Nuevo envío" onPress={handleNuevoEnvio} variant="outline" />
+      <PrimaryButton title={t('recomendacion.nuevoEnvio')} onPress={handleNuevoEnvio} variant="outline" />
     </ScrollView>
   );
 }

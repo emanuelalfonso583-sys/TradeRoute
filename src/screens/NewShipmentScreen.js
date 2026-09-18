@@ -12,67 +12,50 @@ import { Picker } from '@react-native-picker/picker';
 import PrimaryButton from '../components/PrimaryButton';
 import LocationPicker from '../components/LocationPicker';
 import { useShipment } from '../context/ShipmentContext';
+import { useLanguage } from '../context/LanguageContext';
 import { hayConexionTerrestreEntrePaises } from '../utils/routeGroups';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { colors, radius } from '../theme/colors';
-
-const TIPOS_MERCANCIA = [
-  { label: 'Selecciona un tipo...', value: '' },
-  { label: 'General / Carga seca', value: 'general' },
-  { label: 'Perecedero', value: 'perecedero' },
-  { label: 'Frágil', value: 'fragil' },
-  { label: 'Electrónica', value: 'electronica' },
-  { label: 'Textil', value: 'textil' },
-  { label: 'Mercancía peligrosa', value: 'peligrosa' },
-  { label: 'Otro', value: 'otro' },
-];
-
-const MODALIDADES_BASE = [
-  { label: 'Comparar todas', value: 'todas' },
-  { label: 'Marítima', value: 'maritima' },
-  { label: 'Aérea', value: 'aerea' },
-  { label: 'Terrestre', value: 'terrestre' },
-];
 
 function parseNumero(texto) {
   if (typeof texto !== 'string') return NaN;
   return parseFloat(texto.replace(',', '.'));
 }
 
-function validar(form) {
+function validar(form, t) {
   const errores = {};
 
-  if (!form.origen?.city) errores.origen = 'Selecciona el país y la ciudad de origen.';
-  if (!form.destino?.city) errores.destino = 'Selecciona el país y la ciudad de destino.';
-  if (!form.tipoMercancia) errores.tipoMercancia = 'Selecciona el tipo de mercancía.';
+  if (!form.origen?.city) errores.origen = t('nuevoEnvio.error.origen');
+  if (!form.destino?.city) errores.destino = t('nuevoEnvio.error.destino');
+  if (!form.tipoMercancia) errores.tipoMercancia = t('nuevoEnvio.error.tipoMercancia');
 
   const peso = parseNumero(form.peso);
   if (form.peso === '' || Number.isNaN(peso)) {
-    errores.peso = 'Ingresa el peso total.';
+    errores.peso = t('nuevoEnvio.error.pesoVacio');
   } else if (peso <= 0) {
-    errores.peso = 'El peso debe ser mayor que 0.';
+    errores.peso = t('nuevoEnvio.error.pesoNegativo');
   }
 
   const volumen = parseNumero(form.volumen);
   if (form.volumen === '' || Number.isNaN(volumen)) {
-    errores.volumen = 'Ingresa el volumen total.';
+    errores.volumen = t('nuevoEnvio.error.volumenVacio');
   } else if (volumen <= 0) {
-    errores.volumen = 'El volumen debe ser mayor que 0.';
+    errores.volumen = t('nuevoEnvio.error.volumenNegativo');
   }
 
   const unidades = parseNumero(form.unidades);
   if (form.unidades === '' || Number.isNaN(unidades)) {
-    errores.unidades = 'Ingresa la cantidad de unidades.';
+    errores.unidades = t('nuevoEnvio.error.unidadesVacio');
   } else if (unidades <= 0) {
-    errores.unidades = 'La cantidad de unidades debe ser mayor que 0.';
+    errores.unidades = t('nuevoEnvio.error.unidadesNegativo');
   }
 
   const valor = parseNumero(form.valor);
   if (form.valor === '' || Number.isNaN(valor)) {
-    errores.valor = 'Ingresa el valor de la mercancía.';
+    errores.valor = t('nuevoEnvio.error.valorVacio');
   } else if (valor < 0) {
-    errores.valor = 'El valor debe ser mayor o igual a 0.';
+    errores.valor = t('nuevoEnvio.error.valorNegativo');
   }
 
   return errores;
@@ -80,6 +63,26 @@ function validar(form) {
 
 export default function NewShipmentScreen({ navigation }) {
   const { envio, guardarEnvio } = useShipment();
+  const { t } = useLanguage();
+
+  const TIPOS_MERCANCIA = [
+    { label: t('nuevoEnvio.tipoMercanciaPlaceholder'), value: '' },
+    { label: t('nuevoEnvio.tipoMercancia.general'), value: 'general' },
+    { label: t('nuevoEnvio.tipoMercancia.perecedero'), value: 'perecedero' },
+    { label: t('nuevoEnvio.tipoMercancia.fragil'), value: 'fragil' },
+    { label: t('nuevoEnvio.tipoMercancia.electronica'), value: 'electronica' },
+    { label: t('nuevoEnvio.tipoMercancia.textil'), value: 'textil' },
+    { label: t('nuevoEnvio.tipoMercancia.peligrosa'), value: 'peligrosa' },
+    { label: t('nuevoEnvio.tipoMercancia.otro'), value: 'otro' },
+  ];
+
+  const MODALIDADES_BASE = [
+    { label: t('nuevoEnvio.modalidad.todas'), value: 'todas' },
+    { label: t('modalidad.maritima'), value: 'maritima' },
+    { label: t('modalidad.aerea'), value: 'aerea' },
+    { label: t('modalidad.terrestre'), value: 'terrestre' },
+  ];
+
   const [form, setForm] = useState({
     origen: envio.origenPais
       ? {
@@ -145,9 +148,9 @@ export default function NewShipmentScreen({ navigation }) {
       volumen: parseNumero(form.volumen) || 0,
     };
 
-    const alternativas = compararEnvio(envioPreview, tarifas);
+    const alternativas = compararEnvio(envioPreview, tarifas, t);
     return obtenerRecomendacion(alternativas);
-  }, [tarifas, form.origen, form.destino, pesoPreview, form.volumen]);
+  }, [tarifas, form.origen, form.destino, pesoPreview, form.volumen, t]);
 
   const modalidades = useMemo(
     () =>
@@ -158,12 +161,12 @@ export default function NewShipmentScreen({ navigation }) {
         const esRecomendada = !noDisponible && recomendacionPreliminar?.key === op.value;
 
         let label = op.label;
-        if (noDisponible) label += ' (No disponible para esta distancia)';
-        else if (esRecomendada) label += ' — Mejor opción recomendada';
+        if (noDisponible) label += ` (${t('nuevoEnvio.modalidad.noDisponible')})`;
+        else if (esRecomendada) label += ` — ${t('nuevoEnvio.modalidad.recomendada')}`;
 
         return { ...op, label, enabled: !noDisponible };
       }),
-    [terrestreDisponible, recomendacionPreliminar]
+    [terrestreDisponible, recomendacionPreliminar, t]
   );
 
   // Si el usuario tenía elegida "Terrestre" y con el nuevo origen/destino
@@ -175,11 +178,11 @@ export default function NewShipmentScreen({ navigation }) {
   }, [terrestreDisponible, form.modalidad]);
 
   function handleContinuar() {
-    const erroresEncontrados = validar(form);
+    const erroresEncontrados = validar(form, t);
     setErrores(erroresEncontrados);
 
     if (Object.keys(erroresEncontrados).length > 0) {
-      setErrorGeneral('Revisa los campos marcados: falta información obligatoria.');
+      setErrorGeneral(t('nuevoEnvio.error.general'));
       return;
     }
 
@@ -211,10 +214,8 @@ export default function NewShipmentScreen({ navigation }) {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.titulo}>Nuevo Envío</Text>
-        <Text style={styles.subtitulo}>
-          Ingresa los datos del envío para comparar las alternativas de transporte.
-        </Text>
+        <Text style={styles.titulo}>{t('nuevoEnvio.titulo')}</Text>
+        <Text style={styles.subtitulo}>{t('nuevoEnvio.subtitulo')}</Text>
 
         {errorGeneral ? (
           <View style={styles.errorGeneralBox}>
@@ -223,20 +224,20 @@ export default function NewShipmentScreen({ navigation }) {
         ) : null}
 
         <LocationPicker
-          label="Origen"
+          label={t('nuevoEnvio.origen')}
           value={form.origen}
           onChange={(v) => actualizarCampo('origen', v)}
           error={errores.origen}
         />
 
         <LocationPicker
-          label="Destino"
+          label={t('nuevoEnvio.destino')}
           value={form.destino}
           onChange={(v) => actualizarCampo('destino', v)}
           error={errores.destino}
         />
 
-        <Text style={styles.label}>Tipo de mercancía</Text>
+        <Text style={styles.label}>{t('nuevoEnvio.tipoMercancia')}</Text>
         <View style={[styles.pickerBox, errores.tipoMercancia && styles.inputError]}>
           <Picker
             selectedValue={form.tipoMercancia}
@@ -250,42 +251,42 @@ export default function NewShipmentScreen({ navigation }) {
         {errores.tipoMercancia ? <Text style={styles.errorText}>{errores.tipoMercancia}</Text> : null}
 
         <Campo
-          label="Peso total (kg)"
-          placeholder="Ej: 500"
+          label={t('nuevoEnvio.peso')}
+          placeholder={t('nuevoEnvio.ejPeso')}
           value={form.peso}
-          onChangeText={(t) => actualizarCampo('peso', t)}
+          onChangeText={(v) => actualizarCampo('peso', v)}
           error={errores.peso}
           keyboardType="numeric"
         />
 
         <Campo
-          label="Volumen (m³)"
-          placeholder="Ej: 2.5"
+          label={t('nuevoEnvio.volumen')}
+          placeholder={t('nuevoEnvio.ejVolumen')}
           value={form.volumen}
-          onChangeText={(t) => actualizarCampo('volumen', t)}
+          onChangeText={(v) => actualizarCampo('volumen', v)}
           error={errores.volumen}
           keyboardType="numeric"
         />
 
         <Campo
-          label="Cantidad de unidades"
-          placeholder="Ej: 100"
+          label={t('nuevoEnvio.unidades')}
+          placeholder={t('nuevoEnvio.ejUnidades')}
           value={form.unidades}
-          onChangeText={(t) => actualizarCampo('unidades', t)}
+          onChangeText={(v) => actualizarCampo('unidades', v)}
           error={errores.unidades}
           keyboardType="numeric"
         />
 
         <Campo
-          label="Valor de la mercancía (USD)"
-          placeholder="Ej: 10000"
+          label={t('nuevoEnvio.valor')}
+          placeholder={t('nuevoEnvio.ejValor')}
           value={form.valor}
-          onChangeText={(t) => actualizarCampo('valor', t)}
+          onChangeText={(v) => actualizarCampo('valor', v)}
           error={errores.valor}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Modalidad de transporte</Text>
+        <Text style={styles.label}>{t('nuevoEnvio.modalidad')}</Text>
         <View style={styles.pickerBox}>
           <Picker
             selectedValue={form.modalidad}
@@ -297,13 +298,11 @@ export default function NewShipmentScreen({ navigation }) {
           </Picker>
         </View>
         {!form.origen?.lat || !form.destino?.lat || Number.isNaN(pesoPreview) || pesoPreview <= 0 ? (
-          <Text style={styles.ayudaTexto}>
-            Completa origen, destino y peso para que te indiquemos la mejor opción aquí mismo.
-          </Text>
+          <Text style={styles.ayudaTexto}>{t('nuevoEnvio.ayudaModalidad')}</Text>
         ) : null}
 
         <View style={styles.spacer} />
-        <PrimaryButton title="Continuar" onPress={handleContinuar} />
+        <PrimaryButton title={t('nuevoEnvio.continuar')} onPress={handleContinuar} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

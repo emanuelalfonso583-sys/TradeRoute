@@ -5,8 +5,10 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth } from '../firebase/config';
+import { guardarPerfil } from '../firebase/perfil';
 
 const AuthContext = createContext(null);
 
@@ -24,6 +26,8 @@ function mensajeError(codigo) {
       return 'Correo o contraseña incorrectos.';
     case 'auth/too-many-requests':
       return 'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
+    case 'auth/missing-email':
+      return 'Ingresa tu correo electrónico.';
     default:
       return 'Ocurrió un error. Inténtalo de nuevo.';
   }
@@ -41,12 +45,19 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  async function registrarse(nombre, correo, contrasena) {
+  async function registrarse(nombre, correo, contrasena, datosPerfil = {}) {
     try {
       const credencial = await createUserWithEmailAndPassword(auth, correo, contrasena);
       if (nombre) {
         await updateProfile(credencial.user, { displayName: nombre });
       }
+      await guardarPerfil(credencial.user.uid, {
+        nombre,
+        correo,
+        tipoDocumento: datosPerfil.tipoDocumento || '',
+        numeroDocumento: datosPerfil.numeroDocumento || '',
+        telefono: datosPerfil.telefono || '',
+      });
       return { ok: true };
     } catch (error) {
       return { ok: false, mensaje: mensajeError(error.code) };
@@ -62,11 +73,27 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function restablecerContrasena(correo) {
+    try {
+      await sendPasswordResetEmail(auth, correo);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, mensaje: mensajeError(error.code) };
+    }
+  }
+
   async function cerrarSesion() {
     await signOut(auth);
   }
 
-  const value = { usuario, cargandoSesion, registrarse, iniciarSesion, cerrarSesion };
+  const value = {
+    usuario,
+    cargandoSesion,
+    registrarse,
+    iniciarSesion,
+    restablecerContrasena,
+    cerrarSesion,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

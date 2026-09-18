@@ -6,6 +6,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import { ShipmentProvider } from './src/context/ShipmentContext';
 import { AuthProvider } from './src/context/AuthContext';
+import { LanguageProvider } from './src/context/LanguageContext';
+import { ThemeProvider } from './src/context/ThemeContext';
 
 export default function App() {
   return (
@@ -13,12 +15,16 @@ export default function App() {
       <SafeAreaProvider>
         <View style={styles.fondoWeb}>
           <View style={styles.contenidoWeb}>
-            <AuthProvider>
-              <ShipmentProvider>
-                <StatusBar style="dark" />
-                <AppNavigator />
-              </ShipmentProvider>
-            </AuthProvider>
+            <LanguageProvider>
+              <ThemeProvider>
+                <AuthProvider>
+                  <ShipmentProvider>
+                    <StatusBar style="dark" />
+                    <AppNavigator />
+                  </ShipmentProvider>
+                </AuthProvider>
+              </ThemeProvider>
+            </LanguageProvider>
           </View>
         </View>
       </SafeAreaProvider>

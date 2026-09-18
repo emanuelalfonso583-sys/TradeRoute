@@ -3,19 +3,21 @@ import { View, Text, StyleSheet, FlatList, RefreshControl, SafeAreaView, Pressab
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { obtenerHistorial } from '../firebase/historial';
 import { formatearUsd } from '../utils/format';
 import { colors, radius, shadow } from '../theme/colors';
 
-function formatearFecha(timestamp) {
+function formatearFecha(timestamp, idioma) {
   if (!timestamp?.toDate) return '';
   const fecha = timestamp.toDate();
-  return fecha.toLocaleDateString('es', { day: '2-digit', month: 'short', year: 'numeric' }) +
+  return fecha.toLocaleDateString(idioma, { day: '2-digit', month: 'short', year: 'numeric' }) +
     ' · ' +
-    fecha.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    fecha.toLocaleTimeString(idioma, { hour: '2-digit', minute: '2-digit' });
 }
 
 function TarjetaHistorial({ item, onPress }) {
+  const { t, idioma } = useLanguage();
   const { envio, recomendacion } = item;
   return (
     <Pressable
@@ -29,7 +31,7 @@ function TarjetaHistorial({ item, onPress }) {
         <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
       </View>
       <Text style={styles.detalle}>
-        {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} unidades
+        {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} {t('comparador.unidades')}
       </Text>
       {recomendacion ? (
         <View style={styles.recomendacionBox}>
@@ -37,15 +39,16 @@ function TarjetaHistorial({ item, onPress }) {
           <Text style={styles.recomendacionTexto}>🏆 {recomendacion.label}</Text>
         </View>
       ) : (
-        <Text style={styles.sinRecomendacion}>Sin alternativas disponibles para esta ruta</Text>
+        <Text style={styles.sinRecomendacion}>{t('historial.sinAlternativas')}</Text>
       )}
-      <Text style={styles.fecha}>{formatearFecha(item.creadoEn)}</Text>
+      <Text style={styles.fecha}>{formatearFecha(item.creadoEn, idioma)}</Text>
     </Pressable>
   );
 }
 
 export default function HistorialScreen({ navigation }) {
   const { usuario } = useAuth();
+  const { t } = useLanguage();
   const [historial, setHistorial] = useState([]);
   const [cargando, setCargando] = useState(true);
 
@@ -69,8 +72,8 @@ export default function HistorialScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <Text style={styles.titulo}>Historial de Envíos</Text>
-        <Text style={styles.subtitulo}>Tus comparaciones guardadas, más recientes primero.</Text>
+        <Text style={styles.titulo}>{t('historial.titulo')}</Text>
+        <Text style={styles.subtitulo}>{t('historial.subtitulo')}</Text>
       </View>
 
       <FlatList
@@ -87,9 +90,7 @@ export default function HistorialScreen({ navigation }) {
           !cargando ? (
             <View style={styles.vacioContainer}>
               <Text style={styles.vacioIcono}>📦</Text>
-              <Text style={styles.vacioTexto}>
-                Todavía no has calculado ningún envío. Cuando lo hagas, aparecerá aquí.
-              </Text>
+              <Text style={styles.vacioTexto}>{t('historial.vacioTexto')}</Text>
             </View>
           ) : null
         }

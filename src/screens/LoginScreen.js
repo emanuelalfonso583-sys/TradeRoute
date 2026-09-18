@@ -7,21 +7,89 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Modal,
 } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { colors, radius } from '../theme/colors';
+
+function ModalRecuperar({ visible, onCerrar, correoInicial }) {
+  const { restablecerContrasena } = useAuth();
+  const { t } = useLanguage();
+  const [correo, setCorreo] = useState(correoInicial);
+  const [mensaje, setMensaje] = useState('');
+  const [esError, setEsError] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+
+  async function handleEnviar() {
+    if (!correo.trim()) {
+      setMensaje(t('login.recuperar.errorSinCorreo'));
+      setEsError(true);
+      return;
+    }
+    setEnviando(true);
+    setMensaje('');
+    const resultado = await restablecerContrasena(correo.trim());
+    setEnviando(false);
+    if (resultado.ok) {
+      setEsError(false);
+      setMensaje(t('login.recuperar.exito'));
+    } else {
+      setEsError(true);
+      setMensaje(resultado.mensaje);
+    }
+  }
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onCerrar}>
+      <View style={styles.modalFondo}>
+        <View style={styles.modalCaja}>
+          <Text style={styles.modalTitulo}>{t('login.recuperar.titulo')}</Text>
+          <Text style={styles.modalDescripcion}>{t('login.recuperar.descripcion')}</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder={t('login.correoPlaceholder')}
+            placeholderTextColor={colors.textMuted}
+            value={correo}
+            onChangeText={setCorreo}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="email-address"
+          />
+
+          {mensaje ? (
+            <View style={[styles.errorBox, !esError && styles.exitoBox]}>
+              <Text style={[styles.errorTexto, !esError && styles.exitoTexto]}>{mensaje}</Text>
+            </View>
+          ) : null}
+
+          <PrimaryButton
+            title={enviando ? t('login.recuperar.enviando') : t('login.recuperar.boton')}
+            onPress={handleEnviar}
+            disabled={enviando}
+          />
+          <View style={styles.espacioChico} />
+          <PrimaryButton title={t('comun.cerrar')} onPress={onCerrar} variant="outline" />
+        </View>
+      </View>
+    </Modal>
+  );
+}
 
 export default function LoginScreen({ navigation }) {
   const { iniciarSesion } = useAuth();
+  const { t } = useLanguage();
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
+  const [modalRecuperarVisible, setModalRecuperarVisible] = useState(false);
 
   async function handleIniciarSesion() {
     if (!correo.trim() || !contrasena) {
-      setError('Ingresa tu correo y contraseña.');
+      setError(t('login.errorCamposVacios'));
       return;
     }
     setError('');
@@ -37,7 +105,7 @@ export default function LoginScreen({ navigation }) {
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.logo}>🌐 TradeRoute</Text>
-        <Text style={styles.titulo}>Iniciar sesión</Text>
+        <Text style={styles.titulo}>{t('login.titulo')}</Text>
 
         {error ? (
           <View style={styles.errorBox}>
@@ -45,10 +113,10 @@ export default function LoginScreen({ navigation }) {
           </View>
         ) : null}
 
-        <Text style={styles.label}>Correo electrónico</Text>
+        <Text style={styles.label}>{t('login.correo')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="tucorreo@ejemplo.com"
+          placeholder={t('login.correoPlaceholder')}
           placeholderTextColor={colors.textMuted}
           value={correo}
           onChangeText={setCorreo}
@@ -57,31 +125,41 @@ export default function LoginScreen({ navigation }) {
           keyboardType="email-address"
         />
 
-        <Text style={styles.label}>Contraseña</Text>
+        <Text style={styles.label}>{t('login.contrasena')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Tu contraseña"
+          placeholder={t('login.contrasenaPlaceholder')}
           placeholderTextColor={colors.textMuted}
           value={contrasena}
           onChangeText={setContrasena}
           secureTextEntry
         />
 
+        <Text style={styles.olvideLink} onPress={() => setModalRecuperarVisible(true)}>
+          {t('login.olvidasteContrasena')}
+        </Text>
+
         <View style={styles.spacer} />
         <PrimaryButton
-          title={cargando ? 'Ingresando...' : 'Iniciar sesión'}
+          title={cargando ? t('login.ingresando') : t('login.boton')}
           onPress={handleIniciarSesion}
           disabled={cargando}
         />
 
         <View style={styles.pieContainer}>
-          <Text style={styles.pieTexto}>¿No tienes cuenta?</Text>
+          <Text style={styles.pieTexto}>{t('login.sinCuenta')}</Text>
           <Text style={styles.pieLink} onPress={() => navigation.navigate('Registro')}>
             {' '}
-            Crear una cuenta
+            {t('login.crearCuenta')}
           </Text>
         </View>
       </ScrollView>
+
+      <ModalRecuperar
+        visible={modalRecuperarVisible}
+        onCerrar={() => setModalRecuperarVisible(false)}
+        correoInicial={correo}
+      />
     </KeyboardAvoidingView>
   );
 }
@@ -118,6 +196,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 13,
   },
+  exitoBox: {
+    backgroundColor: colors.successLight,
+  },
+  exitoTexto: {
+    color: colors.success,
+  },
   label: {
     fontSize: 13,
     fontWeight: '700',
@@ -134,6 +218,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.text,
     marginBottom: 14,
+  },
+  olvideLink: {
+    color: colors.action,
+    fontWeight: '600',
+    fontSize: 13,
+    textAlign: 'right',
+    marginBottom: 6,
   },
   spacer: {
     height: 6,
@@ -152,5 +243,31 @@ const styles = StyleSheet.create({
     color: colors.action,
     fontWeight: '700',
     fontSize: 14,
+  },
+  modalFondo: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  modalCaja: {
+    backgroundColor: colors.background,
+    borderRadius: radius.lg,
+    padding: 22,
+  },
+  modalTitulo: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.primaryDark,
+    marginBottom: 8,
+  },
+  modalDescripcion: {
+    fontSize: 13,
+    color: colors.textMuted,
+    marginBottom: 16,
+    lineHeight: 18,
+  },
+  espacioChico: {
+    height: 10,
   },
 });

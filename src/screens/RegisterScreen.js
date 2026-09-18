@@ -8,36 +8,62 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { colors, radius } from '../theme/colors';
 
 export default function RegisterScreen({ navigation }) {
   const { registrarse } = useAuth();
+  const { t } = useLanguage();
   const [nombre, setNombre] = useState('');
+  const [tipoDocumento, setTipoDocumento] = useState('');
+  const [numeroDocumento, setNumeroDocumento] = useState('');
+  const [telefono, setTelefono] = useState('');
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [confirmar, setConfirmar] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
 
+  const TIPOS_DOCUMENTO = [
+    { value: '', label: t('registro.tipoDocumentoPlaceholder') },
+    { value: 'cc', label: t('registro.tipoDocumento.cc') },
+    { value: 'ce', label: t('registro.tipoDocumento.ce') },
+    { value: 'ti', label: t('registro.tipoDocumento.ti') },
+    { value: 'pasaporte', label: t('registro.tipoDocumento.pasaporte') },
+    { value: 'otro', label: t('registro.tipoDocumento.otro') },
+  ];
+
   async function handleRegistrarse() {
-    if (!nombre.trim() || !correo.trim() || !contrasena) {
-      setError('Completa todos los campos.');
+    if (
+      !nombre.trim() ||
+      !correo.trim() ||
+      !contrasena ||
+      !tipoDocumento ||
+      !numeroDocumento.trim() ||
+      !telefono.trim()
+    ) {
+      setError(t('registro.errorCamposVacios'));
       return;
     }
     if (contrasena.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres.');
+      setError(t('registro.errorContrasenaCorta'));
       return;
     }
     if (contrasena !== confirmar) {
-      setError('Las contraseñas no coinciden.');
+      setError(t('registro.errorContrasenasNoCoinciden'));
       return;
     }
 
     setError('');
     setCargando(true);
-    const resultado = await registrarse(nombre.trim(), correo.trim(), contrasena);
+    const resultado = await registrarse(nombre.trim(), correo.trim(), contrasena, {
+      tipoDocumento,
+      numeroDocumento: numeroDocumento.trim(),
+      telefono: telefono.trim(),
+    });
     setCargando(false);
     if (!resultado.ok) {
       setError(resultado.mensaje);
@@ -48,7 +74,7 @@ export default function RegisterScreen({ navigation }) {
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.logo}>🌐 TradeRoute</Text>
-        <Text style={styles.titulo}>Crear cuenta</Text>
+        <Text style={styles.titulo}>{t('registro.titulo')}</Text>
 
         {error ? (
           <View style={styles.errorBox}>
@@ -56,19 +82,48 @@ export default function RegisterScreen({ navigation }) {
           </View>
         ) : null}
 
-        <Text style={styles.label}>Nombre</Text>
+        <Text style={styles.label}>{t('registro.nombre')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Tu nombre"
+          placeholder={t('registro.nombrePlaceholder')}
           placeholderTextColor={colors.textMuted}
           value={nombre}
           onChangeText={setNombre}
         />
 
-        <Text style={styles.label}>Correo electrónico</Text>
+        <Text style={styles.label}>{t('registro.tipoDocumento')}</Text>
+        <View style={styles.pickerBox}>
+          <Picker selectedValue={tipoDocumento} onValueChange={setTipoDocumento}>
+            {TIPOS_DOCUMENTO.map((op) => (
+              <Picker.Item key={op.value} label={op.label} value={op.value} />
+            ))}
+          </Picker>
+        </View>
+
+        <Text style={styles.label}>{t('registro.numeroDocumento')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="tucorreo@ejemplo.com"
+          placeholder={t('registro.numeroDocumentoPlaceholder')}
+          placeholderTextColor={colors.textMuted}
+          value={numeroDocumento}
+          onChangeText={setNumeroDocumento}
+          keyboardType="number-pad"
+        />
+
+        <Text style={styles.label}>{t('registro.telefono')}</Text>
+        <TextInput
+          style={styles.input}
+          placeholder={t('registro.telefonoPlaceholder')}
+          placeholderTextColor={colors.textMuted}
+          value={telefono}
+          onChangeText={setTelefono}
+          keyboardType="phone-pad"
+        />
+
+        <Text style={styles.label}>{t('registro.correo')}</Text>
+        <TextInput
+          style={styles.input}
+          placeholder={t('login.correoPlaceholder')}
           placeholderTextColor={colors.textMuted}
           value={correo}
           onChangeText={setCorreo}
@@ -77,20 +132,20 @@ export default function RegisterScreen({ navigation }) {
           keyboardType="email-address"
         />
 
-        <Text style={styles.label}>Contraseña</Text>
+        <Text style={styles.label}>{t('registro.contrasena')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Mínimo 6 caracteres"
+          placeholder={t('registro.contrasenaPlaceholder')}
           placeholderTextColor={colors.textMuted}
           value={contrasena}
           onChangeText={setContrasena}
           secureTextEntry
         />
 
-        <Text style={styles.label}>Confirmar contraseña</Text>
+        <Text style={styles.label}>{t('registro.confirmar')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Repite tu contraseña"
+          placeholder={t('registro.confirmarPlaceholder')}
           placeholderTextColor={colors.textMuted}
           value={confirmar}
           onChangeText={setConfirmar}
@@ -99,16 +154,16 @@ export default function RegisterScreen({ navigation }) {
 
         <View style={styles.spacer} />
         <PrimaryButton
-          title={cargando ? 'Creando cuenta...' : 'Crear cuenta'}
+          title={cargando ? t('registro.creando') : t('registro.boton')}
           onPress={handleRegistrarse}
           disabled={cargando}
         />
 
         <View style={styles.pieContainer}>
-          <Text style={styles.pieTexto}>¿Ya tienes cuenta?</Text>
+          <Text style={styles.pieTexto}>{t('registro.yaTieneCuenta')}</Text>
           <Text style={styles.pieLink} onPress={() => navigation.navigate('Login')}>
             {' '}
-            Iniciar sesión
+            {t('registro.iniciarSesion')}
           </Text>
         </View>
       </ScrollView>
@@ -163,6 +218,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 15,
     color: colors.text,
+    marginBottom: 14,
+  },
+  pickerBox: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    borderRadius: radius.sm,
     marginBottom: 14,
   },
   spacer: {
