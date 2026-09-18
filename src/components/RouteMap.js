@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Platform, StyleSheet, Text } from 'react-native';
+import { View, Platform, StyleSheet } from 'react-native';
 import WebView from 'react-native-webview';
+import Text from './AppText';
 import { MAPBOX_TOKEN } from '../mapbox/config';
 import { colors, radius } from '../theme/colors';
 

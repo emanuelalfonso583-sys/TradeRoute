@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Text from '../components/AppText';
+import TextInput from '../components/AppTextInput';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, RefreshControl, SafeAreaView, Pressable } from 'react-native';
+import { View, StyleSheet, FlatList, RefreshControl, SafeAreaView, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Text from '../components/AppText';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
+import Text from '../components/AppText';
 import PrimaryButton from '../components/PrimaryButton';
 import { useLanguage } from '../context/LanguageContext';
 import { colors } from '../theme/colors';

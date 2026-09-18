@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, Image, ActivityIndicator, Linking, StyleSheet } from 'react-native';
+import { View, Pressable, Image, ActivityIndicator, Linking, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Text from './AppText';
 import { obtenerInfoWiki } from '../utils/wikiInfo';
 import { COUNTRIES } from '../data/countries';
 import { useLanguage } from '../context/LanguageContext';

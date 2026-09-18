@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Text from '../components/AppText';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';

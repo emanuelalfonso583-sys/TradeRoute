@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
+import Text from '../components/AppText';
 import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
 import { compararEnvio } from '../utils/calculations';

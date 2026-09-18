@@ -1,15 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import {
   View,
-  Text,
   Pressable,
   Modal,
-  TextInput,
   FlatList,
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Text from './AppText';
+import TextInput from './AppTextInput';
 import { COUNTRIES } from '../data/countries';
 import { CITIES_BY_COUNTRY } from '../data/cities';
 import { useLanguage } from '../context/LanguageContext';

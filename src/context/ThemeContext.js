@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { Text, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PALETAS_ACENTO, ACENTO_POR_DEFECTO, obtenerColorAcento } from '../theme/paletas';
 import { FUENTES, FUENTE_POR_DEFECTO, obtenerFontFamily } from '../theme/fuentes';
@@ -8,18 +7,6 @@ const CLAVE_STORAGE_ACENTO = '@traderoute_acento';
 const CLAVE_STORAGE_FUENTE = '@traderoute_fuente';
 
 const ThemeContext = createContext(null);
-
-// Aplica la fuente elegida a todos los <Text> y <TextInput> de la app de
-// una sola vez, sin tener que tocar cada pantalla: React arma cada elemento
-// de texto combinando sus props con este "defaultProps", así que basta con
-// mutarlo y volver a renderizar.
-function aplicarFontFamilyGlobal(fontFamily) {
-  const estilo = fontFamily ? { fontFamily } : {};
-  Text.defaultProps = Text.defaultProps || {};
-  Text.defaultProps.style = [Text.defaultProps.style, estilo].filter(Boolean);
-  TextInput.defaultProps = TextInput.defaultProps || {};
-  TextInput.defaultProps.style = [TextInput.defaultProps.style, estilo].filter(Boolean);
-}
 
 export function ThemeProvider({ children }) {
   const [claveAcento, setClaveAcentoState] = useState(ACENTO_POR_DEFECTO);
@@ -30,10 +17,7 @@ export function ThemeProvider({ children }) {
       if (valor && PALETAS_ACENTO.some((p) => p.key === valor)) setClaveAcentoState(valor);
     });
     AsyncStorage.getItem(CLAVE_STORAGE_FUENTE).then((valor) => {
-      if (valor && FUENTES.some((f) => f.key === valor)) {
-        setClaveFuenteState(valor);
-        aplicarFontFamilyGlobal(obtenerFontFamily(valor));
-      }
+      if (valor && FUENTES.some((f) => f.key === valor)) setClaveFuenteState(valor);
     });
   }, []);
 
@@ -43,7 +27,6 @@ export function ThemeProvider({ children }) {
   }
 
   function setClaveFuente(clave) {
-    aplicarFontFamilyGlobal(obtenerFontFamily(clave));
     setClaveFuenteState(clave);
     AsyncStorage.setItem(CLAVE_STORAGE_FUENTE, clave).catch(() => {});
   }
@@ -54,6 +37,7 @@ export function ThemeProvider({ children }) {
       acento: obtenerColorAcento(claveAcento),
       setClaveAcento,
       claveFuente,
+      fontFamily: obtenerFontFamily(claveFuente),
       setClaveFuente,
     }),
     [claveAcento, claveFuente]

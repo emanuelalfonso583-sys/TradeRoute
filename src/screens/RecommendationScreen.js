@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import Text from '../components/AppText';
 import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
 import { useShipment } from '../context/ShipmentContext';

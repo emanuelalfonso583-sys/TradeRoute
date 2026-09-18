@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Modal,
 } from 'react-native';
+import Text from '../components/AppText';
+import TextInput from '../components/AppTextInput';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
