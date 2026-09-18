@@ -209,9 +209,9 @@ export function generarExplicacion(recomendacion, alternativasConScore) {
       : 'Presenta el mejor equilibrio general entre costo, tiempo de tránsito y emisiones de CO₂.';
 
   return (
-    `${recomendacion.label} obtuvo el TradeRoute Score más alto (${recomendacion.score}/100), ` +
-    `calculado con 55% costo, 30% tiempo y 15% CO₂ (el costo pesa más porque es el factor que ` +
-    `más le importa a quien envía). ${detalle}`
+    `${recomendacion.label} es la opción recomendada para esta ruta, considerando costo, ` +
+    `tiempo de tránsito y emisiones de CO₂ (el costo es el factor que más pesa en la decisión, ` +
+    `porque es lo que más le importa a quien envía). ${detalle}`
   );
 }
 
@@ -225,8 +225,5 @@ export function generarExplicacionSeleccion(seleccion, alternativasConScore) {
     return `${seleccion.label} es la única alternativa disponible para esta ruta con los datos ingresados.`;
   }
 
-  return (
-    `Elegiste ${seleccion.label} para este envío. Su TradeRoute Score es ${seleccion.score}/100 ` +
-    `frente a las demás alternativas disponibles para esta ruta (55% costo, 30% tiempo, 15% CO₂).`
-  );
+  return `Elegiste ${seleccion.label} para este envío. Estos son sus datos frente a las demás alternativas disponibles para esta ruta.`;
 }

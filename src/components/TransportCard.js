@@ -58,14 +58,11 @@ const EXPLICACIONES = {
       'Es el mayor valor entre tu peso real y tu peso volumétrico (volumen ÷ 6000, la fórmula estándar de IATA para aerolíneas). Una carga grande pero liviana se cobra como si pesara más, porque ocupa espacio en el avión.',
     terrestre: 'En transporte terrestre se cobra por el peso real de la carga.',
   },
-  score:
-    'Puntaje de 0 a 100 que combina costo (55%), tiempo (30%) y huella de CO₂ (15%) de esta alternativa frente a las demás disponibles para esta ruta. El costo pesa más porque es lo que más le importa a quien envía.',
 };
 
-export default function TransportCard({ alternativa, destacada = false, mostrarScore = true }) {
+export default function TransportCard({ alternativa, destacada = false }) {
   const { icono, label, disponible } = alternativa;
   const [mostrarInfoCosto, setMostrarInfoCosto] = useState(false);
-  const [mostrarInfoScore, setMostrarInfoScore] = useState(false);
 
   return (
     <View style={[styles.card, destacada && styles.cardDestacada]}>
@@ -115,19 +112,6 @@ export default function TransportCard({ alternativa, destacada = false, mostrarS
             value={`${alternativa.pesoFacturableKg} kg`}
             info={EXPLICACIONES.pesoFacturable[alternativa.key]}
           />
-          {mostrarScore && (
-            <>
-              <View style={styles.divider} />
-              <View style={styles.scoreRow}>
-                <View style={styles.metricLabelBox}>
-                  <Text style={styles.scoreLabel}>TradeRoute Score</Text>
-                  <IconoInfo onPress={() => setMostrarInfoScore((v) => !v)} />
-                </View>
-                <Text style={styles.scoreValue}>{alternativa.score}/100</Text>
-              </View>
-              {mostrarInfoScore && <CajaInfo texto={EXPLICACIONES.score} />}
-            </>
-          )}
         </View>
       )}
     </View>
@@ -235,26 +219,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 14,
     fontWeight: '600',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: colors.border,
-    marginVertical: 10,
-  },
-  scoreRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  scoreLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.primaryDark,
-  },
-  scoreValue: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.success,
   },
   noDisponibleBox: {
     backgroundColor: colors.surface,

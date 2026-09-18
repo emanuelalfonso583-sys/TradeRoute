@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-nat
 import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
 import { useShipment } from '../context/ShipmentContext';
-import { compararEnvio, obtenerRecomendacion, hayComparacionReal } from '../utils/calculations';
+import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { colors } from '../theme/colors';
 
@@ -40,7 +40,6 @@ export default function ComparatorScreen({ navigation }) {
         : todasLasAlternativas.find((a) => a.key === envio.modalidad && a.disponible) || null,
     [todasLasAlternativas, comparandoTodas, envio.modalidad]
   );
-  const conComparacion = useMemo(() => hayComparacionReal(todasLasAlternativas), [todasLasAlternativas]);
 
   if (!envio.peso) {
     return null;
@@ -74,7 +73,6 @@ export default function ComparatorScreen({ navigation }) {
           key={alt.key}
           alternativa={alt}
           destacada={recomendacion?.key === alt.key}
-          mostrarScore={conComparacion}
         />
       ))}
 

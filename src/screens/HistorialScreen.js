@@ -27,9 +27,7 @@ function TarjetaHistorial({ item }) {
       {recomendacion ? (
         <View style={styles.recomendacionBox}>
           <Text style={styles.recomendacionCosto}>US$ {formatearUsd(recomendacion.costoUsd)}</Text>
-          <Text style={styles.recomendacionTexto}>
-            🏆 {recomendacion.label} · Score {recomendacion.score}/100
-          </Text>
+          <Text style={styles.recomendacionTexto}>🏆 {recomendacion.label}</Text>
         </View>
       ) : (
         <Text style={styles.sinRecomendacion}>Sin alternativas disponibles para esta ruta</Text>
