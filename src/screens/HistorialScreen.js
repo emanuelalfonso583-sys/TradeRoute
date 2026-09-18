@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, StyleSheet, FlatList, RefreshControl, SafeAreaView, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Text from '../components/AppText';
@@ -7,7 +7,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { obtenerHistorial } from '../firebase/historial';
 import { formatearUsd } from '../utils/format';
-import { colors, radius, shadow } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius, shadow } from '../theme/colors';
 
 function formatearFecha(timestamp, idioma) {
   if (!timestamp?.toDate) return '';
@@ -19,6 +20,8 @@ function formatearFecha(timestamp, idioma) {
 
 function TarjetaHistorial({ item, onPress }) {
   const { t, idioma } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const { envio, recomendacion } = item;
   return (
     <Pressable
@@ -50,6 +53,8 @@ function TarjetaHistorial({ item, onPress }) {
 export default function HistorialScreen({ navigation }) {
   const { usuario } = useAuth();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [historial, setHistorial] = useState([]);
   const [cargando, setCargando] = useState(true);
 
@@ -100,100 +105,102 @@ export default function HistorialScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.background },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 8,
-  },
-  titulo: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: colors.primaryDark,
-  },
-  subtitulo: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  listaContainer: {
-    padding: 20,
-    paddingTop: 8,
-    flexGrow: 1,
-  },
-  card: {
-    backgroundColor: colors.background,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 16,
-    marginBottom: 14,
-    ...shadow.card,
-  },
-  cardPresionada: {
-    backgroundColor: colors.surface,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  ruta: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginBottom: 4,
-  },
-  detalle: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginBottom: 10,
-  },
-  recomendacionBox: {
-    backgroundColor: colors.successLight,
-    borderRadius: radius.sm,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    alignSelf: 'flex-start',
-  },
-  recomendacionCosto: {
-    color: colors.primaryDark,
-    fontWeight: '800',
-    fontSize: 16,
-    marginBottom: 2,
-  },
-  recomendacionTexto: {
-    color: colors.success,
-    fontWeight: '700',
-    fontSize: 13,
-  },
-  sinRecomendacion: {
-    color: colors.textMuted,
-    fontSize: 13,
-    fontStyle: 'italic',
-  },
-  fecha: {
-    fontSize: 11,
-    color: colors.textMuted,
-    marginTop: 10,
-    textAlign: 'right',
-  },
-  vacioContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 60,
-  },
-  vacioIcono: {
-    fontSize: 40,
-    marginBottom: 12,
-  },
-  vacioTexto: {
-    color: colors.textMuted,
-    fontSize: 14,
-    textAlign: 'center',
-    paddingHorizontal: 30,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: colors.background },
+    header: {
+      paddingHorizontal: 20,
+      paddingTop: 16,
+      paddingBottom: 8,
+    },
+    titulo: {
+      fontSize: 22,
+      fontWeight: '800',
+      color: colors.primaryDark,
+    },
+    subtitulo: {
+      fontSize: 13,
+      color: colors.textMuted,
+      marginTop: 2,
+    },
+    listaContainer: {
+      padding: 20,
+      paddingTop: 8,
+      flexGrow: 1,
+    },
+    card: {
+      backgroundColor: colors.background,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 16,
+      marginBottom: 14,
+      ...shadow.card,
+    },
+    cardPresionada: {
+      backgroundColor: colors.surface,
+    },
+    cardHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    ruta: {
+      flex: 1,
+      fontSize: 15,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 4,
+    },
+    detalle: {
+      fontSize: 12,
+      color: colors.textMuted,
+      marginBottom: 10,
+    },
+    recomendacionBox: {
+      backgroundColor: colors.successLight,
+      borderRadius: radius.sm,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      alignSelf: 'flex-start',
+    },
+    recomendacionCosto: {
+      color: colors.primaryDark,
+      fontWeight: '800',
+      fontSize: 16,
+      marginBottom: 2,
+    },
+    recomendacionTexto: {
+      color: colors.success,
+      fontWeight: '700',
+      fontSize: 13,
+    },
+    sinRecomendacion: {
+      color: colors.textMuted,
+      fontSize: 13,
+      fontStyle: 'italic',
+    },
+    fecha: {
+      fontSize: 11,
+      color: colors.textMuted,
+      marginTop: 10,
+      textAlign: 'right',
+    },
+    vacioContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: 60,
+    },
+    vacioIcono: {
+      fontSize: 40,
+      marginBottom: 12,
+    },
+    vacioTexto: {
+      color: colors.textMuted,
+      fontSize: 14,
+      textAlign: 'center',
+      paddingHorizontal: 30,
+    },
+  });
+}

@@ -18,7 +18,6 @@ import RegisterScreen from '../screens/RegisterScreen';
 import { useAuth } from '../context/AuthContext';
 import { useAppTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
-import { colors } from '../theme/colors';
 
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -32,14 +31,14 @@ const ICONOS_TAB = {
 };
 
 function MainTabs() {
-  const { acento } = useAppTheme();
+  const { colors } = useAppTheme();
   const { t } = useLanguage();
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: acento,
+        tabBarActiveTintColor: colors.action,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
           backgroundColor: colors.background,
@@ -67,6 +66,7 @@ function MainTabs() {
 
 function AppStack() {
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
 
   return (
     <Stack.Navigator
@@ -111,6 +111,7 @@ function AuthNavigator() {
 }
 
 function PantallaCargando() {
+  const { colors } = useAppTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
       <ActivityIndicator size="large" color={colors.action} />

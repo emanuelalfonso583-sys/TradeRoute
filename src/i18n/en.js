@@ -228,7 +228,7 @@ export const en = {
   'cuenta.config.idioma': 'Language',
   'cuenta.config.idiomaDescripcion': 'Changes the language for the whole app.',
   'cuenta.personalizacion.color': 'Accent color',
-  'cuenta.personalizacion.colorDescripcion': 'Applies instantly to the main buttons and the navigation bar.',
+  'cuenta.personalizacion.colorDescripcion': 'Applies instantly across the whole app: buttons, headers, titles and icons.',
   'cuenta.personalizacion.fuente': 'Font',
   'cuenta.personalizacion.fuenteDescripcion': 'Changes the typography across the whole app instantly.',
   'fuente.sistema': 'Default',

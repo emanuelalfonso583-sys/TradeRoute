@@ -13,7 +13,8 @@ import TextInput from './AppTextInput';
 import { COUNTRIES } from '../data/countries';
 import { CITIES_BY_COUNTRY } from '../data/cities';
 import { useLanguage } from '../context/LanguageContext';
-import { colors, radius } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius } from '../theme/colors';
 
 function normalizar(texto) {
   return (texto || '')
@@ -24,6 +25,8 @@ function normalizar(texto) {
 
 function ListaBusqueda({ visible, titulo, datos, obtenerTexto, onSeleccionar, onCerrar }) {
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [busqueda, setBusqueda] = useState('');
 
   const filtrados = useMemo(() => {
@@ -85,6 +88,8 @@ function nombrePais(pais, idioma) {
 
 export default function LocationPicker({ label, value, onChange, error }) {
   const { t, idioma } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [modalPaisVisible, setModalPaisVisible] = useState(false);
   const [modalCiudadVisible, setModalCiudadVisible] = useState(false);
 
@@ -143,93 +148,95 @@ export default function LocationPicker({ label, value, onChange, error }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 14,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginBottom: 6,
-  },
-  campo: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  campoError: {
-    borderColor: colors.danger,
-  },
-  campoTexto: {
-    fontSize: 15,
-    color: colors.text,
-    flex: 1,
-  },
-  campoPlaceholder: {
-    color: colors.textMuted,
-  },
-  errorText: {
-    color: colors.danger,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12,
-  },
-  modalTitulo: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.primaryDark,
-  },
-  buscadorBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    marginHorizontal: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 8,
-    gap: 8,
-  },
-  buscadorInput: {
-    flex: 1,
-    fontSize: 15,
-    color: colors.text,
-  },
-  filaItem: {
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  filaItemPresionada: {
-    backgroundColor: colors.surface,
-  },
-  filaTexto: {
-    fontSize: 15,
-    color: colors.text,
-  },
-  sinResultados: {
-    textAlign: 'center',
-    color: colors.textMuted,
-    marginTop: 30,
-    fontSize: 14,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    container: {
+      marginBottom: 14,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 6,
+    },
+    campo: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    campoError: {
+      borderColor: colors.danger,
+    },
+    campoTexto: {
+      fontSize: 15,
+      color: colors.text,
+      flex: 1,
+    },
+    campoPlaceholder: {
+      color: colors.textMuted,
+    },
+    errorText: {
+      color: colors.danger,
+      fontSize: 12,
+      marginTop: 4,
+    },
+    modalContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      paddingTop: 16,
+      paddingBottom: 12,
+    },
+    modalTitulo: {
+      fontSize: 18,
+      fontWeight: '800',
+      color: colors.primaryDark,
+    },
+    buscadorBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      marginHorizontal: 20,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      marginBottom: 8,
+      gap: 8,
+    },
+    buscadorInput: {
+      flex: 1,
+      fontSize: 15,
+      color: colors.text,
+    },
+    filaItem: {
+      paddingHorizontal: 20,
+      paddingVertical: 14,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    filaItemPresionada: {
+      backgroundColor: colors.surface,
+    },
+    filaTexto: {
+      fontSize: 15,
+      color: colors.text,
+    },
+    sinResultados: {
+      textAlign: 'center',
+      color: colors.textMuted,
+      marginTop: 30,
+      fontSize: 14,
+    },
+  });
+}

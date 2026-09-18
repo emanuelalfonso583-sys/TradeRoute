@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -12,11 +12,14 @@ import TextInput from '../components/AppTextInput';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { colors, radius } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius } from '../theme/colors';
 
 export default function RegisterScreen({ navigation }) {
   const { registrarse } = useAuth();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [nombre, setNombre] = useState('');
   const [tipoDocumento, setTipoDocumento] = useState('');
   const [numeroDocumento, setNumeroDocumento] = useState('');
@@ -171,78 +174,80 @@ export default function RegisterScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  logo: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    textAlign: 'center',
-    marginBottom: 6,
-  },
-  titulo: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  errorBox: {
-    backgroundColor: colors.dangerLight,
-    borderRadius: radius.sm,
-    padding: 12,
-    marginBottom: 16,
-  },
-  errorTexto: {
-    color: colors.danger,
-    fontWeight: '600',
-    fontSize: 13,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginBottom: 6,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: colors.text,
-    marginBottom: 14,
-  },
-  pickerBox: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    marginBottom: 14,
-  },
-  spacer: {
-    height: 6,
-  },
-  pieContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-    flexWrap: 'wrap',
-  },
-  pieTexto: {
-    color: colors.textMuted,
-    fontSize: 14,
-  },
-  pieLink: {
-    color: colors.action,
-    fontWeight: '700',
-    fontSize: 14,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    flex: { flex: 1, backgroundColor: colors.background },
+    container: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 24,
+    },
+    logo: {
+      fontSize: 22,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      textAlign: 'center',
+      marginBottom: 6,
+    },
+    titulo: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.text,
+      textAlign: 'center',
+      marginBottom: 24,
+    },
+    errorBox: {
+      backgroundColor: colors.dangerLight,
+      borderRadius: radius.sm,
+      padding: 12,
+      marginBottom: 16,
+    },
+    errorTexto: {
+      color: colors.danger,
+      fontWeight: '600',
+      fontSize: 13,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 6,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      fontSize: 15,
+      color: colors.text,
+      marginBottom: 14,
+    },
+    pickerBox: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      marginBottom: 14,
+    },
+    spacer: {
+      height: 6,
+    },
+    pieContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 20,
+      flexWrap: 'wrap',
+    },
+    pieTexto: {
+      color: colors.textMuted,
+      fontSize: 14,
+    },
+    pieLink: {
+      color: colors.action,
+      fontWeight: '700',
+      fontSize: 14,
+    },
+  });
+}

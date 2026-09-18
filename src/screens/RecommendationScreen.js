@@ -17,12 +17,15 @@ import { obtenerTarifas } from '../firebase/tarifas';
 import { guardarEnvioEnHistorial } from '../firebase/historial';
 import { formatearUsd } from '../utils/format';
 import RouteMap from '../components/RouteMap';
-import { colors, radius, shadow } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius, shadow } from '../theme/colors';
 
 export default function RecommendationScreen({ navigation }) {
   const { envio, reiniciarEnvio } = useShipment();
   const { usuario } = useAuth();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [tarifas, setTarifas] = useState(null);
   const guardadoRef = useRef(null);
 
@@ -173,98 +176,100 @@ export default function RecommendationScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  cargandoContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background,
-  },
-  cargandoTexto: {
-    marginTop: 12,
-    color: colors.textMuted,
-    fontSize: 13,
-  },
-  titulo: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginBottom: 4,
-  },
-  ruta: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.action,
-    marginBottom: 18,
-  },
-  tarjetaPrincipal: {
-    backgroundColor: colors.primaryDark,
-    borderRadius: radius.xl,
-    paddingVertical: 28,
-    alignItems: 'center',
-    marginBottom: 18,
-    ...shadow.card,
-  },
-  trofeo: {
-    fontSize: 44,
-    marginBottom: 6,
-  },
-  rutaRecomendadaLabel: {
-    color: '#C7D2E8',
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  rutaRecomendadaValor: {
-    color: '#FFFFFF',
-    fontSize: 26,
-    fontWeight: '800',
-    marginTop: 6,
-    marginBottom: 4,
-  },
-  costoRecomendadoValor: {
-    color: colors.success,
-    fontSize: 34,
-    fontWeight: '800',
-  },
-  costoRecomendadoLabel: {
-    color: '#C7D2E8',
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 18,
-  },
-  explicacion: {
-    fontSize: 14,
-    color: colors.text,
-    lineHeight: 20,
-    marginBottom: 22,
-  },
-  seccionTitulo: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginBottom: 10,
-  },
-  disclaimer: {
-    fontSize: 11,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-    marginBottom: 18,
-    textAlign: 'center',
-  },
-  espacioBoton: {
-    height: 12,
-  },
-  otrasContainer: {
-    marginBottom: 20,
-  },
-  otrasLista: {
-    marginTop: 14,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    flex: { flex: 1, backgroundColor: colors.background },
+    container: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    cargandoContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
+    },
+    cargandoTexto: {
+      marginTop: 12,
+      color: colors.textMuted,
+      fontSize: 13,
+    },
+    titulo: {
+      fontSize: 24,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginBottom: 4,
+    },
+    ruta: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.action,
+      marginBottom: 18,
+    },
+    tarjetaPrincipal: {
+      backgroundColor: colors.primaryDark,
+      borderRadius: radius.xl,
+      paddingVertical: 28,
+      alignItems: 'center',
+      marginBottom: 18,
+      ...shadow.card,
+    },
+    trofeo: {
+      fontSize: 44,
+      marginBottom: 6,
+    },
+    rutaRecomendadaLabel: {
+      color: '#C7D2E8',
+      fontSize: 13,
+      fontWeight: '600',
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+    },
+    rutaRecomendadaValor: {
+      color: '#FFFFFF',
+      fontSize: 26,
+      fontWeight: '800',
+      marginTop: 6,
+      marginBottom: 4,
+    },
+    costoRecomendadoValor: {
+      color: colors.success,
+      fontSize: 34,
+      fontWeight: '800',
+    },
+    costoRecomendadoLabel: {
+      color: '#C7D2E8',
+      fontSize: 12,
+      fontWeight: '600',
+      marginBottom: 18,
+    },
+    explicacion: {
+      fontSize: 14,
+      color: colors.text,
+      lineHeight: 20,
+      marginBottom: 22,
+    },
+    seccionTitulo: {
+      fontSize: 15,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 10,
+    },
+    disclaimer: {
+      fontSize: 11,
+      color: colors.textMuted,
+      fontStyle: 'italic',
+      marginBottom: 18,
+      textAlign: 'center',
+    },
+    espacioBoton: {
+      height: 12,
+    },
+    otrasContainer: {
+      marginBottom: 20,
+    },
+    otrasLista: {
+      marginTop: 14,
+    },
+  });
+}

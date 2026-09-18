@@ -16,7 +16,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { hayConexionTerrestreEntrePaises } from '../utils/routeGroups';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
-import { colors, radius } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius } from '../theme/colors';
 
 function parseNumero(texto) {
   if (typeof texto !== 'string') return NaN;
@@ -64,6 +65,8 @@ function validar(form, t) {
 export default function NewShipmentScreen({ navigation }) {
   const { envio, guardarEnvio } = useShipment();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
 
   const TIPOS_MERCANCIA = [
     { label: t('nuevoEnvio.tipoMercanciaPlaceholder'), value: '' },
@@ -309,6 +312,8 @@ export default function NewShipmentScreen({ navigation }) {
 }
 
 function Campo({ label, error, ...props }) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View style={styles.campoContainer}>
       <Text style={styles.label}>{label}</Text>
@@ -322,77 +327,79 @@ function Campo({ label, error, ...props }) {
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  titulo: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginBottom: 4,
-  },
-  subtitulo: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginBottom: 18,
-  },
-  errorGeneralBox: {
-    backgroundColor: colors.dangerLight,
-    borderRadius: radius.sm,
-    padding: 12,
-    marginBottom: 16,
-  },
-  errorGeneralText: {
-    color: colors.danger,
-    fontWeight: '600',
-    fontSize: 13,
-  },
-  campoContainer: {
-    marginBottom: 14,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginBottom: 6,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: colors.text,
-  },
-  inputError: {
-    borderColor: colors.danger,
-  },
-  errorText: {
-    color: colors.danger,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  pickerBox: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    marginBottom: 14,
-    overflow: 'hidden',
-  },
-  spacer: {
-    height: 10,
-  },
-  ayudaTexto: {
-    fontSize: 11,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-    marginTop: -8,
-    marginBottom: 14,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    flex: { flex: 1, backgroundColor: colors.background },
+    container: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    titulo: {
+      fontSize: 24,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginBottom: 4,
+    },
+    subtitulo: {
+      fontSize: 13,
+      color: colors.textMuted,
+      marginBottom: 18,
+    },
+    errorGeneralBox: {
+      backgroundColor: colors.dangerLight,
+      borderRadius: radius.sm,
+      padding: 12,
+      marginBottom: 16,
+    },
+    errorGeneralText: {
+      color: colors.danger,
+      fontWeight: '600',
+      fontSize: 13,
+    },
+    campoContainer: {
+      marginBottom: 14,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 6,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      fontSize: 15,
+      color: colors.text,
+    },
+    inputError: {
+      borderColor: colors.danger,
+    },
+    errorText: {
+      color: colors.danger,
+      fontSize: 12,
+      marginTop: 4,
+    },
+    pickerBox: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      marginBottom: 14,
+      overflow: 'hidden',
+    },
+    spacer: {
+      height: 10,
+    },
+    ayudaTexto: {
+      fontSize: 11,
+      color: colors.textMuted,
+      fontStyle: 'italic',
+      marginTop: -8,
+      marginBottom: 14,
+    },
+  });
+}

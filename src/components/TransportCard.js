@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Text from './AppText';
-import { colors, radius, shadow } from '../theme/colors';
+import { radius, shadow } from '../theme/colors';
 import { formatearUsd } from '../utils/format';
 import { useLanguage } from '../context/LanguageContext';
+import { useAppTheme } from '../context/ThemeContext';
 
-function IconoInfo({ onPress, colorIcono = colors.action, tamano = 15 }) {
+function IconoInfo({ onPress, colorIcono, tamano = 15 }) {
+  const { colors } = useAppTheme();
   return (
     <Pressable onPress={onPress} hitSlop={8}>
-      <Ionicons name="information-circle-outline" size={tamano} color={colorIcono} style={styles.infoIcono} />
+      <Ionicons
+        name="information-circle-outline"
+        size={tamano}
+        color={colorIcono || colors.action}
+        style={styles.infoIcono}
+      />
     </Pressable>
   );
 }
 
 function CajaInfo({ texto }) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View style={styles.infoBox}>
       <Text style={styles.infoTexto}>{texto}</Text>
@@ -23,6 +32,8 @@ function CajaInfo({ texto }) {
 }
 
 function Metric({ label, value, info }) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [mostrarInfo, setMostrarInfo] = useState(false);
 
   return (
@@ -42,6 +53,8 @@ function Metric({ label, value, info }) {
 export default function TransportCard({ alternativa, destacada = false }) {
   const { icono, label, disponible } = alternativa;
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [mostrarInfoCosto, setMostrarInfoCosto] = useState(false);
 
   const EXPLICACIONES = {
@@ -117,120 +130,125 @@ export default function TransportCard({ alternativa, destacada = false }) {
 }
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.background,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 18,
-    marginBottom: 16,
-    ...shadow.card,
-  },
-  cardDestacada: {
-    borderColor: colors.success,
-    borderWidth: 2,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  icono: {
-    fontSize: 26,
-    marginRight: 10,
-  },
-  titulo: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    flex: 1,
-  },
-  badgeRecomendada: {
-    backgroundColor: colors.successLight,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: radius.sm,
-  },
-  badgeRecomendadaText: {
-    color: colors.success,
-    fontWeight: '700',
-    fontSize: 12,
-  },
-  costoDestacadoBox: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 12,
-  },
-  costoDestacadoLabelBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  costoDestacadoLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  costoDestacadoValor: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginTop: 2,
-  },
-  costoDestacadoSubtexto: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  metricRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  metricLabelBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  metricLabel: {
-    color: colors.textMuted,
-    fontSize: 14,
-  },
   infoIcono: {
     marginLeft: 4,
   },
-  infoBox: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    padding: 10,
-    marginBottom: 6,
-  },
-  infoTexto: {
-    color: colors.textMuted,
-    fontSize: 12,
-    lineHeight: 17,
-  },
-  metricValue: {
-    color: colors.text,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  noDisponibleBox: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    padding: 14,
-  },
-  noDisponibleText: {
-    color: colors.textMuted,
-    fontWeight: '700',
-    fontSize: 15,
-    marginBottom: 4,
-  },
-  noDisponibleSubtext: {
-    color: colors.textMuted,
-    fontSize: 12,
-  },
 });
+
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: colors.background,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 18,
+      marginBottom: 16,
+      ...shadow.card,
+    },
+    cardDestacada: {
+      borderColor: colors.success,
+      borderWidth: 2,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    icono: {
+      fontSize: 26,
+      marginRight: 10,
+    },
+    titulo: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      flex: 1,
+    },
+    badgeRecomendada: {
+      backgroundColor: colors.successLight,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: radius.sm,
+    },
+    badgeRecomendadaText: {
+      color: colors.success,
+      fontWeight: '700',
+      fontSize: 12,
+    },
+    costoDestacadoBox: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.md,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      marginBottom: 12,
+    },
+    costoDestacadoLabelBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    costoDestacadoLabel: {
+      fontSize: 12,
+      fontWeight: '700',
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    costoDestacadoValor: {
+      fontSize: 32,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginTop: 2,
+    },
+    costoDestacadoSubtexto: {
+      fontSize: 13,
+      color: colors.textMuted,
+      marginTop: 2,
+    },
+    metricRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 4,
+    },
+    metricLabelBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    metricLabel: {
+      color: colors.textMuted,
+      fontSize: 14,
+    },
+    infoBox: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      padding: 10,
+      marginBottom: 6,
+    },
+    infoTexto: {
+      color: colors.textMuted,
+      fontSize: 12,
+      lineHeight: 17,
+    },
+    metricValue: {
+      color: colors.text,
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    noDisponibleBox: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      padding: 14,
+    },
+    noDisponibleText: {
+      color: colors.textMuted,
+      fontWeight: '700',
+      fontSize: 15,
+      marginBottom: 4,
+    },
+    noDisponibleSubtext: {
+      color: colors.textMuted,
+      fontSize: 12,
+    },
+  });
+}

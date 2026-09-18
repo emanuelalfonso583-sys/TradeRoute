@@ -1,12 +1,28 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PALETAS_ACENTO, ACENTO_POR_DEFECTO, obtenerColorAcento } from '../theme/paletas';
+import { colors as coloresBase } from '../theme/colors';
+import { PALETAS_ACENTO, ACENTO_POR_DEFECTO, obtenerPaleta } from '../theme/paletas';
 import { FUENTES, FUENTE_POR_DEFECTO, obtenerFontFamily } from '../theme/fuentes';
 
 const CLAVE_STORAGE_ACENTO = '@traderoute_acento';
 const CLAVE_STORAGE_FUENTE = '@traderoute_fuente';
 
 const ThemeContext = createContext(null);
+
+// A partir de los colores base de la app, reemplaza únicamente los tonos de
+// marca (el azul oscuro de encabezados/tarjetas y el azul de botones/enlaces)
+// por el acento que haya elegido el usuario. Los colores de estado (verde de
+// éxito, rojo de error, etc.) se dejan igual: no cambian de significado
+// aunque el usuario elija otro color de acento.
+function construirColoresTema(claveAcento) {
+  const paleta = obtenerPaleta(claveAcento);
+  return {
+    ...coloresBase,
+    primaryDark: paleta.colorOscuro,
+    primary: paleta.colorOscuro,
+    action: paleta.color,
+  };
+}
 
 export function ThemeProvider({ children }) {
   const [claveAcento, setClaveAcentoState] = useState(ACENTO_POR_DEFECTO);
@@ -31,16 +47,19 @@ export function ThemeProvider({ children }) {
     AsyncStorage.setItem(CLAVE_STORAGE_FUENTE, clave).catch(() => {});
   }
 
+  const colors = useMemo(() => construirColoresTema(claveAcento), [claveAcento]);
+
   const value = useMemo(
     () => ({
       claveAcento,
-      acento: obtenerColorAcento(claveAcento),
+      acento: colors.action,
+      colors,
       setClaveAcento,
       claveFuente,
       fontFamily: obtenerFontFamily(claveFuente),
       setClaveFuente,
     }),
-    [claveAcento, claveFuente]
+    [claveAcento, colors, claveFuente]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

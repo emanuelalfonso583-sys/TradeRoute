@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Pressable, Image, ActivityIndicator, Linking, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Text from './AppText';
 import { obtenerInfoWiki } from '../utils/wikiInfo';
 import { COUNTRIES } from '../data/countries';
 import { useLanguage } from '../context/LanguageContext';
-import { colors, radius } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius } from '../theme/colors';
 
 const NOMBRE_PAIS_POR_CODIGO = COUNTRIES.reduce((acc, pais) => {
   acc[pais.code] = pais.name;
@@ -41,6 +42,8 @@ function consultasWikipedia(hub) {
 // una foto real (Wikipedia) y una descripción más amplia del lugar.
 export default function HubCard({ hub }) {
   const { t, idioma } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [abierto, setAbierto] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [info, setInfo] = useState(null);
@@ -107,7 +110,8 @@ export default function HubCard({ hub }) {
   );
 }
 
-const styles = StyleSheet.create({
+function crearEstilos(colors) {
+  return StyleSheet.create({
   hubCard: {
     backgroundColor: colors.surface,
     borderRadius: radius.md,
@@ -184,4 +188,5 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontStyle: 'italic',
   },
-});
+  });
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, ScrollView, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Text from '../components/AppText';
@@ -9,9 +9,11 @@ import { useAppTheme } from '../context/ThemeContext';
 import { obtenerPerfil } from '../firebase/perfil';
 import { PALETAS_ACENTO } from '../theme/paletas';
 import { FUENTES } from '../theme/fuentes';
-import { colors, radius, shadow } from '../theme/colors';
+import { radius, shadow } from '../theme/colors';
 
 function SeccionDesplegable({ icono, titulo, abierta, onPress, children, acento }) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View style={styles.seccion}>
       <Pressable style={styles.seccionHeader} onPress={onPress}>
@@ -31,6 +33,8 @@ function SeccionDesplegable({ icono, titulo, abierta, onPress, children, acento 
 }
 
 function Fila({ etiqueta, valor }) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View style={styles.fila}>
       <Text style={styles.filaEtiqueta}>{etiqueta}</Text>
@@ -42,7 +46,8 @@ function Fila({ etiqueta, valor }) {
 export default function AccountScreen() {
   const { usuario, cerrarSesion } = useAuth();
   const { t, idioma, setIdioma } = useLanguage();
-  const { acento, claveAcento, setClaveAcento, claveFuente, setClaveFuente } = useAppTheme();
+  const { colors, acento, claveAcento, setClaveAcento, claveFuente, setClaveFuente } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [perfil, setPerfil] = useState(null);
   const [seccionAbierta, setSeccionAbierta] = useState(null);
 
@@ -205,6 +210,8 @@ export default function AccountScreen() {
 }
 
 function OpcionChip({ label, activo, acento, onPress }) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <Pressable
       onPress={onPress}
@@ -219,6 +226,8 @@ function OpcionChip({ label, activo, acento, onPress }) {
 }
 
 function ComplementoFila({ nombre, descripcion }) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View style={styles.complementoFila}>
       <Text style={styles.complementoNombre}>{nombre}</Text>
@@ -228,6 +237,8 @@ function ComplementoFila({ nombre, descripcion }) {
 }
 
 function PoliticaPrivacidad() {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View>
       <Text style={styles.privacidadFecha}>Última actualización: septiembre de 2026</Text>
@@ -298,180 +309,182 @@ function PoliticaPrivacidad() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.background },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  perfilBox: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  avatar: {
-    width: 76,
-    height: 76,
-    borderRadius: radius.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  nombre: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.primaryDark,
-  },
-  correo: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  seccion: {
-    backgroundColor: colors.background,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    marginBottom: 12,
-    overflow: 'hidden',
-    ...shadow.card,
-  },
-  seccionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
-  },
-  seccionIconoBox: {
-    width: 34,
-    height: 34,
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  seccionTitulo: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  seccionContenido: {
-    paddingHorizontal: 14,
-    paddingBottom: 16,
-  },
-  fila: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  filaEtiqueta: {
-    fontSize: 12,
-    color: colors.textMuted,
-    flex: 1,
-  },
-  filaValor: {
-    fontSize: 13,
-    color: colors.text,
-    fontWeight: '600',
-    flex: 1,
-    textAlign: 'right',
-  },
-  campoEtiqueta: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginTop: 4,
-  },
-  campoDescripcion: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 2,
-    marginBottom: 10,
-    lineHeight: 16,
-  },
-  opcionesFila: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    borderRadius: radius.sm,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-  },
-  chipTexto: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  chipTextoActivo: {
-    color: '#FFFFFF',
-  },
-  coloresFila: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  colorSwatch: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  colorSwatchActivo: {
-    borderColor: colors.text,
-  },
-  espacioMedio: {
-    height: 16,
-  },
-  espacioChico: {
-    height: 6,
-  },
-  espacioGrande: {
-    height: 12,
-  },
-  complementoFila: {
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  complementoNombre: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  complementoDescripcion: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 2,
-    lineHeight: 16,
-  },
-  privacidadFecha: {
-    fontSize: 11,
-    color: colors.textMuted,
-    marginBottom: 8,
-  },
-  privacidadSubtitulo: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginTop: 12,
-    marginBottom: 4,
-  },
-  privacidadParrafo: {
-    fontSize: 12.5,
-    color: colors.text,
-    lineHeight: 18,
-    marginBottom: 4,
-  },
-  privacidadNegrita: {
-    fontWeight: '700',
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: colors.background },
+    container: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    perfilBox: {
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    avatar: {
+      width: 76,
+      height: 76,
+      borderRadius: radius.xl,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 12,
+    },
+    nombre: {
+      fontSize: 18,
+      fontWeight: '800',
+      color: colors.primaryDark,
+    },
+    correo: {
+      fontSize: 13,
+      color: colors.textMuted,
+      marginTop: 2,
+    },
+    seccion: {
+      backgroundColor: colors.background,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginBottom: 12,
+      overflow: 'hidden',
+      ...shadow.card,
+    },
+    seccionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 14,
+    },
+    seccionIconoBox: {
+      width: 34,
+      height: 34,
+      borderRadius: radius.sm,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 12,
+    },
+    seccionTitulo: {
+      flex: 1,
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    seccionContenido: {
+      paddingHorizontal: 14,
+      paddingBottom: 16,
+    },
+    fila: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 8,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    filaEtiqueta: {
+      fontSize: 12,
+      color: colors.textMuted,
+      flex: 1,
+    },
+    filaValor: {
+      fontSize: 13,
+      color: colors.text,
+      fontWeight: '600',
+      flex: 1,
+      textAlign: 'right',
+    },
+    campoEtiqueta: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginTop: 4,
+    },
+    campoDescripcion: {
+      fontSize: 12,
+      color: colors.textMuted,
+      marginTop: 2,
+      marginBottom: 10,
+      lineHeight: 16,
+    },
+    opcionesFila: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    chip: {
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+    },
+    chipTexto: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    chipTextoActivo: {
+      color: '#FFFFFF',
+    },
+    coloresFila: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 10,
+    },
+    colorSwatch: {
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 2,
+      borderColor: 'transparent',
+    },
+    colorSwatchActivo: {
+      borderColor: colors.text,
+    },
+    espacioMedio: {
+      height: 16,
+    },
+    espacioChico: {
+      height: 6,
+    },
+    espacioGrande: {
+      height: 12,
+    },
+    complementoFila: {
+      paddingVertical: 8,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    complementoNombre: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    complementoDescripcion: {
+      fontSize: 12,
+      color: colors.textMuted,
+      marginTop: 2,
+      lineHeight: 16,
+    },
+    privacidadFecha: {
+      fontSize: 11,
+      color: colors.textMuted,
+      marginBottom: 8,
+    },
+    privacidadSubtitulo: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginTop: 12,
+      marginBottom: 4,
+    },
+    privacidadParrafo: {
+      fontSize: 12.5,
+      color: colors.text,
+      lineHeight: 18,
+      marginBottom: 4,
+    },
+    privacidadNegrita: {
+      fontWeight: '700',
+    },
+  });
+}

@@ -7,11 +7,13 @@ import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
-import { colors } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
 
 export default function ComparatorScreen({ navigation }) {
   const { envio } = useShipment();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [tarifas, setTarifas] = useState(null);
 
   useEffect(() => {
@@ -90,47 +92,49 @@ export default function ComparatorScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  cargandoContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background,
-  },
-  cargandoTexto: {
-    marginTop: 12,
-    color: colors.textMuted,
-    fontSize: 13,
-  },
-  titulo: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginBottom: 4,
-  },
-  ruta: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.action,
-  },
-  detalle: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  spacer: {
-    height: 16,
-  },
-  disclaimer: {
-    fontSize: 11,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-    marginBottom: 18,
-    textAlign: 'center',
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    flex: { flex: 1, backgroundColor: colors.background },
+    container: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    cargandoContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
+    },
+    cargandoTexto: {
+      marginTop: 12,
+      color: colors.textMuted,
+      fontSize: 13,
+    },
+    titulo: {
+      fontSize: 24,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginBottom: 4,
+    },
+    ruta: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: colors.action,
+    },
+    detalle: {
+      fontSize: 13,
+      color: colors.textMuted,
+      marginTop: 2,
+    },
+    spacer: {
+      height: 16,
+    },
+    disclaimer: {
+      fontSize: 11,
+      color: colors.textMuted,
+      fontStyle: 'italic',
+      marginBottom: 18,
+      textAlign: 'center',
+    },
+  });
+}

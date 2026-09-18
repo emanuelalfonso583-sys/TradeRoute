@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -12,11 +12,14 @@ import TextInput from '../components/AppTextInput';
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { colors, radius } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius } from '../theme/colors';
 
 function ModalRecuperar({ visible, onCerrar, correoInicial }) {
   const { restablecerContrasena } = useAuth();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [correo, setCorreo] = useState(correoInicial);
   const [mensaje, setMensaje] = useState('');
   const [esError, setEsError] = useState(false);
@@ -81,6 +84,8 @@ function ModalRecuperar({ visible, onCerrar, correoInicial }) {
 export default function LoginScreen({ navigation }) {
   const { iniciarSesion } = useAuth();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState('');
@@ -164,110 +169,112 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  logo: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    textAlign: 'center',
-    marginBottom: 6,
-  },
-  titulo: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  errorBox: {
-    backgroundColor: colors.dangerLight,
-    borderRadius: radius.sm,
-    padding: 12,
-    marginBottom: 16,
-  },
-  errorTexto: {
-    color: colors.danger,
-    fontWeight: '600',
-    fontSize: 13,
-  },
-  exitoBox: {
-    backgroundColor: colors.successLight,
-  },
-  exitoTexto: {
-    color: colors.success,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginBottom: 6,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: colors.text,
-    marginBottom: 14,
-  },
-  olvideLink: {
-    color: colors.action,
-    fontWeight: '600',
-    fontSize: 13,
-    textAlign: 'right',
-    marginBottom: 6,
-  },
-  spacer: {
-    height: 6,
-  },
-  pieContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-    flexWrap: 'wrap',
-  },
-  pieTexto: {
-    color: colors.textMuted,
-    fontSize: 14,
-  },
-  pieLink: {
-    color: colors.action,
-    fontWeight: '700',
-    fontSize: 14,
-  },
-  modalFondo: {
-    flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.5)',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  modalCaja: {
-    backgroundColor: colors.background,
-    borderRadius: radius.lg,
-    padding: 22,
-  },
-  modalTitulo: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginBottom: 8,
-  },
-  modalDescripcion: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginBottom: 16,
-    lineHeight: 18,
-  },
-  espacioChico: {
-    height: 10,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    flex: { flex: 1, backgroundColor: colors.background },
+    container: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 24,
+    },
+    logo: {
+      fontSize: 22,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      textAlign: 'center',
+      marginBottom: 6,
+    },
+    titulo: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.text,
+      textAlign: 'center',
+      marginBottom: 24,
+    },
+    errorBox: {
+      backgroundColor: colors.dangerLight,
+      borderRadius: radius.sm,
+      padding: 12,
+      marginBottom: 16,
+    },
+    errorTexto: {
+      color: colors.danger,
+      fontWeight: '600',
+      fontSize: 13,
+    },
+    exitoBox: {
+      backgroundColor: colors.successLight,
+    },
+    exitoTexto: {
+      color: colors.success,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 6,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      fontSize: 15,
+      color: colors.text,
+      marginBottom: 14,
+    },
+    olvideLink: {
+      color: colors.action,
+      fontWeight: '600',
+      fontSize: 13,
+      textAlign: 'right',
+      marginBottom: 6,
+    },
+    spacer: {
+      height: 6,
+    },
+    pieContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 20,
+      flexWrap: 'wrap',
+    },
+    pieTexto: {
+      color: colors.textMuted,
+      fontSize: 14,
+    },
+    pieLink: {
+      color: colors.action,
+      fontWeight: '700',
+      fontSize: 14,
+    },
+    modalFondo: {
+      flex: 1,
+      backgroundColor: 'rgba(15, 23, 42, 0.5)',
+      justifyContent: 'center',
+      padding: 24,
+    },
+    modalCaja: {
+      backgroundColor: colors.background,
+      borderRadius: radius.lg,
+      padding: 22,
+    },
+    modalTitulo: {
+      fontSize: 18,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginBottom: 8,
+    },
+    modalDescripcion: {
+      fontSize: 13,
+      color: colors.textMuted,
+      marginBottom: 16,
+      lineHeight: 18,
+    },
+    espacioChico: {
+      height: 10,
+    },
+  });
+}

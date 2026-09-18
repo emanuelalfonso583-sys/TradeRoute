@@ -228,7 +228,7 @@ export const es = {
   'cuenta.config.idioma': 'Idioma',
   'cuenta.config.idiomaDescripcion': 'Cambia el idioma de toda la app.',
   'cuenta.personalizacion.color': 'Color de acento',
-  'cuenta.personalizacion.colorDescripcion': 'Se aplica de inmediato a los botones principales y la barra de navegación.',
+  'cuenta.personalizacion.colorDescripcion': 'Se aplica de inmediato a toda la app: botones, encabezados, títulos e íconos.',
   'cuenta.personalizacion.fuente': 'Tipo de letra',
   'cuenta.personalizacion.fuenteDescripcion': 'Cambia la tipografía de toda la app al instante.',
   'fuente.sistema': 'Predeterminada',

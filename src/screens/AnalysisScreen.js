@@ -9,12 +9,15 @@ import { puertosCercanos, aeropuertosCercanos } from '../utils/nearestHubs';
 import { calcularRutaMaritima } from '../utils/seaRoute';
 import RouteMap from '../components/RouteMap';
 import HubCard from '../components/HubCard';
-import { colors, radius, shadow } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
+import { radius, shadow } from '../theme/colors';
 
 const CANTIDAD_HUBS = 3;
 
 function SeccionHubs({ titulo, hubs }) {
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View style={styles.seccionHubs}>
       <Text style={styles.subtitulo}>{titulo}</Text>
@@ -29,6 +32,8 @@ function SeccionHubs({ titulo, hubs }) {
 
 function AnalisisMaritimo({ alternativa, envio }) {
   const { t, idioma } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const puertosOrigen = useMemo(
     () => puertosCercanos(envio.origenLat, envio.origenLng, CANTIDAD_HUBS),
     [envio.origenLat, envio.origenLng]
@@ -75,6 +80,8 @@ function AnalisisMaritimo({ alternativa, envio }) {
 
 function AnalisisAereo({ envio }) {
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const aeropuertosOrigen = useMemo(
     () => aeropuertosCercanos(envio.origenLat, envio.origenLng, CANTIDAD_HUBS),
     [envio.origenLat, envio.origenLng]
@@ -109,6 +116,8 @@ function AnalisisAereo({ envio }) {
 
 function AnalisisTerrestre({ envio }) {
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View>
       <Text style={styles.subtitulo}>
@@ -133,6 +142,8 @@ function AnalisisModalidad({ alternativa, envio }) {
 
 function EstadoVacio() {
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   return (
     <View style={styles.vacioContainer}>
       <Text style={styles.vacioIcono}>📊</Text>
@@ -145,6 +156,8 @@ function EstadoVacio() {
 export default function AnalysisScreen() {
   const { envio } = useShipment();
   const { t } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [tarifas, setTarifas] = useState(null);
 
   useEffect(() => {
@@ -211,113 +224,115 @@ export default function AnalysisScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.background },
-  flex: { flex: 1 },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  cargandoContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background,
-  },
-  cargandoTexto: {
-    marginTop: 12,
-    color: colors.textMuted,
-    fontSize: 13,
-  },
-  titulo: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginBottom: 4,
-  },
-  ruta: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.action,
-    marginBottom: 20,
-  },
-  bloqueModalidad: {
-    marginBottom: 28,
-  },
-  encabezadoModalidad: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.primaryDark,
-    borderRadius: radius.lg,
-    padding: 16,
-    marginBottom: 14,
-    ...shadow.card,
-  },
-  encabezadoIcono: {
-    fontSize: 30,
-    marginRight: 12,
-  },
-  encabezadoEtiqueta: {
-    color: '#C7D2E8',
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  encabezadoModalidadTexto: {
-    color: '#FFFFFF',
-    fontSize: 19,
-    fontWeight: '800',
-    marginTop: 2,
-  },
-  subtitulo: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.primaryDark,
-    marginBottom: 8,
-  },
-  seccionHubs: {
-    marginBottom: 16,
-  },
-  sinDatos: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-  },
-  rutaDetalle: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginBottom: 10,
-    lineHeight: 17,
-  },
-  disclaimer: {
-    fontSize: 11,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  vacioContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-  },
-  vacioIcono: {
-    fontSize: 48,
-    marginBottom: 12,
-  },
-  vacioTitulo: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  vacioTexto: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: colors.background },
+    flex: { flex: 1 },
+    container: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    cargandoContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
+    },
+    cargandoTexto: {
+      marginTop: 12,
+      color: colors.textMuted,
+      fontSize: 13,
+    },
+    titulo: {
+      fontSize: 24,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginBottom: 4,
+    },
+    ruta: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.action,
+      marginBottom: 20,
+    },
+    bloqueModalidad: {
+      marginBottom: 28,
+    },
+    encabezadoModalidad: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.primaryDark,
+      borderRadius: radius.lg,
+      padding: 16,
+      marginBottom: 14,
+      ...shadow.card,
+    },
+    encabezadoIcono: {
+      fontSize: 30,
+      marginRight: 12,
+    },
+    encabezadoEtiqueta: {
+      color: '#C7D2E8',
+      fontSize: 12,
+      fontWeight: '700',
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    encabezadoModalidadTexto: {
+      color: '#FFFFFF',
+      fontSize: 19,
+      fontWeight: '800',
+      marginTop: 2,
+    },
+    subtitulo: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 8,
+    },
+    seccionHubs: {
+      marginBottom: 16,
+    },
+    sinDatos: {
+      fontSize: 13,
+      color: colors.textMuted,
+      fontStyle: 'italic',
+    },
+    rutaDetalle: {
+      fontSize: 12,
+      color: colors.textMuted,
+      marginBottom: 10,
+      lineHeight: 17,
+    },
+    disclaimer: {
+      fontSize: 11,
+      color: colors.textMuted,
+      fontStyle: 'italic',
+      textAlign: 'center',
+      marginTop: 8,
+    },
+    vacioContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 32,
+    },
+    vacioIcono: {
+      fontSize: 48,
+      marginBottom: 12,
+    },
+    vacioTitulo: {
+      fontSize: 18,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    vacioTexto: {
+      fontSize: 14,
+      color: colors.textMuted,
+      textAlign: 'center',
+      lineHeight: 20,
+    },
+  });
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import Text from '../components/AppText';
 import PrimaryButton from '../components/PrimaryButton';
@@ -6,7 +6,7 @@ import TransportCard from '../components/TransportCard';
 import RouteMap from '../components/RouteMap';
 import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
-import { colors } from '../theme/colors';
+import { useAppTheme } from '../context/ThemeContext';
 
 function formatearFecha(timestamp, idioma) {
   if (!timestamp?.toDate) return '';
@@ -23,6 +23,8 @@ export default function HistorialDetailScreen({ route, navigation }) {
   const { envio, alternativas = [], recomendacion, creadoEn } = item;
   const { guardarEnvio } = useShipment();
   const { t, idioma } = useLanguage();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => crearEstilos(colors), [colors]);
 
   const disponibles = alternativas.filter((a) => a.disponible).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
@@ -69,37 +71,39 @@ export default function HistorialDetailScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  fecha: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginBottom: 6,
-  },
-  ruta: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: colors.primaryDark,
-    marginBottom: 4,
-  },
-  detalle: {
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-  spacer: {
-    height: 16,
-  },
-  espacioBoton: {
-    height: 12,
-  },
-  sinDatos: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-    marginBottom: 16,
-  },
-});
+function crearEstilos(colors) {
+  return StyleSheet.create({
+    flex: { flex: 1, backgroundColor: colors.background },
+    container: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    fecha: {
+      fontSize: 12,
+      color: colors.textMuted,
+      marginBottom: 6,
+    },
+    ruta: {
+      fontSize: 20,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginBottom: 4,
+    },
+    detalle: {
+      fontSize: 13,
+      color: colors.textMuted,
+    },
+    spacer: {
+      height: 16,
+    },
+    espacioBoton: {
+      height: 12,
+    },
+    sinDatos: {
+      fontSize: 13,
+      color: colors.textMuted,
+      fontStyle: 'italic',
+      marginBottom: 16,
+    },
+  });
+}
