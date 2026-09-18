@@ -6,28 +6,10 @@ import { obtenerTarifas } from '../firebase/tarifas';
 import { puertosCercanos, aeropuertosCercanos } from '../utils/nearestHubs';
 import { calcularRutaMaritima } from '../utils/seaRoute';
 import RouteMap from '../components/RouteMap';
+import HubCard from '../components/HubCard';
 import { colors, radius, shadow } from '../theme/colors';
 
 const CANTIDAD_HUBS = 3;
-
-function HubCard({ hub }) {
-  return (
-    <View style={[styles.hubCard, hub.recomendado && styles.hubCardRecomendado]}>
-      <View style={styles.hubHeader}>
-        <Text style={styles.hubNombre}>{hub.name}</Text>
-        {hub.recomendado && (
-          <View style={styles.hubBadge}>
-            <Text style={styles.hubBadgeText}>Recomendado</Text>
-          </View>
-        )}
-      </View>
-      <Text style={styles.hubDetalle}>
-        Código {hub.code} · {hub.city && hub.city !== hub.name ? `${hub.city} · ` : ''}
-        {hub.distanciaCiudadKm.toLocaleString('es')} km de la ciudad ingresada
-      </Text>
-    </View>
-  );
-}
 
 function SeccionHubs({ titulo, hubs }) {
   return (
@@ -222,9 +204,10 @@ export default function AnalysisScreen() {
         )}
 
         <Text style={styles.disclaimer}>
-          Puertos y aeropuertos son datos reales (UN/LOCODE y OurAirports). La ruta marítima se calcula
-          sobre la red de navegación real; la ruta terrestre usa carreteras reales. Los tiempos y costos
-          siguen siendo estimaciones académicas.
+          Puertos y aeropuertos son datos reales (UN/LOCODE y OurAirports); toca el recomendado para ver
+          una foto real y más información (Wikipedia). La ruta marítima se calcula sobre la red de
+          navegación real; la ruta terrestre usa carreteras reales. Los tiempos y costos siguen siendo
+          estimaciones académicas.
         </Text>
       </ScrollView>
     </SafeAreaView>
@@ -298,46 +281,6 @@ const styles = StyleSheet.create({
   },
   seccionHubs: {
     marginBottom: 16,
-  },
-  hubCard: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 12,
-    marginBottom: 8,
-  },
-  hubCardRecomendado: {
-    borderColor: colors.success,
-    borderWidth: 2,
-  },
-  hubHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  hubNombre: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.text,
-    flex: 1,
-  },
-  hubBadge: {
-    backgroundColor: colors.successLight,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: radius.sm,
-    marginLeft: 8,
-  },
-  hubBadgeText: {
-    color: colors.success,
-    fontWeight: '700',
-    fontSize: 11,
-  },
-  hubDetalle: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 4,
   },
   sinDatos: {
     fontSize: 13,
