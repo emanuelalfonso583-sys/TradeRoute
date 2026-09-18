@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors, radius, shadow } from '../theme/colors';
+import { formatearUsd } from '../utils/format';
 
 function Metric({ label, value }) {
   return (
@@ -37,9 +38,9 @@ export default function TransportCard({ alternativa, destacada = false }) {
         <View>
           <View style={styles.costoDestacadoBox}>
             <Text style={styles.costoDestacadoLabel}>Costo del flete (USD)</Text>
-            <Text style={styles.costoDestacadoValor}>US$ {alternativa.costoUsd.toFixed(2)}</Text>
+            <Text style={styles.costoDestacadoValor}>US$ {formatearUsd(alternativa.costoUsd)}</Text>
             <Text style={styles.costoDestacadoSubtexto}>
-              US$ {alternativa.costoPorKg.toFixed(2)} por kg
+              US$ {formatearUsd(alternativa.costoPorKg)} por kg
             </Text>
           </View>
 

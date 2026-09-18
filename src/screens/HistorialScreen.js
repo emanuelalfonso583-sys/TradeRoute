@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, RefreshControl, SafeAreaView } from '
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { obtenerHistorial } from '../firebase/historial';
+import { formatearUsd } from '../utils/format';
 import { colors, radius, shadow } from '../theme/colors';
 
 function formatearFecha(timestamp) {
@@ -25,7 +26,7 @@ function TarjetaHistorial({ item }) {
       </Text>
       {recomendacion ? (
         <View style={styles.recomendacionBox}>
-          <Text style={styles.recomendacionCosto}>US$ {recomendacion.costoUsd?.toFixed(2)}</Text>
+          <Text style={styles.recomendacionCosto}>US$ {formatearUsd(recomendacion.costoUsd)}</Text>
           <Text style={styles.recomendacionTexto}>
             🏆 {recomendacion.label} · Score {recomendacion.score}/100
           </Text>

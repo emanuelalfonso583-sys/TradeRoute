@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { compararEnvio, obtenerRecomendacion, generarExplicacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { guardarEnvioEnHistorial } from '../firebase/historial';
+import { formatearUsd } from '../utils/format';
 import { colors, radius, shadow } from '../theme/colors';
 
 function BarraContribucion({ label, porcentaje, valor }) {
@@ -95,7 +96,7 @@ export default function RecommendationScreen({ navigation }) {
           {recomendacion.icono} {recomendacion.label}
         </Text>
 
-        <Text style={styles.costoRecomendadoValor}>US$ {recomendacion.costoUsd.toFixed(2)}</Text>
+        <Text style={styles.costoRecomendadoValor}>US$ {formatearUsd(recomendacion.costoUsd)}</Text>
         <Text style={styles.costoRecomendadoLabel}>Costo del flete (USD)</Text>
 
         <View style={styles.scoreCircle}>
