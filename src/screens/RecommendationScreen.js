@@ -12,6 +12,7 @@ import {
 import { obtenerTarifas } from '../firebase/tarifas';
 import { guardarEnvioEnHistorial } from '../firebase/historial';
 import { formatearUsd } from '../utils/format';
+import RouteMap from '../components/RouteMap';
 import { colors, radius, shadow } from '../theme/colors';
 
 function BarraContribucion({ label, porcentaje, valor }) {
@@ -117,6 +118,20 @@ export default function RecommendationScreen({ navigation }) {
           </>
         )}
       </View>
+
+      <Text style={styles.seccionTitulo}>Mapa de la ruta</Text>
+      <RouteMap
+        origen={{
+          lat: envio.origenLat,
+          lng: envio.origenLng,
+          label: `${envio.origenCiudad}, ${envio.origenPaisNombre}`,
+        }}
+        destino={{
+          lat: envio.destinoLat,
+          lng: envio.destinoLng,
+          label: `${envio.destinoCiudad}, ${envio.destinoPaisNombre}`,
+        }}
+      />
 
       <Text style={styles.explicacion}>{explicacion}</Text>
 
