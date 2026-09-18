@@ -9,7 +9,7 @@ import HomeScreen from '../screens/HomeScreen';
 import NewShipmentScreen from '../screens/NewShipmentScreen';
 import ComparatorScreen from '../screens/ComparatorScreen';
 import RecommendationScreen from '../screens/RecommendationScreen';
-import PlaceholderScreen from '../screens/PlaceholderScreen';
+import AnalysisScreen from '../screens/AnalysisScreen';
 import HistorialScreen from '../screens/HistorialScreen';
 import AccountScreen from '../screens/AccountScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -27,16 +27,6 @@ const ICONOS_TAB = {
   Historial: 'document-text',
   Cuenta: 'person-circle',
 };
-
-function AnalisisScreen() {
-  return (
-    <PlaceholderScreen
-      icono="📊"
-      titulo="Análisis"
-      descripcion="Aquí verás métricas históricas y tendencias de tus envíos."
-    />
-  );
-}
 
 function MainTabs() {
   return (
@@ -62,7 +52,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Inicio" component={HomeScreen} />
-      <Tab.Screen name="Analisis" component={AnalisisScreen} options={{ title: 'Análisis' }} />
+      <Tab.Screen name="Analisis" component={AnalysisScreen} options={{ title: 'Análisis' }} />
       <Tab.Screen name="Historial" component={HistorialScreen} />
       <Tab.Screen name="Cuenta" component={AccountScreen} />
     </Tab.Navigator>
