@@ -23,11 +23,15 @@ function palabrasSignificativas(texto) {
 // Evita mostrar la foto/info de un lugar equivocado: exige que el
 // resultado de Wikipedia comparta al menos una palabra clave real con el
 // nombre que se buscó (p. ej. "Cuatro" y "Vientos", no solo "Airport").
+// La comparación es en ambos sentidos porque un idioma a veces agrega o
+// quita una terminación (p. ej. "Antwerp" / "Antwerpen").
 function coincideDeVerdad(nombreBuscado, tituloEncontrado) {
   const claves = palabrasSignificativas(nombreBuscado);
   if (claves.length === 0) return true;
-  const tituloNormalizado = normalizar(tituloEncontrado);
-  return claves.some((palabra) => tituloNormalizado.includes(palabra));
+  const palabrasTitulo = palabrasSignificativas(tituloEncontrado);
+  return claves.some((palabra) =>
+    palabrasTitulo.some((palabraTitulo) => palabraTitulo.includes(palabra) || palabra.includes(palabraTitulo))
+  );
 }
 
 async function buscarEnWikipedia(idioma, consulta) {

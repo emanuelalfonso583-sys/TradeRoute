@@ -16,10 +16,12 @@ const NOMBRE_PAIS_POR_CODIGO = COUNTRIES.reduce((acc, pais) => {
 function consultasWikipedia(hub) {
   if (hub.countryCode) {
     // Puerto: los datos no traen nombre en inglés, se busca en español.
+    // Si no hay artículo dedicado al puerto, el de la ciudad también sirve.
     const nombrePais = NOMBRE_PAIS_POR_CODIGO[hub.countryCode];
     return [
       { idioma: 'es', texto: `Puerto de ${hub.name}${nombrePais ? `, ${nombrePais}` : ''}` },
       { idioma: 'en', texto: `Port of ${hub.name}` },
+      { idioma: 'es', texto: `${hub.name}${nombrePais ? `, ${nombrePais}` : ''}` },
     ];
   }
   if (hub.country) {
@@ -33,9 +35,8 @@ function consultasWikipedia(hub) {
   return [{ idioma: 'es', texto: hub.name }];
 }
 
-// Tarjeta de un puerto o aeropuerto. Solo la opción recomendada se puede
-// abrir para ver una foto real (Wikipedia) y una descripción más amplia del
-// lugar; las demás alternativas se muestran como referencia simple.
+// Tarjeta de un puerto o aeropuerto. Cualquiera se puede abrir para ver
+// una foto real (Wikipedia) y una descripción más amplia del lugar.
 export default function HubCard({ hub }) {
   const [abierto, setAbierto] = useState(false);
   const [cargando, setCargando] = useState(false);
@@ -43,7 +44,6 @@ export default function HubCard({ hub }) {
   const [buscado, setBuscado] = useState(false);
 
   async function alPresionar() {
-    if (!hub.recomendado) return;
     const siguiente = !abierto;
     setAbierto(siguiente);
     if (siguiente && !buscado) {
@@ -62,19 +62,19 @@ export default function HubCard({ hub }) {
     >
       <View style={styles.hubHeader}>
         <Text style={styles.hubNombre}>{hub.name}</Text>
-        {hub.recomendado && (
-          <View style={styles.hubBadgeRow}>
+        <View style={styles.hubBadgeRow}>
+          {hub.recomendado && (
             <View style={styles.hubBadge}>
               <Text style={styles.hubBadgeText}>Recomendado</Text>
             </View>
-            <Ionicons
-              name={abierto ? 'chevron-up' : 'chevron-down'}
-              size={16}
-              color={colors.textMuted}
-              style={styles.chevron}
-            />
-          </View>
-        )}
+          )}
+          <Ionicons
+            name={abierto ? 'chevron-up' : 'chevron-down'}
+            size={16}
+            color={colors.textMuted}
+            style={styles.chevron}
+          />
+        </View>
       </View>
       <Text style={styles.hubDetalle}>
         Código {hub.code} · {hub.city && hub.city !== hub.name ? `${hub.city} · ` : ''}
