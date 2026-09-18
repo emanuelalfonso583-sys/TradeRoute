@@ -17,21 +17,6 @@ import { formatearUsd } from '../utils/format';
 import RouteMap from '../components/RouteMap';
 import { colors, radius, shadow } from '../theme/colors';
 
-function BarraContribucion({ label, porcentaje, valor }) {
-  return (
-    <View style={styles.barraContainer}>
-      <View style={styles.barraHeader}>
-        <Text style={styles.barraLabel}>{label}</Text>
-        <Text style={styles.barraValor}>{Math.round(valor)}/100</Text>
-      </View>
-      <View style={styles.barraTrack}>
-        <View style={[styles.barraFill, { width: `${Math.max(0, Math.min(100, valor))}%` }]} />
-      </View>
-      <Text style={styles.barraPeso}>Peso en el score: {porcentaje}</Text>
-    </View>
-  );
-}
-
 export default function RecommendationScreen({ navigation }) {
   const { envio, reiniciarEnvio } = useShipment();
   const { usuario } = useAuth();
@@ -155,17 +140,6 @@ export default function RecommendationScreen({ navigation }) {
       />
 
       <Text style={styles.explicacion}>{explicacion}</Text>
-
-      {conComparacion && (
-        <>
-          <Text style={styles.seccionTitulo}>Composición del Score</Text>
-          <View style={styles.desgloseCard}>
-            <BarraContribucion label="Costo" porcentaje="55%" valor={recomendacion.scoreCosto} />
-            <BarraContribucion label="Tiempo" porcentaje="30%" valor={recomendacion.scoreTiempo} />
-            <BarraContribucion label="CO₂" porcentaje="15%" valor={recomendacion.scoreCo2} />
-          </View>
-        </>
-      )}
 
       {!comparandoTodas && otrasDisponibles.length > 0 && (
         <View style={styles.otrasContainer}>
@@ -299,46 +273,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.primaryDark,
     marginBottom: 10,
-  },
-  desgloseCard: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: 16,
-    marginBottom: 20,
-  },
-  barraContainer: {
-    marginBottom: 14,
-  },
-  barraHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  barraLabel: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  barraValor: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.success,
-  },
-  barraTrack: {
-    height: 8,
-    backgroundColor: colors.border,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  barraFill: {
-    height: 8,
-    backgroundColor: colors.success,
-    borderRadius: 4,
-  },
-  barraPeso: {
-    fontSize: 11,
-    color: colors.textMuted,
-    marginTop: 3,
   },
   disclaimer: {
     fontSize: 11,
