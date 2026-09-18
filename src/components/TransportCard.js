@@ -100,7 +100,11 @@ export default function TransportCard({ alternativa, destacada = false }) {
             {mostrarInfoCosto && <CajaInfo texto={EXPLICACIONES.costo[alternativa.key]} />}
           </View>
 
-          <Metric label="Tiempo estimado" value={`${alternativa.tiempoDias} días`} info={EXPLICACIONES.tiempo} />
+          <Metric
+            label="Tiempo estimado"
+            value={`${alternativa.tiempoDias} ${alternativa.tiempoDias === 1 ? 'día' : 'días'}`}
+            info={EXPLICACIONES.tiempo}
+          />
           <Metric
             label="Distancia real"
             value={`${alternativa.distanciaKm.toLocaleString('es')} km`}
