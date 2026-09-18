@@ -52,7 +52,7 @@ function Metric({ label, value, info }) {
 
 export default function TransportCard({ alternativa, destacada = false }) {
   const { icono, label, disponible } = alternativa;
-  const { t } = useLanguage();
+  const { t, idioma } = useLanguage();
   const { colors } = useAppTheme();
   const styles = useMemo(() => crearEstilos(colors), [colors]);
   const [mostrarInfoCosto, setMostrarInfoCosto] = useState(false);
@@ -114,7 +114,7 @@ export default function TransportCard({ alternativa, destacada = false }) {
           />
           <Metric
             label={t('tarjeta.distanciaReal')}
-            value={`${alternativa.distanciaKm.toLocaleString('es')} ${t('comun.km')}`}
+            value={`${alternativa.distanciaKm.toLocaleString(idioma)} ${t('comun.km')}`}
             info={EXPLICACIONES.distancia}
           />
           <Metric label={t('tarjeta.huellaCo2')} value={`${alternativa.co2Kg.toFixed(2)} kg`} info={EXPLICACIONES.co2} />
