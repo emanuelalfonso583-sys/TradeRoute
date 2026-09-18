@@ -11,6 +11,7 @@ import ComparatorScreen from '../screens/ComparatorScreen';
 import RecommendationScreen from '../screens/RecommendationScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
 import HistorialScreen from '../screens/HistorialScreen';
+import HistorialDetailScreen from '../screens/HistorialDetailScreen';
 import AccountScreen from '../screens/AccountScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -83,6 +84,11 @@ function AppStack() {
         name="Recomendacion"
         component={RecommendationScreen}
         options={{ title: 'Recomendación' }}
+      />
+      <Stack.Screen
+        name="HistorialDetalle"
+        component={HistorialDetailScreen}
+        options={{ title: 'Envío guardado' }}
       />
     </Stack.Navigator>
   );

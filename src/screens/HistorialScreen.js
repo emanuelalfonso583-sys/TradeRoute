@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, RefreshControl, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, RefreshControl, SafeAreaView, Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { obtenerHistorial } from '../firebase/historial';
@@ -14,13 +15,19 @@ function formatearFecha(timestamp) {
     fecha.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
 }
 
-function TarjetaHistorial({ item }) {
+function TarjetaHistorial({ item, onPress }) {
   const { envio, recomendacion } = item;
   return (
-    <View style={styles.card}>
-      <Text style={styles.ruta}>
-        {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
-      </Text>
+    <Pressable
+      style={({ pressed }) => [styles.card, pressed && styles.cardPresionada]}
+      onPress={onPress}
+    >
+      <View style={styles.cardHeader}>
+        <Text style={styles.ruta}>
+          {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
+        </Text>
+        <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+      </View>
       <Text style={styles.detalle}>
         {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} unidades
       </Text>
@@ -33,11 +40,11 @@ function TarjetaHistorial({ item }) {
         <Text style={styles.sinRecomendacion}>Sin alternativas disponibles para esta ruta</Text>
       )}
       <Text style={styles.fecha}>{formatearFecha(item.creadoEn)}</Text>
-    </View>
+    </Pressable>
   );
 }
 
-export default function HistorialScreen() {
+export default function HistorialScreen({ navigation }) {
   const { usuario } = useAuth();
   const [historial, setHistorial] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -73,7 +80,9 @@ export default function HistorialScreen() {
         refreshControl={
           <RefreshControl refreshing={cargando} onRefresh={cargarHistorial} tintColor={colors.action} />
         }
-        renderItem={({ item }) => <TarjetaHistorial item={item} />}
+        renderItem={({ item }) => (
+          <TarjetaHistorial item={item} onPress={() => navigation.navigate('HistorialDetalle', { item })} />
+        )}
         ListEmptyComponent={
           !cargando ? (
             <View style={styles.vacioContainer}>
@@ -120,7 +129,16 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     ...shadow.card,
   },
+  cardPresionada: {
+    backgroundColor: colors.surface,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   ruta: {
+    flex: 1,
     fontSize: 15,
     fontWeight: '700',
     color: colors.primaryDark,
