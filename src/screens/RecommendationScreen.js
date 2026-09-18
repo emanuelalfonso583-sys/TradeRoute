@@ -17,6 +17,36 @@ import { formatearUsd } from '../utils/format';
 import RouteMap from '../components/RouteMap';
 import { colors, radius, shadow } from '../theme/colors';
 
+// Muestra la cuenta exacta detrás del TradeRoute Score, factor por factor,
+// para que se pueda verificar con calculadora: subpuntaje × peso = puntos.
+function DesgloseScore({ recomendacion }) {
+  const filas = [
+    { label: 'Costo', sub: recomendacion.scoreCosto, peso: 0.55 },
+    { label: 'Tiempo', sub: recomendacion.scoreTiempo, peso: 0.3 },
+    { label: 'CO₂', sub: recomendacion.scoreCo2, peso: 0.15 },
+  ];
+
+  return (
+    <View style={styles.desgloseCard}>
+      {filas.map((fila) => (
+        <View key={fila.label} style={styles.desgloseFila}>
+          <Text style={styles.desgloseTexto}>
+            {fila.label}: {Math.round(fila.sub)}/100 × {Math.round(fila.peso * 100)}%
+          </Text>
+          <Text style={styles.desglosePuntos}>
+            = {(fila.sub * fila.peso).toFixed(1)} pts
+          </Text>
+        </View>
+      ))}
+      <View style={styles.desgloseDivider} />
+      <View style={styles.desgloseFila}>
+        <Text style={styles.desgloseTotalTexto}>Total</Text>
+        <Text style={styles.desgloseTotalPuntos}>{recomendacion.score}/100</Text>
+      </View>
+    </View>
+  );
+}
+
 export default function RecommendationScreen({ navigation }) {
   const { envio, reiniciarEnvio } = useShipment();
   const { usuario } = useAuth();
@@ -140,6 +170,13 @@ export default function RecommendationScreen({ navigation }) {
       />
 
       <Text style={styles.explicacion}>{explicacion}</Text>
+
+      {conComparacion && (
+        <>
+          <Text style={styles.seccionTitulo}>Cómo se calculó el Score</Text>
+          <DesgloseScore recomendacion={recomendacion} />
+        </>
+      )}
 
       {!comparandoTodas && otrasDisponibles.length > 0 && (
         <View style={styles.otrasContainer}>
@@ -289,5 +326,41 @@ const styles = StyleSheet.create({
   },
   otrasLista: {
     marginTop: 14,
+  },
+  desgloseCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: 16,
+    marginBottom: 20,
+  },
+  desgloseFila: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  desgloseTexto: {
+    fontSize: 13,
+    color: colors.text,
+  },
+  desglosePuntos: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  desgloseDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: 8,
+  },
+  desgloseTotalTexto: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.primaryDark,
+  },
+  desgloseTotalPuntos: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.success,
   },
 });
