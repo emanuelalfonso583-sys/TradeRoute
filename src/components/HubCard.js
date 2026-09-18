@@ -10,17 +10,27 @@ const NOMBRE_PAIS_POR_CODIGO = COUNTRIES.reduce((acc, pais) => {
   return acc;
 }, {});
 
-// Arma una búsqueda lo más específica posible para no confundir, por
-// ejemplo, "Cartagena" (Colombia) con una ciudad homónima en otro país.
-function consultaWikipedia(hub) {
+// Arma varias búsquedas, de la más a la menos específica, para no
+// confundir por ejemplo "Cartagena" (Colombia) con una ciudad homónima en
+// otro país, ni traer la foto de un lugar distinto.
+function consultasWikipedia(hub) {
   if (hub.countryCode) {
+    // Puerto: los datos no traen nombre en inglés, se busca en español.
     const nombrePais = NOMBRE_PAIS_POR_CODIGO[hub.countryCode];
-    return `Puerto de ${hub.name}${nombrePais ? `, ${nombrePais}` : ''}`;
+    return [
+      { idioma: 'es', texto: `Puerto de ${hub.name}${nombrePais ? `, ${nombrePais}` : ''}` },
+      { idioma: 'en', texto: `Port of ${hub.name}` },
+    ];
   }
   if (hub.country) {
-    return `${hub.name}, ${hub.country}`;
+    // Aeropuerto: el nombre ya viene en inglés y suele ser el título exacto
+    // del artículo, así que se prueba primero tal cual en Wikipedia inglés.
+    return [
+      { idioma: 'en', texto: hub.name },
+      { idioma: 'es', texto: `${hub.name}, ${hub.country}` },
+    ];
   }
-  return hub.name;
+  return [{ idioma: 'es', texto: hub.name }];
 }
 
 // Tarjeta de un puerto o aeropuerto. Solo la opción recomendada se puede
@@ -39,7 +49,7 @@ export default function HubCard({ hub }) {
     if (siguiente && !buscado) {
       setBuscado(true);
       setCargando(true);
-      const resultado = await obtenerInfoWiki(consultaWikipedia(hub));
+      const resultado = await obtenerInfoWiki(consultasWikipedia(hub));
       setInfo(resultado);
       setCargando(false);
     }

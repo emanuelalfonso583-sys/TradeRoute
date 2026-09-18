@@ -1,8 +1,35 @@
 // Busca en Wikipedia una foto real y una descripción corta de un lugar
 // (puerto o aeropuerto) a partir de su nombre. Es gratis, no necesita
 // llave/API key, y corre directo desde el teléfono (sin backend propio).
-// Intenta primero en español y, si no encuentra nada, en inglés (hay más
-// aeropuertos y puertos documentados en la Wikipedia en inglés).
+
+const PALABRAS_GENERICAS = new Set([
+  'airport', 'international', 'aeropuerto', 'internacional', 'puerto', 'port',
+  'de', 'del', 'la', 'el', 'los', 'las', 'y', 'of', 'the',
+]);
+
+function normalizar(texto) {
+  return (texto || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+}
+
+function palabrasSignificativas(texto) {
+  return normalizar(texto)
+    .split(/[^a-z0-9]+/)
+    .filter((palabra) => palabra.length > 2 && !PALABRAS_GENERICAS.has(palabra));
+}
+
+// Evita mostrar la foto/info de un lugar equivocado: exige que el
+// resultado de Wikipedia comparta al menos una palabra clave real con el
+// nombre que se buscó (p. ej. "Cuatro" y "Vientos", no solo "Airport").
+function coincideDeVerdad(nombreBuscado, tituloEncontrado) {
+  const claves = palabrasSignificativas(nombreBuscado);
+  if (claves.length === 0) return true;
+  const tituloNormalizado = normalizar(tituloEncontrado);
+  return claves.some((palabra) => tituloNormalizado.includes(palabra));
+}
+
 async function buscarEnWikipedia(idioma, consulta) {
   const params = new URLSearchParams({
     action: 'query',
@@ -28,6 +55,7 @@ async function buscarEnWikipedia(idioma, consulta) {
 
   const pagina = Object.values(paginas)[0];
   if (!pagina || !pagina.title) return null;
+  if (!coincideDeVerdad(consulta, pagina.title)) return null;
 
   return {
     titulo: pagina.title,
@@ -37,16 +65,22 @@ async function buscarEnWikipedia(idioma, consulta) {
   };
 }
 
-export async function obtenerInfoWiki(nombreLugar) {
-  try {
-    const resultadoEs = await buscarEnWikipedia('es', nombreLugar);
-    if (resultadoEs?.imagenUrl) return resultadoEs;
+// Prueba varias consultas en orden hasta encontrar una coincidencia real
+// con foto; si ninguna trae foto, se queda con la primera coincidencia real
+// aunque no tenga foto (mejor mostrar texto que nada).
+export async function obtenerInfoWiki(consultas) {
+  const intentos = Array.isArray(consultas) ? consultas : [consultas];
+  let mejorSinFoto = null;
 
-    const resultadoEn = await buscarEnWikipedia('en', nombreLugar);
-    if (resultadoEn?.imagenUrl) return resultadoEn;
-
-    return resultadoEs || resultadoEn || null;
-  } catch {
-    return null;
+  for (const { idioma, texto } of intentos) {
+    try {
+      const resultado = await buscarEnWikipedia(idioma, texto);
+      if (resultado?.imagenUrl) return resultado;
+      if (resultado && !mejorSinFoto) mejorSinFoto = resultado;
+    } catch {
+      // sigue con el siguiente intento
+    }
   }
+
+  return mejorSinFoto;
 }
