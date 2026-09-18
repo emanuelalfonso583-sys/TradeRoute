@@ -35,11 +35,18 @@ export default function TransportCard({ alternativa, destacada = false }) {
         </View>
       ) : (
         <View>
+          <View style={styles.costoDestacadoBox}>
+            <Text style={styles.costoDestacadoLabel}>Costo del flete</Text>
+            <Text style={styles.costoDestacadoValor}>${alternativa.costoUsd.toFixed(2)}</Text>
+            <Text style={styles.costoDestacadoSubtexto}>
+              ${alternativa.costoPorKg.toFixed(2)} por kg
+            </Text>
+          </View>
+
           <Metric label="Tiempo estimado" value={`${alternativa.tiempoDias} días`} />
-          <Metric label="Costo estimado" value={`$${alternativa.costoUsd.toFixed(2)}`} />
+          <Metric label="Distancia real" value={`${alternativa.distanciaKm.toLocaleString('es')} km`} />
           <Metric label="Huella de CO₂" value={`${alternativa.co2Kg.toFixed(2)} kg`} />
-          <Metric label="Costo por kg" value={`$${alternativa.costoPorKg.toFixed(2)}/kg`} />
-          <Metric label="CO₂ por kg" value={`${alternativa.co2PorKg.toFixed(3)} kg/kg`} />
+          <Metric label="Peso facturable" value={`${alternativa.pesoFacturableKg} kg`} />
           <View style={styles.divider} />
           <View style={styles.scoreRow}>
             <Text style={styles.scoreLabel}>TradeRoute Score</Text>
@@ -90,6 +97,31 @@ const styles = StyleSheet.create({
     color: colors.success,
     fontWeight: '700',
     fontSize: 12,
+  },
+  costoDestacadoBox: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+  },
+  costoDestacadoLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.textMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  costoDestacadoValor: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: colors.primaryDark,
+    marginTop: 2,
+  },
+  costoDestacadoSubtexto: {
+    fontSize: 13,
+    color: colors.textMuted,
+    marginTop: 2,
   },
   metricRow: {
     flexDirection: 'row',

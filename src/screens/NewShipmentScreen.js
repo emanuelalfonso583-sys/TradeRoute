@@ -79,10 +79,22 @@ export default function NewShipmentScreen({ navigation }) {
   const { envio, guardarEnvio } = useShipment();
   const [form, setForm] = useState({
     origen: envio.origenPais
-      ? { countryCode: envio.origenPais, countryName: envio.origenPaisNombre, city: envio.origenCiudad }
+      ? {
+          countryCode: envio.origenPais,
+          countryName: envio.origenPaisNombre,
+          city: envio.origenCiudad,
+          lat: envio.origenLat,
+          lng: envio.origenLng,
+        }
       : null,
     destino: envio.destinoPais
-      ? { countryCode: envio.destinoPais, countryName: envio.destinoPaisNombre, city: envio.destinoCiudad }
+      ? {
+          countryCode: envio.destinoPais,
+          countryName: envio.destinoPaisNombre,
+          city: envio.destinoCiudad,
+          lat: envio.destinoLat,
+          lng: envio.destinoLng,
+        }
       : null,
     tipoMercancia: envio.tipoMercancia || '',
     peso: envio.peso ? String(envio.peso) : '',
@@ -112,9 +124,13 @@ export default function NewShipmentScreen({ navigation }) {
       origenPais: form.origen.countryCode,
       origenPaisNombre: form.origen.countryName,
       origenCiudad: form.origen.city,
+      origenLat: form.origen.lat,
+      origenLng: form.origen.lng,
       destinoPais: form.destino.countryCode,
       destinoPaisNombre: form.destino.countryName,
       destinoCiudad: form.destino.city,
+      destinoLat: form.destino.lat,
+      destinoLng: form.destino.lng,
       tipoMercancia: form.tipoMercancia,
       peso: parseNumero(form.peso),
       volumen: parseNumero(form.volumen),

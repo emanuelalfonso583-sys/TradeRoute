@@ -91,7 +91,7 @@ export default function LocationPicker({ label, value, onChange, error }) {
 
   function seleccionarCiudad(ciudad) {
     setModalCiudadVisible(false);
-    onChange({ ...value, city: ciudad.name });
+    onChange({ ...value, city: ciudad.name, lat: ciudad.lat, lng: ciudad.lng });
   }
 
   const textoMostrado = value?.city

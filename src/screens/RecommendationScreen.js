@@ -95,6 +95,9 @@ export default function RecommendationScreen({ navigation }) {
           {recomendacion.icono} {recomendacion.label}
         </Text>
 
+        <Text style={styles.costoRecomendadoValor}>${recomendacion.costoUsd.toFixed(2)}</Text>
+        <Text style={styles.costoRecomendadoLabel}>Costo del flete</Text>
+
         <View style={styles.scoreCircle}>
           <Text style={styles.scoreNumero}>{recomendacion.score}</Text>
           <Text style={styles.scoreSobre}>/100</Text>
@@ -106,9 +109,9 @@ export default function RecommendationScreen({ navigation }) {
 
       <Text style={styles.seccionTitulo}>Composición del Score</Text>
       <View style={styles.desgloseCard}>
-        <BarraContribucion label="Costo" porcentaje="40%" valor={recomendacion.scoreCosto} />
-        <BarraContribucion label="Tiempo" porcentaje="35%" valor={recomendacion.scoreTiempo} />
-        <BarraContribucion label="CO₂" porcentaje="25%" valor={recomendacion.scoreCo2} />
+        <BarraContribucion label="Costo" porcentaje="55%" valor={recomendacion.scoreCosto} />
+        <BarraContribucion label="Tiempo" porcentaje="30%" valor={recomendacion.scoreTiempo} />
+        <BarraContribucion label="CO₂" porcentaje="15%" valor={recomendacion.scoreCo2} />
       </View>
 
       <Text style={styles.disclaimer}>
@@ -176,6 +179,17 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '800',
     marginTop: 6,
+    marginBottom: 4,
+  },
+  costoRecomendadoValor: {
+    color: colors.success,
+    fontSize: 34,
+    fontWeight: '800',
+  },
+  costoRecomendadoLabel: {
+    color: '#C7D2E8',
+    fontSize: 12,
+    fontWeight: '600',
     marginBottom: 18,
   },
   scoreCircle: {

@@ -1,18 +1,45 @@
 import { hayConexionTerrestreEntrePaises } from './routeGroups';
+import { distanciaKm as calcularDistanciaKm } from './geo';
 
 // ---------------------------------------------------------------------------
-// Las tarifas (costo base, costo por kg, tiempo, CO2 por kg) ya NO están
-// fijas en el código: se leen en tiempo real desde Firestore
-// (ver src/firebase/tarifas.js) y se reciben aquí como parámetro `tarifas`.
-// Todos los resultados se calculan en tiempo de ejecución a partir del peso
-// y de esas tarifas.
+// Modelo de flete realista: el costo, el tiempo de tránsito y el CO2 ya NO
+// dependen solo del peso. Se calculan a partir de:
+//   - la DISTANCIA REAL entre origen y destino (fórmula de Haversine sobre
+//     las coordenadas reales de cada ciudad),
+//   - el PESO FACTURABLE (peso volumétrico/revenue ton, como se cobra de
+//     verdad en fletes marítimos y aéreos), y
+//   - tarifas por ZONA de distancia (corto/largo recorrido), leídas en
+//     tiempo real desde Firestore (ver src/firebase/tarifas.js).
+// No es una cotización comercial en vivo (eso requiere pagar un servicio
+// como Freightos), pero refleja las variables reales que determinan un
+// flete, no solo el peso.
 // ---------------------------------------------------------------------------
 
-function calcularModalidad(pesoKg, tarifa) {
+const DISTANCIA_LIMITE_ZONA_KM = 3000;
+const DISTANCIA_RESPALDO_KM = 5000; // si por alguna razón faltan coordenadas
+
+// Peso facturable: lo que realmente se cobra en el flete, no solo el peso
+// real. Marítimo usa "revenue ton" (1 m³ ≈ 1000 kg); aéreo usa el estándar
+// IATA de peso volumétrico (1 kg ≈ 6000 cm³); terrestre cobra por peso real.
+function calcularPesoFacturable(modalidadKey, pesoKg, volumenM3) {
+  const volumen = Number(volumenM3) || 0;
+  if (modalidadKey === 'maritima') return Math.max(pesoKg, volumen * 1000);
+  if (modalidadKey === 'aerea') return Math.max(pesoKg, (volumen * 1_000_000) / 6000);
+  return pesoKg;
+}
+
+function calcularModalidad(modalidadKey, pesoKg, volumenM3, distanciaReal, tarifasModalidad) {
+  const zona = distanciaReal >= DISTANCIA_LIMITE_ZONA_KM ? 'largo' : 'corto';
+  const tarifa = tarifasModalidad[zona];
+
+  const pesoFacturable = calcularPesoFacturable(modalidadKey, pesoKg, volumenM3);
+
   return {
-    costoUsd: tarifa.costoBase + pesoKg * tarifa.costoPorKg,
-    tiempoDias: tarifa.tiempoDias,
-    co2Kg: pesoKg * tarifa.co2PorKg,
+    costoUsd: tarifa.costoBase + pesoFacturable * tarifa.costoPorKg,
+    tiempoDias: Math.round(tarifa.tiempoDiasBase + (distanciaReal / 1000) * tarifa.tiempoDiasPorMilKm),
+    co2Kg: pesoFacturable * distanciaReal * tarifa.co2PorKgKm,
+    pesoFacturable,
+    zona,
   };
 }
 
@@ -26,14 +53,19 @@ export const MODALIDADES = [
 // como no disponible la opción terrestre cuando no existe conexión terrestre
 // entre el origen y el destino ingresados. `tarifas` viene de Firestore
 // (obtenerTarifas()), con la forma { maritima, aerea, terrestre } donde cada
-// una trae { costoBase, costoPorKg, tiempoDias, co2PorKg }.
+// una trae { corto: {...}, largo: {...} } según la zona de distancia.
 export function calcularAlternativas(envio, tarifas) {
   const peso = Number(envio.peso);
+  const volumen = Number(envio.volumen);
+
+  const distancia =
+    calcularDistanciaKm(envio.origenLat, envio.origenLng, envio.destinoLat, envio.destinoLng) ??
+    DISTANCIA_RESPALDO_KM;
 
   const base = {
-    maritima: calcularModalidad(peso, tarifas.maritima),
-    aerea: calcularModalidad(peso, tarifas.aerea),
-    terrestre: calcularModalidad(peso, tarifas.terrestre),
+    maritima: calcularModalidad('maritima', peso, volumen, distancia, tarifas.maritima),
+    aerea: calcularModalidad('aerea', peso, volumen, distancia, tarifas.aerea),
+    terrestre: calcularModalidad('terrestre', peso, volumen, distancia, tarifas.terrestre),
   };
 
   const terrestreDisponible = hayConexionTerrestreEntrePaises(envio.origenPais, envio.destinoPais);
@@ -57,7 +89,7 @@ export function calcularAlternativas(envio, tarifas) {
       };
     }
 
-    const { costoUsd, tiempoDias, co2Kg } = base[key];
+    const { costoUsd, tiempoDias, co2Kg, pesoFacturable, zona } = base[key];
 
     return {
       key,
@@ -69,14 +101,19 @@ export function calcularAlternativas(envio, tarifas) {
       co2Kg,
       costoPorKg: peso > 0 ? costoUsd / peso : 0,
       co2PorKg: peso > 0 ? co2Kg / peso : 0,
+      distanciaKm: Math.round(distancia),
+      pesoFacturableKg: Math.round(pesoFacturable * 10) / 10,
+      zona,
     };
   });
 }
 
-// Pesos del TradeRoute Score.
-const PESO_COSTO = 0.4;
-const PESO_TIEMPO = 0.35;
-const PESO_CO2 = 0.25;
+// Pesos del TradeRoute Score. El costo pesa más que los demás factores
+// porque, según indicó el profesor, es el criterio que más le importa a
+// quien usa la app al decidir una ruta de envío.
+const PESO_COSTO = 0.55;
+const PESO_TIEMPO = 0.3;
+const PESO_CO2 = 0.15;
 
 // Normaliza un valor donde "menor es mejor" a una escala de 0 a 100
 // dentro del rango [min, max] observado entre las alternativas disponibles.
@@ -163,6 +200,7 @@ export function generarExplicacion(recomendacion, alternativasConScore) {
 
   return (
     `${recomendacion.label} obtuvo el TradeRoute Score más alto (${recomendacion.score}/100), ` +
-    `calculado con 40% costo, 35% tiempo y 25% CO₂. ${detalle}`
+    `calculado con 55% costo, 30% tiempo y 15% CO₂ (el costo pesa más porque es el factor que ` +
+    `más le importa a quien envía). ${detalle}`
   );
 }
