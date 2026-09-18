@@ -21,13 +21,26 @@ export default function ComparatorScreen({ navigation }) {
     obtenerTarifas().then(setTarifas);
   }, []);
 
-  const alternativas = useMemo(
+  const todasLasAlternativas = useMemo(
     () => (tarifas ? compararEnvio(envio, tarifas) : []),
     [envio, tarifas]
   );
-  const recomendacion = useMemo(() => obtenerRecomendacion(alternativas), [alternativas]);
   const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
-  const conComparacion = useMemo(() => hayComparacionReal(alternativas), [alternativas]);
+  const alternativas = useMemo(
+    () =>
+      comparandoTodas
+        ? todasLasAlternativas
+        : todasLasAlternativas.filter((a) => a.key === envio.modalidad),
+    [todasLasAlternativas, comparandoTodas, envio.modalidad]
+  );
+  const recomendacion = useMemo(
+    () =>
+      comparandoTodas
+        ? obtenerRecomendacion(todasLasAlternativas)
+        : todasLasAlternativas.find((a) => a.key === envio.modalidad && a.disponible) || null,
+    [todasLasAlternativas, comparandoTodas, envio.modalidad]
+  );
+  const conComparacion = useMemo(() => hayComparacionReal(todasLasAlternativas), [todasLasAlternativas]);
 
   if (!envio.peso) {
     return null;

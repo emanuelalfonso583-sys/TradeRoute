@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
+import TransportCard from '../components/TransportCard';
 import { useShipment } from '../context/ShipmentContext';
 import { useAuth } from '../context/AuthContext';
 import {
   compararEnvio,
   obtenerRecomendacion,
   generarExplicacion,
+  generarExplicacionSeleccion,
   hayComparacionReal,
 } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
@@ -46,16 +48,35 @@ export default function RecommendationScreen({ navigation }) {
     obtenerTarifas().then(setTarifas);
   }, []);
 
-  const alternativas = useMemo(
+  const [mostrarOtras, setMostrarOtras] = useState(false);
+
+  const todasLasAlternativas = useMemo(
     () => (tarifas ? compararEnvio(envio, tarifas) : []),
     [envio, tarifas]
   );
-  const recomendacion = useMemo(() => obtenerRecomendacion(alternativas), [alternativas]);
-  const explicacion = useMemo(
-    () => generarExplicacion(recomendacion, alternativas),
-    [recomendacion, alternativas]
+  const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
+  const recomendacion = useMemo(
+    () =>
+      comparandoTodas
+        ? obtenerRecomendacion(todasLasAlternativas)
+        : todasLasAlternativas.find((a) => a.key === envio.modalidad && a.disponible) || null,
+    [todasLasAlternativas, comparandoTodas, envio.modalidad]
   );
-  const conComparacion = useMemo(() => hayComparacionReal(alternativas), [alternativas]);
+  const explicacion = useMemo(
+    () =>
+      comparandoTodas
+        ? generarExplicacion(recomendacion, todasLasAlternativas)
+        : generarExplicacionSeleccion(recomendacion, todasLasAlternativas),
+    [comparandoTodas, recomendacion, todasLasAlternativas]
+  );
+  const conComparacion = useMemo(
+    () => hayComparacionReal(todasLasAlternativas),
+    [todasLasAlternativas]
+  );
+  const otrasDisponibles = useMemo(
+    () => todasLasAlternativas.filter((a) => a.disponible && a.key !== recomendacion?.key),
+    [todasLasAlternativas, recomendacion]
+  );
 
   // Guarda el resultado en el historial del usuario una sola vez por envío
   // (se identifica por sus datos + la modalidad elegida).
@@ -64,8 +85,8 @@ export default function RecommendationScreen({ navigation }) {
     const idEnvio = JSON.stringify(envio);
     if (guardadoRef.current === idEnvio) return;
     guardadoRef.current = idEnvio;
-    guardarEnvioEnHistorial(usuario.uid, envio, alternativas, recomendacion);
-  }, [usuario, envio, alternativas, recomendacion]);
+    guardarEnvioEnHistorial(usuario.uid, envio, todasLasAlternativas, recomendacion);
+  }, [usuario, envio, todasLasAlternativas, recomendacion]);
 
   if (!envio.peso) {
     return null;
@@ -144,6 +165,29 @@ export default function RecommendationScreen({ navigation }) {
             <BarraContribucion label="CO₂" porcentaje="15%" valor={recomendacion.scoreCo2} />
           </View>
         </>
+      )}
+
+      {!comparandoTodas && otrasDisponibles.length > 0 && (
+        <View style={styles.otrasContainer}>
+          <PrimaryButton
+            title={
+              mostrarOtras
+                ? 'Ocultar otras alternativas'
+                : otrasDisponibles.length === 1
+                ? 'Ver segunda opción recomendada'
+                : 'Ver otras alternativas disponibles'
+            }
+            onPress={() => setMostrarOtras((v) => !v)}
+            variant="outline"
+          />
+          {mostrarOtras && (
+            <View style={styles.otrasLista}>
+              {otrasDisponibles.map((alt) => (
+                <TransportCard key={alt.key} alternativa={alt} mostrarScore={conComparacion} />
+              ))}
+            </View>
+          )}
+        </View>
       )}
 
       <Text style={styles.disclaimer}>
@@ -305,5 +349,11 @@ const styles = StyleSheet.create({
   },
   espacioBoton: {
     height: 12,
+  },
+  otrasContainer: {
+    marginBottom: 20,
+  },
+  otrasLista: {
+    marginTop: 14,
   },
 });

@@ -54,6 +54,11 @@ export const MODALIDADES = [
 // entre el origen y el destino ingresados. `tarifas` viene de Firestore
 // (obtenerTarifas()), con la forma { maritima, aerea, terrestre } donde cada
 // una trae { corto: {...}, largo: {...} } según la zona de distancia.
+//
+// Siempre calcula las 3 modalidades (aunque el usuario haya elegido una
+// específica en el formulario): así el Score de cada una refleja una
+// comparación real contra las demás, y las pantallas pueden mostrar "ver
+// otras alternativas" sin tener que recalcular nada.
 export function calcularAlternativas(envio, tarifas) {
   const peso = Number(envio.peso);
   const volumen = Number(envio.volumen);
@@ -70,14 +75,7 @@ export function calcularAlternativas(envio, tarifas) {
 
   const terrestreDisponible = hayConexionTerrestreEntrePaises(envio.origenPais, envio.destinoPais);
 
-  // Si el usuario eligió una modalidad específica (no "Comparar todas"),
-  // solo se calcula y muestra esa modalidad.
-  const modalidadesAMostrar =
-    envio.modalidad && envio.modalidad !== 'todas'
-      ? MODALIDADES.filter((m) => m.key === envio.modalidad)
-      : MODALIDADES;
-
-  return modalidadesAMostrar.map(({ key, label, icono }) => {
+  return MODALIDADES.map(({ key, label, icono }) => {
     const disponible = key !== 'terrestre' || terrestreDisponible;
 
     if (!disponible) {
@@ -214,5 +212,21 @@ export function generarExplicacion(recomendacion, alternativasConScore) {
     `${recomendacion.label} obtuvo el TradeRoute Score más alto (${recomendacion.score}/100), ` +
     `calculado con 55% costo, 30% tiempo y 15% CO₂ (el costo pesa más porque es el factor que ` +
     `más le importa a quien envía). ${detalle}`
+  );
+}
+
+// Explicación para cuando el usuario eligió una modalidad específica en el
+// formulario (no "Comparar todas"): no dice que sea "la mejor", solo informa
+// su Score real frente a las demás alternativas disponibles para esa ruta.
+export function generarExplicacionSeleccion(seleccion, alternativasConScore) {
+  if (!seleccion) return '';
+
+  if (!hayComparacionReal(alternativasConScore)) {
+    return `${seleccion.label} es la única alternativa disponible para esta ruta con los datos ingresados.`;
+  }
+
+  return (
+    `Elegiste ${seleccion.label} para este envío. Su TradeRoute Score es ${seleccion.score}/100 ` +
+    `frente a las demás alternativas disponibles para esta ruta (55% costo, 30% tiempo, 15% CO₂).`
   );
 }

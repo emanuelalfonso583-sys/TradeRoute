@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,9 @@ import { Picker } from '@react-native-picker/picker';
 import PrimaryButton from '../components/PrimaryButton';
 import LocationPicker from '../components/LocationPicker';
 import { useShipment } from '../context/ShipmentContext';
+import { hayConexionTerrestreEntrePaises } from '../utils/routeGroups';
+import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
+import { obtenerTarifas } from '../firebase/tarifas';
 import { colors, radius } from '../theme/colors';
 
 const TIPOS_MERCANCIA = [
@@ -25,7 +28,7 @@ const TIPOS_MERCANCIA = [
   { label: 'Otro', value: 'otro' },
 ];
 
-const MODALIDADES = [
+const MODALIDADES_BASE = [
   { label: 'Comparar todas', value: 'todas' },
   { label: 'Marítima', value: 'maritima' },
   { label: 'Aérea', value: 'aerea' },
@@ -105,10 +108,71 @@ export default function NewShipmentScreen({ navigation }) {
   });
   const [errores, setErrores] = useState({});
   const [errorGeneral, setErrorGeneral] = useState('');
+  const [tarifas, setTarifas] = useState(null);
+
+  useEffect(() => {
+    obtenerTarifas().then(setTarifas);
+  }, []);
 
   function actualizarCampo(campo, valor) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
   }
+
+  // En cuanto hay origen y destino, se sabe si terrestre aplica para esa
+  // distancia real (sin necesidad de calcular todo lo demás).
+  const terrestreDisponible = useMemo(() => {
+    if (!form.origen?.countryCode || !form.destino?.countryCode) return true;
+    return hayConexionTerrestreEntrePaises(form.origen.countryCode, form.destino.countryCode);
+  }, [form.origen?.countryCode, form.destino?.countryCode]);
+
+  // Si ya hay origen, destino y peso, se calcula de una vez cuál sería la
+  // mejor opción, para mostrarlo directamente en el selector de modalidad
+  // (así el usuario no elige a ciegas: la app ya le dice cuál conviene más).
+  const pesoPreview = parseNumero(form.peso);
+  const recomendacionPreliminar = useMemo(() => {
+    if (!tarifas) return null;
+    if (!form.origen?.lat || !form.destino?.lat) return null;
+    if (Number.isNaN(pesoPreview) || pesoPreview <= 0) return null;
+
+    const envioPreview = {
+      origenPais: form.origen.countryCode,
+      origenLat: form.origen.lat,
+      origenLng: form.origen.lng,
+      destinoPais: form.destino.countryCode,
+      destinoLat: form.destino.lat,
+      destinoLng: form.destino.lng,
+      peso: pesoPreview,
+      volumen: parseNumero(form.volumen) || 0,
+    };
+
+    const alternativas = compararEnvio(envioPreview, tarifas);
+    return obtenerRecomendacion(alternativas);
+  }, [tarifas, form.origen, form.destino, pesoPreview, form.volumen]);
+
+  const modalidades = useMemo(
+    () =>
+      MODALIDADES_BASE.map((op) => {
+        if (op.value === 'todas') return { ...op, enabled: true };
+
+        const noDisponible = op.value === 'terrestre' && !terrestreDisponible;
+        const esRecomendada = !noDisponible && recomendacionPreliminar?.key === op.value;
+
+        let label = op.label;
+        if (noDisponible) label += ' (No disponible para esta distancia)';
+        else if (esRecomendada) label += ' — Mejor opción recomendada';
+
+        return { ...op, label, enabled: !noDisponible };
+      }),
+    [terrestreDisponible, recomendacionPreliminar]
+  );
+
+  // Si el usuario tenía elegida "Terrestre" y con el nuevo origen/destino
+  // deja de estar disponible, se regresa a "Comparar todas" automáticamente.
+  useEffect(() => {
+    if (form.modalidad === 'terrestre' && !terrestreDisponible) {
+      actualizarCampo('modalidad', 'todas');
+    }
+  }, [terrestreDisponible, form.modalidad]);
 
   function handleContinuar() {
     const erroresEncontrados = validar(form);
@@ -227,11 +291,16 @@ export default function NewShipmentScreen({ navigation }) {
             selectedValue={form.modalidad}
             onValueChange={(v) => actualizarCampo('modalidad', v)}
           >
-            {MODALIDADES.map((op) => (
-              <Picker.Item key={op.value} label={op.label} value={op.value} />
+            {modalidades.map((op) => (
+              <Picker.Item key={op.value} label={op.label} value={op.value} enabled={op.enabled} />
             ))}
           </Picker>
         </View>
+        {!form.origen?.lat || !form.destino?.lat || Number.isNaN(pesoPreview) || pesoPreview <= 0 ? (
+          <Text style={styles.ayudaTexto}>
+            Completa origen, destino y peso para que te indiquemos la mejor opción aquí mismo.
+          </Text>
+        ) : null}
 
         <View style={styles.spacer} />
         <PrimaryButton title="Continuar" onPress={handleContinuar} />
@@ -319,5 +388,12 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 10,
+  },
+  ayudaTexto: {
+    fontSize: 11,
+    color: colors.textMuted,
+    fontStyle: 'italic',
+    marginTop: -8,
+    marginBottom: 14,
   },
 });
