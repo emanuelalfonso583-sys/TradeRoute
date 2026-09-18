@@ -1,16 +1,46 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, radius, shadow } from '../theme/colors';
 import { formatearUsd } from '../utils/format';
 
-function Metric({ label, value }) {
+function Metric({ label, value, info }) {
+  const [mostrarInfo, setMostrarInfo] = useState(false);
+
   return (
-    <View style={styles.metricRow}>
-      <Text style={styles.metricLabel}>{label}</Text>
-      <Text style={styles.metricValue}>{value}</Text>
+    <View>
+      <View style={styles.metricRow}>
+        <View style={styles.metricLabelBox}>
+          <Text style={styles.metricLabel}>{label}</Text>
+          {info && (
+            <Pressable onPress={() => setMostrarInfo((v) => !v)} hitSlop={8}>
+              <Ionicons
+                name="information-circle-outline"
+                size={15}
+                color={colors.action}
+                style={styles.infoIcono}
+              />
+            </Pressable>
+          )}
+        </View>
+        <Text style={styles.metricValue}>{value}</Text>
+      </View>
+      {info && mostrarInfo && (
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTexto}>{info}</Text>
+        </View>
+      )}
     </View>
   );
 }
+
+const EXPLICACION_PESO_FACTURABLE = {
+  maritima:
+    'Es el mayor valor entre tu peso real y tu volumen convertido a peso (1 m³ se factura como 1000 kg, el estándar de carga marítima). Se cobra por lo que "ocupa", no solo por lo que pesa.',
+  aerea:
+    'Es el mayor valor entre tu peso real y tu peso volumétrico (volumen ÷ 6000, la fórmula estándar de IATA para aerolíneas). Una carga grande pero liviana se cobra como si pesara más, porque ocupa espacio en el avión.',
+  terrestre: 'En transporte terrestre se cobra por el peso real de la carga.',
+};
 
 export default function TransportCard({ alternativa, destacada = false, mostrarScore = true }) {
   const { icono, label, disponible } = alternativa;
@@ -47,7 +77,11 @@ export default function TransportCard({ alternativa, destacada = false, mostrarS
           <Metric label="Tiempo estimado" value={`${alternativa.tiempoDias} días`} />
           <Metric label="Distancia real" value={`${alternativa.distanciaKm.toLocaleString('es')} km`} />
           <Metric label="Huella de CO₂" value={`${alternativa.co2Kg.toFixed(2)} kg`} />
-          <Metric label="Peso facturable" value={`${alternativa.pesoFacturableKg} kg`} />
+          <Metric
+            label="Peso facturable"
+            value={`${alternativa.pesoFacturableKg} kg`}
+            info={EXPLICACION_PESO_FACTURABLE[alternativa.key]}
+          />
           {mostrarScore && (
             <>
               <View style={styles.divider} />
@@ -131,11 +165,30 @@ const styles = StyleSheet.create({
   metricRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 4,
+  },
+  metricLabelBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   metricLabel: {
     color: colors.textMuted,
     fontSize: 14,
+  },
+  infoIcono: {
+    marginLeft: 4,
+  },
+  infoBox: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.sm,
+    padding: 10,
+    marginBottom: 6,
+  },
+  infoTexto: {
+    color: colors.textMuted,
+    fontSize: 12,
+    lineHeight: 17,
   },
   metricValue: {
     color: colors.text,
