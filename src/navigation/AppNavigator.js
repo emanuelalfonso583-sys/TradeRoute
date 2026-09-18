@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,16 +10,22 @@ import NewShipmentScreen from '../screens/NewShipmentScreen';
 import ComparatorScreen from '../screens/ComparatorScreen';
 import RecommendationScreen from '../screens/RecommendationScreen';
 import PlaceholderScreen from '../screens/PlaceholderScreen';
+import HistorialScreen from '../screens/HistorialScreen';
+import AccountScreen from '../screens/AccountScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import { useAuth } from '../context/AuthContext';
 import { colors } from '../theme/colors';
 
 const Stack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const ICONOS_TAB = {
   Inicio: 'home',
   Analisis: 'stats-chart',
-  Reportes: 'document-text',
-  Configuracion: 'settings',
+  Historial: 'document-text',
+  Cuenta: 'person-circle',
 };
 
 function AnalisisScreen() {
@@ -27,26 +34,6 @@ function AnalisisScreen() {
       icono="📊"
       titulo="Análisis"
       descripcion="Aquí verás métricas históricas y tendencias de tus envíos."
-    />
-  );
-}
-
-function ReportesScreen() {
-  return (
-    <PlaceholderScreen
-      icono="📄"
-      titulo="Reportes"
-      descripcion="Aquí podrás generar y exportar reportes de comparación."
-    />
-  );
-}
-
-function ConfiguracionScreen() {
-  return (
-    <PlaceholderScreen
-      icono="⚙️"
-      titulo="Configuración"
-      descripcion="Aquí podrás ajustar preferencias de la aplicación."
     />
   );
 }
@@ -76,43 +63,64 @@ function MainTabs() {
     >
       <Tab.Screen name="Inicio" component={HomeScreen} />
       <Tab.Screen name="Analisis" component={AnalisisScreen} options={{ title: 'Análisis' }} />
-      <Tab.Screen name="Reportes" component={ReportesScreen} />
-      <Tab.Screen
-        name="Configuracion"
-        component={ConfiguracionScreen}
-        options={{ title: 'Configuración' }}
-      />
+      <Tab.Screen name="Historial" component={HistorialScreen} />
+      <Tab.Screen name="Cuenta" component={AccountScreen} />
     </Tab.Navigator>
   );
 }
 
+function AppStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: colors.primaryDark },
+        headerTintColor: '#FFFFFF',
+        headerTitleStyle: { fontWeight: '700' },
+      }}
+    >
+      <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="NuevoEnvio"
+        component={NewShipmentScreen}
+        options={{ title: 'Nuevo Envío' }}
+      />
+      <Stack.Screen
+        name="Comparador"
+        component={ComparatorScreen}
+        options={{ title: 'Comparador' }}
+      />
+      <Stack.Screen
+        name="Recomendacion"
+        component={RecommendationScreen}
+        options={{ title: 'Recomendación' }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function AuthNavigator() {
+  return (
+    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="Registro" component={RegisterScreen} />
+    </AuthStack.Navigator>
+  );
+}
+
+function PantallaCargando() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
+      <ActivityIndicator size="large" color={colors.action} />
+    </View>
+  );
+}
+
 export default function AppNavigator() {
+  const { usuario, cargandoSesion } = useAuth();
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: { backgroundColor: colors.primaryDark },
-          headerTintColor: '#FFFFFF',
-          headerTitleStyle: { fontWeight: '700' },
-        }}
-      >
-        <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
-        <Stack.Screen
-          name="NuevoEnvio"
-          component={NewShipmentScreen}
-          options={{ title: 'Nuevo Envío' }}
-        />
-        <Stack.Screen
-          name="Comparador"
-          component={ComparatorScreen}
-          options={{ title: 'Comparador' }}
-        />
-        <Stack.Screen
-          name="Recomendacion"
-          component={RecommendationScreen}
-          options={{ title: 'Recomendación' }}
-        />
-      </Stack.Navigator>
+      {cargandoSesion ? <PantallaCargando /> : usuario ? <AppStack /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

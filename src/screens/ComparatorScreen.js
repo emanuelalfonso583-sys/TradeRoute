@@ -1,13 +1,15 @@
-import React, { useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
 import { useShipment } from '../context/ShipmentContext';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
+import { obtenerTarifas } from '../firebase/tarifas';
 import { colors } from '../theme/colors';
 
 export default function ComparatorScreen({ navigation }) {
   const { envio } = useShipment();
+  const [tarifas, setTarifas] = useState(null);
 
   useEffect(() => {
     if (!envio.peso) {
@@ -15,12 +17,28 @@ export default function ComparatorScreen({ navigation }) {
     }
   }, [envio.peso, navigation]);
 
-  const alternativas = useMemo(() => compararEnvio(envio), [envio]);
+  useEffect(() => {
+    obtenerTarifas().then(setTarifas);
+  }, []);
+
+  const alternativas = useMemo(
+    () => (tarifas ? compararEnvio(envio, tarifas) : []),
+    [envio, tarifas]
+  );
   const recomendacion = useMemo(() => obtenerRecomendacion(alternativas), [alternativas]);
   const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
 
   if (!envio.peso) {
     return null;
+  }
+
+  if (!tarifas) {
+    return (
+      <View style={styles.cargandoContainer}>
+        <ActivityIndicator size="large" color={colors.action} />
+        <Text style={styles.cargandoTexto}>Cargando tarifas...</Text>
+      </View>
+    );
   }
 
   return (
@@ -46,8 +64,8 @@ export default function ComparatorScreen({ navigation }) {
       ))}
 
       <Text style={styles.disclaimer}>
-        Los valores son estimaciones académicas para demostrar el funcionamiento del MVP y NO
-        representan cotizaciones reales.
+        Las tarifas se leen desde la base de datos y son estimaciones académicas para demostrar
+        el funcionamiento del MVP; NO representan cotizaciones reales.
       </Text>
 
       <PrimaryButton
@@ -64,6 +82,17 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingBottom: 40,
+  },
+  cargandoContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background,
+  },
+  cargandoTexto: {
+    marginTop: 12,
+    color: colors.textMuted,
+    fontSize: 13,
   },
   titulo: {
     fontSize: 24,

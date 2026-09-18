@@ -1,31 +1,18 @@
 import { hayConexionTerrestreEntrePaises } from './routeGroups';
 
 // ---------------------------------------------------------------------------
-// Fórmulas académicas simplificadas del MVP (no representan cotizaciones reales).
-// Todos los resultados se calculan en tiempo de ejecución a partir del peso.
+// Las tarifas (costo base, costo por kg, tiempo, CO2 por kg) ya NO están
+// fijas en el código: se leen en tiempo real desde Firestore
+// (ver src/firebase/tarifas.js) y se reciben aquí como parámetro `tarifas`.
+// Todos los resultados se calculan en tiempo de ejecución a partir del peso
+// y de esas tarifas.
 // ---------------------------------------------------------------------------
 
-function calcularMaritimo(pesoKg) {
+function calcularModalidad(pesoKg, tarifa) {
   return {
-    costoUsd: 600 + pesoKg * 1.5,
-    tiempoDias: 25,
-    co2Kg: pesoKg * 0.15,
-  };
-}
-
-function calcularAereo(pesoKg) {
-  return {
-    costoUsd: 700 + pesoKg * 8,
-    tiempoDias: 3,
-    co2Kg: pesoKg * 2.5,
-  };
-}
-
-function calcularTerrestre(pesoKg) {
-  return {
-    costoUsd: 500 + pesoKg * 3,
-    tiempoDias: 10,
-    co2Kg: pesoKg * 0.8,
+    costoUsd: tarifa.costoBase + pesoKg * tarifa.costoPorKg,
+    tiempoDias: tarifa.tiempoDias,
+    co2Kg: pesoKg * tarifa.co2PorKg,
   };
 }
 
@@ -37,14 +24,16 @@ export const MODALIDADES = [
 
 // Construye las 3 alternativas de transporte para un envío dado, marcando
 // como no disponible la opción terrestre cuando no existe conexión terrestre
-// entre el origen y el destino ingresados.
-export function calcularAlternativas(envio) {
+// entre el origen y el destino ingresados. `tarifas` viene de Firestore
+// (obtenerTarifas()), con la forma { maritima, aerea, terrestre } donde cada
+// una trae { costoBase, costoPorKg, tiempoDias, co2PorKg }.
+export function calcularAlternativas(envio, tarifas) {
   const peso = Number(envio.peso);
 
   const base = {
-    maritima: calcularMaritimo(peso),
-    aerea: calcularAereo(peso),
-    terrestre: calcularTerrestre(peso),
+    maritima: calcularModalidad(peso, tarifas.maritima),
+    aerea: calcularModalidad(peso, tarifas.aerea),
+    terrestre: calcularModalidad(peso, tarifas.terrestre),
   };
 
   const terrestreDisponible = hayConexionTerrestreEntrePaises(envio.origenPais, envio.destinoPais);
@@ -138,10 +127,10 @@ export function calcularScores(alternativas) {
   });
 }
 
-// Pipeline completo: a partir de los datos del envío, devuelve las
-// alternativas con costo/tiempo/CO2/score ya calculados.
-export function compararEnvio(envio) {
-  const alternativas = calcularAlternativas(envio);
+// Pipeline completo: a partir de los datos del envío y las tarifas vigentes
+// (Firestore), devuelve las alternativas con costo/tiempo/CO2/score ya calculados.
+export function compararEnvio(envio, tarifas) {
+  const alternativas = calcularAlternativas(envio, tarifas);
   return calcularScores(alternativas);
 }
 

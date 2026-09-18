@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
 import { useShipment } from '../context/ShipmentContext';
+import { useAuth } from '../context/AuthContext';
 import { compararEnvio, obtenerRecomendacion, generarExplicacion } from '../utils/calculations';
+import { obtenerTarifas } from '../firebase/tarifas';
+import { guardarEnvioEnHistorial } from '../firebase/historial';
 import { colors, radius, shadow } from '../theme/colors';
 
 function BarraContribucion({ label, porcentaje, valor }) {
@@ -22,6 +25,9 @@ function BarraContribucion({ label, porcentaje, valor }) {
 
 export default function RecommendationScreen({ navigation }) {
   const { envio, reiniciarEnvio } = useShipment();
+  const { usuario } = useAuth();
+  const [tarifas, setTarifas] = useState(null);
+  const guardadoRef = useRef(null);
 
   useEffect(() => {
     if (!envio.peso) {
@@ -29,14 +35,44 @@ export default function RecommendationScreen({ navigation }) {
     }
   }, [envio.peso, navigation]);
 
-  const alternativas = useMemo(() => compararEnvio(envio), [envio]);
+  useEffect(() => {
+    obtenerTarifas().then(setTarifas);
+  }, []);
+
+  const alternativas = useMemo(
+    () => (tarifas ? compararEnvio(envio, tarifas) : []),
+    [envio, tarifas]
+  );
   const recomendacion = useMemo(() => obtenerRecomendacion(alternativas), [alternativas]);
   const explicacion = useMemo(
     () => generarExplicacion(recomendacion, alternativas),
     [recomendacion, alternativas]
   );
 
-  if (!envio.peso || !recomendacion) {
+  // Guarda el resultado en el historial del usuario una sola vez por envío
+  // (se identifica por sus datos + la modalidad elegida).
+  useEffect(() => {
+    if (!usuario || !recomendacion) return;
+    const idEnvio = JSON.stringify(envio);
+    if (guardadoRef.current === idEnvio) return;
+    guardadoRef.current = idEnvio;
+    guardarEnvioEnHistorial(usuario.uid, envio, alternativas, recomendacion);
+  }, [usuario, envio, alternativas, recomendacion]);
+
+  if (!envio.peso) {
+    return null;
+  }
+
+  if (!tarifas) {
+    return (
+      <View style={styles.cargandoContainer}>
+        <ActivityIndicator size="large" color={colors.action} />
+        <Text style={styles.cargandoTexto}>Cargando recomendación...</Text>
+      </View>
+    );
+  }
+
+  if (!recomendacion) {
     return null;
   }
 
@@ -92,6 +128,17 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingBottom: 40,
+  },
+  cargandoContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background,
+  },
+  cargandoTexto: {
+    marginTop: 12,
+    color: colors.textMuted,
+    fontSize: 13,
   },
   titulo: {
     fontSize: 24,

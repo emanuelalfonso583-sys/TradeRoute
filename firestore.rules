@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Cada usuario solo puede leer y escribir su propio historial de envíos.
+    match /usuarios/{uid}/historial/{historialId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Las tarifas las puede leer cualquier usuario autenticado (para calcular
+    // costo/tiempo/CO2), pero no modificarlas ni borrarlas desde la app.
+    // Solo se permite crearlas una vez (la siembra inicial si no existen).
+    match /tarifas/{modalidad} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null &&
+        !exists(/databases/$(database)/documents/tarifas/$(modalidad));
+      allow update, delete: if false;
+    }
+  }
+}
