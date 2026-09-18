@@ -18,6 +18,15 @@ export const es = {
   'comun.dia': 'día',
   'comun.dias': 'días',
 
+  // Errores de autenticación (Firebase)
+  'auth.error.emailEnUso': 'Ya existe una cuenta registrada con ese correo.',
+  'auth.error.correoInvalido': 'El correo ingresado no es válido.',
+  'auth.error.contrasenaDebil': 'La contraseña debe tener al menos 6 caracteres.',
+  'auth.error.credencialesIncorrectas': 'Correo o contraseña incorrectos.',
+  'auth.error.demasiadosIntentos': 'Demasiados intentos. Espera un momento e inténtalo de nuevo.',
+  'auth.error.correoFaltante': 'Ingresa tu correo electrónico.',
+  'auth.error.generico': 'Ocurrió un error. Inténtalo de nuevo.',
+
   // Login
   'login.titulo': 'Iniciar sesión',
   'login.correo': 'Correo electrónico',
@@ -242,4 +251,26 @@ export const es = {
   'cuenta.complementos.ourairports': 'Catálogo abierto de aeropuertos del mundo (código IATA).',
   'cuenta.complementos.searoute': 'Cálculo de la ruta marítima real (red de navegación de Eurostat).',
   'cuenta.complementos.worldcountries': 'Datos reales de países, fronteras y coordenadas.',
+
+  // Política de privacidad
+  'privacidad.fecha': 'Última actualización: septiembre de 2026',
+  'privacidad.intro': 'TradeRoute es un proyecto académico (Comercio Internacional) que compara rutas de envío internacional. Esta página explica, en términos simples, qué información recopila la app, para qué la usa y qué no hace con ella.',
+  'privacidad.subtitulo.recopilamos': 'Qué información recopilamos',
+  'privacidad.negrita.registrarte': 'Al registrarte: ',
+  'privacidad.parrafo.registrarte': 'tu nombre y tu correo electrónico, para crear tu cuenta (usamos Firebase Authentication, de Google).',
+  'privacidad.negrita.calcularEnvio': 'Al calcular un envío: ',
+  'privacidad.parrafo.calcularEnvio': 'origen, destino, peso, volumen, unidades y valor declarado de la mercancía que ingresas, junto con el resultado de la comparación. Se guarda en tu historial para que puedas consultarlo después.',
+  'privacidad.parrafo.noRecopilamos': 'No recopilamos ubicación en tiempo real, contactos, fotos de tu dispositivo ni ningún otro dato que no hayas escrito tú mismo en el formulario.',
+  'privacidad.subtitulo.paraQueUsamos': 'Para qué la usamos',
+  'privacidad.parrafo.usos': '• Identificarte al iniciar sesión.\n• Mostrarte tu propio historial de envíos calculados.\n• Calcular estimaciones de costo, tiempo y CO₂ de cada ruta.',
+  'privacidad.parrafo.noPublicidad': 'No usamos tus datos para publicidad, no hacemos perfilamiento comercial y no los vendemos.',
+  'privacidad.subtitulo.dondeAlmacena': 'Dónde se almacena',
+  'privacidad.parrafo.dondeAlmacena': 'Tu cuenta y tu historial se guardan en Firestore (la base de datos de Firebase/Google Cloud). Las reglas de seguridad de la base de datos están configuradas para que solo tú puedas leer tu propio historial; ningún otro usuario de la app puede verlo.',
+  'privacidad.subtitulo.terceros': 'Servicios de terceros que usa la app',
+  'privacidad.parrafo.terceros1': 'Firebase (Google) — cuenta e historial. Mapbox — mapas de las rutas. Wikipedia — fotos de puertos y aeropuertos.',
+  'privacidad.parrafo.terceros2': 'Estos servicios pueden recibir información técnica estándar de cualquier app (como la dirección IP) para poder funcionar, según sus propias políticas de privacidad. TradeRoute no les envía tu nombre, correo ni el contenido de tu historial más allá de lo necesario para mostrar el mapa o la foto correspondiente.',
+  'privacidad.subtitulo.derechos': 'Tus derechos',
+  'privacidad.parrafo.derechos': 'Puedes pedir en cualquier momento que eliminemos tu cuenta y tu historial. También puedes simplemente dejar de usar la app: los datos no se comparten con nadie más mientras tanto.',
+  'privacidad.subtitulo.cambios': 'Cambios a esta política',
+  'privacidad.parrafo.cambios': 'Si esta política cambia, se actualizará la fecha al inicio de la página. Como es un proyecto académico, no se prevén cambios frecuentes.',
 };

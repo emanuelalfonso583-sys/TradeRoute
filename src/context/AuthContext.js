@@ -9,31 +9,33 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { guardarPerfil } from '../firebase/perfil';
+import { useLanguage } from './LanguageContext';
 
 const AuthContext = createContext(null);
 
-function mensajeError(codigo) {
+function claveError(codigo) {
   switch (codigo) {
     case 'auth/email-already-in-use':
-      return 'Ya existe una cuenta registrada con ese correo.';
+      return 'auth.error.emailEnUso';
     case 'auth/invalid-email':
-      return 'El correo ingresado no es válido.';
+      return 'auth.error.correoInvalido';
     case 'auth/weak-password':
-      return 'La contraseña debe tener al menos 6 caracteres.';
+      return 'auth.error.contrasenaDebil';
     case 'auth/invalid-credential':
     case 'auth/wrong-password':
     case 'auth/user-not-found':
-      return 'Correo o contraseña incorrectos.';
+      return 'auth.error.credencialesIncorrectas';
     case 'auth/too-many-requests':
-      return 'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
+      return 'auth.error.demasiadosIntentos';
     case 'auth/missing-email':
-      return 'Ingresa tu correo electrónico.';
+      return 'auth.error.correoFaltante';
     default:
-      return 'Ocurrió un error. Inténtalo de nuevo.';
+      return 'auth.error.generico';
   }
 }
 
 export function AuthProvider({ children }) {
+  const { t } = useLanguage();
   const [usuario, setUsuario] = useState(null);
   const [cargandoSesion, setCargandoSesion] = useState(true);
 
@@ -60,7 +62,7 @@ export function AuthProvider({ children }) {
       });
       return { ok: true };
     } catch (error) {
-      return { ok: false, mensaje: mensajeError(error.code) };
+      return { ok: false, mensaje: t(claveError(error.code)) };
     }
   }
 
@@ -69,7 +71,7 @@ export function AuthProvider({ children }) {
       await signInWithEmailAndPassword(auth, correo, contrasena);
       return { ok: true };
     } catch (error) {
-      return { ok: false, mensaje: mensajeError(error.code) };
+      return { ok: false, mensaje: t(claveError(error.code)) };
     }
   }
 
@@ -78,7 +80,7 @@ export function AuthProvider({ children }) {
       await sendPasswordResetEmail(auth, correo);
       return { ok: true };
     } catch (error) {
-      return { ok: false, mensaje: mensajeError(error.code) };
+      return { ok: false, mensaje: t(claveError(error.code)) };
     }
   }
 

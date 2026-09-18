@@ -239,72 +239,39 @@ function ComplementoFila({ nombre, descripcion }) {
 function PoliticaPrivacidad() {
   const { colors } = useAppTheme();
   const styles = useMemo(() => crearEstilos(colors), [colors]);
+  const { t } = useLanguage();
   return (
     <View>
-      <Text style={styles.privacidadFecha}>Última actualización: septiembre de 2026</Text>
-      <Text style={styles.privacidadParrafo}>
-        TradeRoute es un proyecto académico (Comercio Internacional) que compara rutas de envío
-        internacional. Esta página explica, en términos simples, qué información recopila la app,
-        para qué la usa y qué no hace con ella.
-      </Text>
+      <Text style={styles.privacidadFecha}>{t('privacidad.fecha')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.intro')}</Text>
 
-      <Text style={styles.privacidadSubtitulo}>Qué información recopilamos</Text>
+      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.recopilamos')}</Text>
       <Text style={styles.privacidadParrafo}>
-        <Text style={styles.privacidadNegrita}>Al registrarte: </Text>
-        tu nombre y tu correo electrónico, para crear tu cuenta (usamos Firebase Authentication, de
-        Google).
+        <Text style={styles.privacidadNegrita}>{t('privacidad.negrita.registrarte')}</Text>
+        {t('privacidad.parrafo.registrarte')}
       </Text>
       <Text style={styles.privacidadParrafo}>
-        <Text style={styles.privacidadNegrita}>Al calcular un envío: </Text>
-        origen, destino, peso, volumen, unidades y valor declarado de la mercancía que ingresas,
-        junto con el resultado de la comparación. Se guarda en tu historial para que puedas
-        consultarlo después.
+        <Text style={styles.privacidadNegrita}>{t('privacidad.negrita.calcularEnvio')}</Text>
+        {t('privacidad.parrafo.calcularEnvio')}
       </Text>
-      <Text style={styles.privacidadParrafo}>
-        No recopilamos ubicación en tiempo real, contactos, fotos de tu dispositivo ni ningún otro
-        dato que no hayas escrito tú mismo en el formulario.
-      </Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.noRecopilamos')}</Text>
 
-      <Text style={styles.privacidadSubtitulo}>Para qué la usamos</Text>
-      <Text style={styles.privacidadParrafo}>
-        • Identificarte al iniciar sesión.{'\n'}
-        • Mostrarte tu propio historial de envíos calculados.{'\n'}
-        • Calcular estimaciones de costo, tiempo y CO₂ de cada ruta.
-      </Text>
-      <Text style={styles.privacidadParrafo}>
-        No usamos tus datos para publicidad, no hacemos perfilamiento comercial y no los vendemos.
-      </Text>
+      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.paraQueUsamos')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.usos')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.noPublicidad')}</Text>
 
-      <Text style={styles.privacidadSubtitulo}>Dónde se almacena</Text>
-      <Text style={styles.privacidadParrafo}>
-        Tu cuenta y tu historial se guardan en Firestore (la base de datos de Firebase/Google
-        Cloud). Las reglas de seguridad de la base de datos están configuradas para que solo tú
-        puedas leer tu propio historial; ningún otro usuario de la app puede verlo.
-      </Text>
+      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.dondeAlmacena')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.dondeAlmacena')}</Text>
 
-      <Text style={styles.privacidadSubtitulo}>Servicios de terceros que usa la app</Text>
-      <Text style={styles.privacidadParrafo}>
-        Firebase (Google) — cuenta e historial. Mapbox — mapas de las rutas. Wikipedia — fotos de
-        puertos y aeropuertos.
-      </Text>
-      <Text style={styles.privacidadParrafo}>
-        Estos servicios pueden recibir información técnica estándar de cualquier app (como la
-        dirección IP) para poder funcionar, según sus propias políticas de privacidad. TradeRoute
-        no les envía tu nombre, correo ni el contenido de tu historial más allá de lo necesario
-        para mostrar el mapa o la foto correspondiente.
-      </Text>
+      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.terceros')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.terceros1')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.terceros2')}</Text>
 
-      <Text style={styles.privacidadSubtitulo}>Tus derechos</Text>
-      <Text style={styles.privacidadParrafo}>
-        Puedes pedir en cualquier momento que eliminemos tu cuenta y tu historial. También puedes
-        simplemente dejar de usar la app: los datos no se comparten con nadie más mientras tanto.
-      </Text>
+      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.derechos')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.derechos')}</Text>
 
-      <Text style={styles.privacidadSubtitulo}>Cambios a esta política</Text>
-      <Text style={styles.privacidadParrafo}>
-        Si esta política cambia, se actualizará la fecha al inicio de la página. Como es un
-        proyecto académico, no se prevén cambios frecuentes.
-      </Text>
+      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.cambios')}</Text>
+      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.cambios')}</Text>
     </View>
   );
 }

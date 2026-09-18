@@ -18,6 +18,15 @@ export const en = {
   'comun.dia': 'day',
   'comun.dias': 'days',
 
+  // Authentication errors (Firebase)
+  'auth.error.emailEnUso': 'An account with that email already exists.',
+  'auth.error.correoInvalido': 'The email you entered is not valid.',
+  'auth.error.contrasenaDebil': 'The password must be at least 6 characters.',
+  'auth.error.credencialesIncorrectas': 'Incorrect email or password.',
+  'auth.error.demasiadosIntentos': 'Too many attempts. Wait a moment and try again.',
+  'auth.error.correoFaltante': 'Enter your email address.',
+  'auth.error.generico': 'Something went wrong. Please try again.',
+
   // Login
   'login.titulo': 'Log in',
   'login.correo': 'Email address',
@@ -242,4 +251,26 @@ export const en = {
   'cuenta.complementos.ourairports': "Open catalog of the world's airports (IATA code).",
   'cuenta.complementos.searoute': "Real sea route calculation (Eurostat's navigation network).",
   'cuenta.complementos.worldcountries': 'Real data on countries, borders and coordinates.',
+
+  // Privacy policy
+  'privacidad.fecha': 'Last updated: September 2026',
+  'privacidad.intro': 'TradeRoute is an academic project (International Trade) that compares international shipping routes. This page explains, in simple terms, what information the app collects, what it uses it for, and what it does not do with it.',
+  'privacidad.subtitulo.recopilamos': 'What information we collect',
+  'privacidad.negrita.registrarte': 'When you register: ',
+  'privacidad.parrafo.registrarte': 'your name and email address, to create your account (we use Firebase Authentication, by Google).',
+  'privacidad.negrita.calcularEnvio': 'When you calculate a shipment: ',
+  'privacidad.parrafo.calcularEnvio': 'origin, destination, weight, volume, units and declared value of the goods you enter, along with the comparison result. It is saved to your history so you can check it later.',
+  'privacidad.parrafo.noRecopilamos': 'We do not collect real-time location, contacts, photos from your device, or any other data you did not enter yourself in the form.',
+  'privacidad.subtitulo.paraQueUsamos': 'What we use it for',
+  'privacidad.parrafo.usos': '• Identifying you when you log in.\n• Showing you your own history of calculated shipments.\n• Calculating cost, time and CO₂ estimates for each route.',
+  'privacidad.parrafo.noPublicidad': 'We do not use your data for advertising, we do not build commercial profiles, and we do not sell it.',
+  'privacidad.subtitulo.dondeAlmacena': 'Where it is stored',
+  'privacidad.parrafo.dondeAlmacena': 'Your account and history are stored in Firestore (the Firebase/Google Cloud database). The database security rules are configured so that only you can read your own history; no other app user can see it.',
+  'privacidad.subtitulo.terceros': 'Third-party services the app uses',
+  'privacidad.parrafo.terceros1': 'Firebase (Google) — account and history. Mapbox — route maps. Wikipedia — photos of ports and airports.',
+  'privacidad.parrafo.terceros2': 'These services may receive standard technical information from any app (such as the IP address) in order to function, according to their own privacy policies. TradeRoute does not send them your name, email, or the content of your history beyond what is needed to show the corresponding map or photo.',
+  'privacidad.subtitulo.derechos': 'Your rights',
+  'privacidad.parrafo.derechos': 'You can ask at any time that we delete your account and your history. You can also simply stop using the app: your data is not shared with anyone else in the meantime.',
+  'privacidad.subtitulo.cambios': 'Changes to this policy',
+  'privacidad.parrafo.cambios': 'If this policy changes, the date at the top of the page will be updated. As this is an academic project, frequent changes are not expected.',
 };

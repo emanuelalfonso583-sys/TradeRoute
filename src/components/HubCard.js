@@ -38,6 +38,16 @@ function consultasWikipedia(hub) {
   return [{ idioma: 'es', texto: hub.name }];
 }
 
+// El texto (extracto y enlace) que trae Wikipedia queda en el idioma de la
+// consulta que encontró coincidencia, así que se reordena la lista para
+// intentar primero el idioma activo de la app: así, si hay artículo en ese
+// idioma, el resultado mostrado coincide con el resto de la interfaz.
+function priorizarIdioma(consultas, idioma) {
+  const preferidas = consultas.filter((c) => c.idioma === idioma);
+  const resto = consultas.filter((c) => c.idioma !== idioma);
+  return [...preferidas, ...resto];
+}
+
 // Tarjeta de un puerto o aeropuerto. Cualquiera se puede abrir para ver
 // una foto real (Wikipedia) y una descripción más amplia del lugar.
 export default function HubCard({ hub }) {
@@ -55,7 +65,7 @@ export default function HubCard({ hub }) {
     if (siguiente && !buscado) {
       setBuscado(true);
       setCargando(true);
-      const resultado = await obtenerInfoWiki(consultasWikipedia(hub));
+      const resultado = await obtenerInfoWiki(priorizarIdioma(consultasWikipedia(hub), idioma));
       setInfo(resultado);
       setCargando(false);
     }
