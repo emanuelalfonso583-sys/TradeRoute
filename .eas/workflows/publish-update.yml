@@ -1,0 +1,13 @@
+name: Publish Expo Go Update
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  publish_update:
+    name: Publish Update
+    type: update
+    params:
+      branch: production
+      message: Actualizacion automatica
