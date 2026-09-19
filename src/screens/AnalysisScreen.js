@@ -165,14 +165,19 @@ export default function AnalysisScreen() {
   }, []);
 
   const alternativas = useMemo(() => (tarifas ? compararEnvio(envio, tarifas, t) : []), [envio, tarifas, t]);
-  const principales = useMemo(
-    () =>
-      alternativas
-        .filter((a) => a.disponible && a.score !== null)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 2),
-    [alternativas]
-  );
+  // Si el usuario eligió una modalidad específica (no "comparar todas"), el
+  // análisis debe mostrar esa, no la que el algoritmo hubiera recomendado.
+  const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
+  const principales = useMemo(() => {
+    if (!comparandoTodas) {
+      const elegida = alternativas.find((a) => a.key === envio.modalidad && a.disponible);
+      return elegida ? [elegida] : [];
+    }
+    return alternativas
+      .filter((a) => a.disponible && a.score !== null)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2);
+  }, [alternativas, comparandoTodas, envio.modalidad]);
 
   if (!envio.peso) {
     return (
@@ -208,7 +213,11 @@ export default function AnalysisScreen() {
                 <Text style={styles.encabezadoIcono}>{alt.icono}</Text>
                 <View style={styles.flex}>
                   <Text style={styles.encabezadoEtiqueta}>
-                    {index === 0 ? `🏆 ${t('analisis.opcionRecomendada')}` : t('analisis.segundaOpcion')}
+                    {!comparandoTodas
+                      ? t('recomendacion.modalidadSeleccionada')
+                      : index === 0
+                      ? `🏆 ${t('analisis.opcionRecomendada')}`
+                      : t('analisis.segundaOpcion')}
                   </Text>
                   <Text style={styles.encabezadoModalidadTexto}>{alt.label}</Text>
                 </View>

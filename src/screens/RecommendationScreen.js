@@ -11,7 +11,6 @@ import {
   obtenerRecomendacion,
   generarExplicacion,
   generarExplicacionSeleccion,
-  hayComparacionReal,
 } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { guardarEnvioEnHistorial } from '../firebase/historial';
@@ -60,10 +59,6 @@ export default function RecommendationScreen({ navigation }) {
         : generarExplicacionSeleccion(recomendacion, todasLasAlternativas, t),
     [comparandoTodas, recomendacion, todasLasAlternativas, t]
   );
-  const conComparacion = useMemo(
-    () => hayComparacionReal(todasLasAlternativas),
-    [todasLasAlternativas]
-  );
   const otrasDisponibles = useMemo(
     () => todasLasAlternativas.filter((a) => a.disponible && a.key !== recomendacion?.key),
     [todasLasAlternativas, recomendacion]
@@ -104,16 +99,16 @@ export default function RecommendationScreen({ navigation }) {
   return (
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>
-        {conComparacion ? t('recomendacion.tituloConComparacion') : t('recomendacion.tituloSinComparacion')}
+        {comparandoTodas ? t('recomendacion.tituloConComparacion') : t('recomendacion.tituloSinComparacion')}
       </Text>
       <Text style={styles.ruta}>
         {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
       </Text>
 
       <View style={styles.tarjetaPrincipal}>
-        <Text style={styles.trofeo}>{conComparacion ? '🏆' : recomendacion.icono}</Text>
+        <Text style={styles.trofeo}>{comparandoTodas ? '🏆' : recomendacion.icono}</Text>
         <Text style={styles.rutaRecomendadaLabel}>
-          {conComparacion ? t('recomendacion.rutaRecomendada') : t('recomendacion.modalidadSeleccionada')}
+          {comparandoTodas ? t('recomendacion.rutaRecomendada') : t('recomendacion.modalidadSeleccionada')}
         </Text>
         <Text style={styles.rutaRecomendadaValor}>
           {recomendacion.icono} {recomendacion.label}

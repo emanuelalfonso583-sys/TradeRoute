@@ -77,7 +77,7 @@ export default function ComparatorScreen({ navigation }) {
         <TransportCard
           key={alt.key}
           alternativa={alt}
-          destacada={recomendacion?.key === alt.key}
+          destacada={comparandoTodas && recomendacion?.key === alt.key}
         />
       ))}
 

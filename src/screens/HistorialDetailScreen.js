@@ -69,7 +69,11 @@ export default function HistorialDetailScreen({ route, navigation }) {
         <Text style={styles.sinDatos}>{t('historial.sinAlternativasDetalle')}</Text>
       ) : (
         tarjetasPrincipales.map((alt) => (
-          <TransportCard key={alt.key} alternativa={alt} destacada={recomendacion?.key === alt.key} />
+          <TransportCard
+            key={alt.key}
+            alternativa={alt}
+            destacada={comparandoTodas && recomendacion?.key === alt.key}
+          />
         ))
       )}
 
