@@ -46,7 +46,10 @@ function ModalRecuperar({ visible, onCerrar, correoInicial }) {
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onCerrar}>
-      <View style={styles.modalFondo}>
+      <KeyboardAvoidingView
+        style={styles.modalFondo}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         <View style={styles.modalCaja}>
           <Text style={styles.modalTitulo}>{t('login.recuperar.titulo')}</Text>
           <Text style={styles.modalDescripcion}>{t('login.recuperar.descripcion')}</Text>
@@ -76,7 +79,7 @@ function ModalRecuperar({ visible, onCerrar, correoInicial }) {
           <View style={styles.espacioChico} />
           <PrimaryButton title={t('comun.cerrar')} onPress={onCerrar} variant="outline" />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
