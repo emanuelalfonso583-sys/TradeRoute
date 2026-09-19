@@ -2,6 +2,7 @@
   "expo": {
     "name": "TradeRoute",
     "slug": "traderoute-ze-n5ozwjxgrjtdhop5dx",
+    "privacy": "unlisted",
     "scheme": "traderoute",
     "version": "1.0.0",
     "runtimeVersion": {
