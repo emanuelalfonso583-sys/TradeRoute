@@ -103,7 +103,14 @@ export default function HubCard({ hub }) {
             <ActivityIndicator size="small" color={colors.action} style={styles.cargando} />
           ) : info?.imagenUrl ? (
             <>
-              <Image source={{ uri: info.imagenUrl }} style={styles.foto} resizeMode="cover" />
+              <Image
+                source={{
+                  uri: info.imagenUrl,
+                  headers: { 'User-Agent': 'TradeRoute-App/1.0 (proyecto academico Comercio Internacional)' },
+                }}
+                style={styles.foto}
+                resizeMode="cover"
+              />
               {info.extracto ? <Text style={styles.extracto}>{info.extracto}</Text> : null}
               <Pressable onPress={() => Linking.openURL(info.urlPagina)}>
                 <Text style={styles.enlace}>{t('analisis.hub.verWikipedia')}</Text>
