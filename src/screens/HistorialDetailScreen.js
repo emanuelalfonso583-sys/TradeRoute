@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import Text from '../components/AppText';
 import PrimaryButton from '../components/PrimaryButton';
@@ -25,8 +25,17 @@ export default function HistorialDetailScreen({ route, navigation }) {
   const { t, idioma } = useLanguage();
   const { colors } = useAppTheme();
   const styles = useMemo(() => crearEstilos(colors), [colors]);
+  const [mostrarOtras, setMostrarOtras] = useState(false);
 
   const disponibles = alternativas.filter((a) => a.disponible).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+
+  // Si el envío se guardó con una sola modalidad elegida (no "comparar
+  // todas"), se destaca solo esa y el resto queda detrás de "ver segunda
+  // opción", igual que en la pantalla de Recomendación.
+  const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
+  const principal = !comparandoTodas ? disponibles.find((a) => a.key === envio.modalidad) : null;
+  const tarjetasPrincipales = principal ? [principal] : disponibles;
+  const otrasDisponibles = principal ? disponibles.filter((a) => a.key !== principal.key) : [];
 
   function handleVerAnalisis() {
     guardarEnvio(envio);
@@ -59,9 +68,32 @@ export default function HistorialDetailScreen({ route, navigation }) {
       {disponibles.length === 0 ? (
         <Text style={styles.sinDatos}>{t('historial.sinAlternativasDetalle')}</Text>
       ) : (
-        disponibles.map((alt) => (
+        tarjetasPrincipales.map((alt) => (
           <TransportCard key={alt.key} alternativa={alt} destacada={recomendacion?.key === alt.key} />
         ))
+      )}
+
+      {!comparandoTodas && otrasDisponibles.length > 0 && (
+        <View style={styles.otrasContainer}>
+          <PrimaryButton
+            title={
+              mostrarOtras
+                ? t('recomendacion.ocultarOtras')
+                : otrasDisponibles.length === 1
+                ? t('recomendacion.verSegundaOpcion')
+                : t('recomendacion.verOtras')
+            }
+            onPress={() => setMostrarOtras((v) => !v)}
+            variant="outline"
+          />
+          {mostrarOtras && (
+            <View style={styles.otrasLista}>
+              {otrasDisponibles.map((alt) => (
+                <TransportCard key={alt.key} alternativa={alt} />
+              ))}
+            </View>
+          )}
+        </View>
       )}
 
       <PrimaryButton title={t('historial.verAnalisis')} onPress={handleVerAnalisis} />
@@ -104,6 +136,12 @@ function crearEstilos(colors) {
       color: colors.textMuted,
       fontStyle: 'italic',
       marginBottom: 16,
+    },
+    otrasContainer: {
+      marginBottom: 20,
+    },
+    otrasLista: {
+      marginTop: 14,
     },
   });
 }
