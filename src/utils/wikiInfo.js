@@ -51,7 +51,13 @@ async function buscarEnWikipedia(idioma, consulta) {
   });
   const url = `https://${idioma}.wikipedia.org/w/api.php?${params.toString()}`;
 
-  const res = await fetch(url);
+  // Wikipedia exige identificar quién hace el pedido (User-Agent); sin esto,
+  // pedidos desde una app compilada (no un navegador) pueden ser rechazados.
+  const res = await fetch(url, {
+    headers: {
+      'User-Agent': 'TradeRoute-App/1.0 (proyecto academico Comercio Internacional)',
+    },
+  });
   if (!res.ok) return null;
   const data = await res.json();
   const paginas = data?.query?.pages;

@@ -107,7 +107,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.logo}>🌐 TradeRoute</Text>
         <Text style={styles.titulo}>{t('login.titulo')}</Text>
