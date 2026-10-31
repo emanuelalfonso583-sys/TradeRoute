@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import Text from '../components/AppText';
 import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
-import RouteMap from '../components/RouteMap';
+import ModalidadRouteMap from '../components/ModalidadRouteMap';
+import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
 import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAppTheme } from '../context/ThemeContext';
@@ -25,7 +26,6 @@ export default function HistorialDetailScreen({ route, navigation }) {
   const { t, idioma } = useLanguage();
   const { colors } = useAppTheme();
   const styles = useMemo(() => crearEstilos(colors), [colors]);
-  const [mostrarOtras, setMostrarOtras] = useState(false);
 
   const disponibles = alternativas.filter((a) => a.disponible).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
@@ -52,14 +52,10 @@ export default function HistorialDetailScreen({ route, navigation }) {
         {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} {t('comparador.unidades')}
       </Text>
 
-      {envio.origenLat && envio.destinoLat && (
+      {envio.origenLat && envio.destinoLat && (principal || disponibles[0]) && (
         <>
           <View style={styles.spacer} />
-          <RouteMap
-            origen={{ lat: envio.origenLat, lng: envio.origenLng, label: envio.origenCiudad }}
-            destino={{ lat: envio.destinoLat, lng: envio.destinoLng, label: envio.destinoCiudad }}
-            alto={220}
-          />
+          <ModalidadRouteMap modalidadKey={(principal || disponibles[0]).key} envio={envio} alto={220} />
         </>
       )}
 
@@ -77,26 +73,16 @@ export default function HistorialDetailScreen({ route, navigation }) {
         ))
       )}
 
+      {(principal?.key === 'maritima' || (comparandoTodas && recomendacion?.key === 'maritima')) && (
+        <RutaExpresSugerencia alternativaMaritima={principal || disponibles.find((a) => a.key === 'maritima')} />
+      )}
+
       {!comparandoTodas && otrasDisponibles.length > 0 && (
         <View style={styles.otrasContainer}>
-          <PrimaryButton
-            title={
-              mostrarOtras
-                ? t('recomendacion.ocultarOtras')
-                : otrasDisponibles.length === 1
-                ? t('recomendacion.verSegundaOpcion')
-                : t('recomendacion.verOtras')
-            }
-            onPress={() => setMostrarOtras((v) => !v)}
-            variant="outline"
-          />
-          {mostrarOtras && (
-            <View style={styles.otrasLista}>
-              {otrasDisponibles.map((alt) => (
-                <TransportCard key={alt.key} alternativa={alt} />
-              ))}
-            </View>
-          )}
+          <Text style={styles.otrasTitulo}>{t('recomendacion.otrasAlternativas')}</Text>
+          {otrasDisponibles.map((alt) => (
+            <TransportCard key={alt.key} alternativa={alt} />
+          ))}
         </View>
       )}
 
@@ -144,8 +130,11 @@ function crearEstilos(colors) {
     otrasContainer: {
       marginBottom: 20,
     },
-    otrasLista: {
-      marginTop: 14,
+    otrasTitulo: {
+      fontSize: 15,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      marginBottom: 10,
     },
   });
 }

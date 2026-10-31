@@ -9,6 +9,7 @@ import { puertosCercanos, aeropuertosCercanos } from '../utils/nearestHubs';
 import { calcularRutaMaritima } from '../utils/seaRoute';
 import RouteMap from '../components/RouteMap';
 import HubCard from '../components/HubCard';
+import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
 import { useAppTheme } from '../context/ThemeContext';
 import { radius, shadow } from '../theme/colors';
 
@@ -72,6 +73,7 @@ function AnalisisMaritimo({ alternativa, envio }) {
             modoRuta={rutaMaritima ? 'coordenadas' : 'linea'}
             alto={260}
           />
+          <RutaExpresSugerencia alternativaMaritima={alternativa} />
         </>
       )}
     </View>

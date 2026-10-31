@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import Text from '../components/AppText';
 import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
+import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
 import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
@@ -80,6 +81,10 @@ export default function ComparatorScreen({ navigation }) {
           destacada={comparandoTodas && recomendacion?.key === alt.key}
         />
       ))}
+
+      {alternativas.some((alt) => alt.key === 'maritima' && alt.disponible) && (
+        <RutaExpresSugerencia alternativaMaritima={alternativas.find((alt) => alt.key === 'maritima')} />
+      )}
 
       <Text style={styles.disclaimer}>{t('comparador.disclaimer')}</Text>
 

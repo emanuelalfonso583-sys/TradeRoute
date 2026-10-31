@@ -5,11 +5,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Pressable,
+  Modal,
+  SafeAreaView,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
 import Text from '../components/AppText';
 import TextInput from '../components/AppTextInput';
 import PrimaryButton from '../components/PrimaryButton';
+import PoliticaPrivacidadContenido from '../components/PoliticaPrivacidadContenido';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAppTheme } from '../context/ThemeContext';
@@ -29,6 +34,8 @@ export default function RegisterScreen({ navigation }) {
   const [confirmar, setConfirmar] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  const [modalTerminosVisible, setModalTerminosVisible] = useState(false);
 
   const TIPOS_DOCUMENTO = [
     { value: '', label: t('registro.tipoDocumentoPlaceholder') },
@@ -57,6 +64,10 @@ export default function RegisterScreen({ navigation }) {
     }
     if (contrasena !== confirmar) {
       setError(t('registro.errorContrasenasNoCoinciden'));
+      return;
+    }
+    if (!aceptaTerminos) {
+      setError(t('registro.terminos.errorNoAceptado'));
       return;
     }
 
@@ -155,12 +166,46 @@ export default function RegisterScreen({ navigation }) {
           secureTextEntry
         />
 
+        <Pressable
+          style={styles.terminosFila}
+          onPress={() => setAceptaTerminos((v) => !v)}
+          hitSlop={6}
+        >
+          <View style={[styles.checkbox, aceptaTerminos && styles.checkboxActivo]}>
+            {aceptaTerminos && <Ionicons name="checkmark" size={14} color="#FFFFFF" />}
+          </View>
+          <Text style={styles.terminosTexto}>
+            {t('registro.terminos.texto')}
+            <Text style={styles.terminosLink} onPress={() => setModalTerminosVisible(true)}>
+              {t('registro.terminos.link')}
+            </Text>
+          </Text>
+        </Pressable>
+
         <View style={styles.spacer} />
         <PrimaryButton
           title={cargando ? t('registro.creando') : t('registro.boton')}
           onPress={handleRegistrarse}
           disabled={cargando}
         />
+
+        <Modal
+          visible={modalTerminosVisible}
+          animationType="slide"
+          onRequestClose={() => setModalTerminosVisible(false)}
+        >
+          <SafeAreaView style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitulo}>{t('registro.terminos.modalTitulo')}</Text>
+              <Pressable onPress={() => setModalTerminosVisible(false)} hitSlop={12}>
+                <Ionicons name="close" size={26} color={colors.primaryDark} />
+              </Pressable>
+            </View>
+            <ScrollView contentContainerStyle={styles.modalContenido}>
+              <PoliticaPrivacidadContenido />
+            </ScrollView>
+          </SafeAreaView>
+        </Modal>
 
         <View style={styles.pieContainer}>
           <Text style={styles.pieTexto}>{t('registro.yaTieneCuenta')}</Text>
@@ -248,6 +293,59 @@ function crearEstilos(colors) {
       color: colors.action,
       fontWeight: '700',
       fontSize: 14,
+    },
+    terminosFila: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      marginTop: 4,
+    },
+    checkbox: {
+      width: 20,
+      height: 20,
+      borderRadius: 5,
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 10,
+      marginTop: 1,
+    },
+    checkboxActivo: {
+      backgroundColor: colors.action,
+      borderColor: colors.action,
+    },
+    terminosTexto: {
+      flex: 1,
+      fontSize: 13,
+      color: colors.text,
+      lineHeight: 18,
+    },
+    terminosLink: {
+      color: colors.action,
+      fontWeight: '700',
+    },
+    modalContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      paddingTop: 16,
+      paddingBottom: 12,
+    },
+    modalTitulo: {
+      flex: 1,
+      fontSize: 17,
+      fontWeight: '800',
+      color: colors.primaryDark,
+      marginRight: 12,
+    },
+    modalContenido: {
+      padding: 20,
+      paddingTop: 0,
     },
   });
 }

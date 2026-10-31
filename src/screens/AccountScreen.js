@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAppTheme } from '../context/ThemeContext';
 import { obtenerPerfil } from '../firebase/perfil';
+import PoliticaPrivacidadContenido from '../components/PoliticaPrivacidadContenido';
 import { PALETAS_ACENTO } from '../theme/paletas';
 import { FUENTES } from '../theme/fuentes';
 import { radius, shadow } from '../theme/colors';
@@ -129,6 +130,7 @@ export default function AccountScreen() {
           <View style={styles.opcionesFila}>
             <OpcionChip label="Español" activo={idioma === 'es'} acento={acento} onPress={() => setIdioma('es')} />
             <OpcionChip label="English" activo={idioma === 'en'} acento={acento} onPress={() => setIdioma('en')} />
+            <OpcionChip label="Português" activo={idioma === 'pt'} acento={acento} onPress={() => setIdioma('pt')} />
           </View>
         </SeccionDesplegable>
 
@@ -199,7 +201,7 @@ export default function AccountScreen() {
           onPress={() => alternarSeccion('privacidad')}
           acento={acento}
         >
-          <PoliticaPrivacidad />
+          <PoliticaPrivacidadContenido />
         </SeccionDesplegable>
 
         <View style={styles.espacioGrande} />
@@ -232,46 +234,6 @@ function ComplementoFila({ nombre, descripcion }) {
     <View style={styles.complementoFila}>
       <Text style={styles.complementoNombre}>{nombre}</Text>
       <Text style={styles.complementoDescripcion}>{descripcion}</Text>
-    </View>
-  );
-}
-
-function PoliticaPrivacidad() {
-  const { colors } = useAppTheme();
-  const styles = useMemo(() => crearEstilos(colors), [colors]);
-  const { t } = useLanguage();
-  return (
-    <View>
-      <Text style={styles.privacidadFecha}>{t('privacidad.fecha')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.intro')}</Text>
-
-      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.recopilamos')}</Text>
-      <Text style={styles.privacidadParrafo}>
-        <Text style={styles.privacidadNegrita}>{t('privacidad.negrita.registrarte')}</Text>
-        {t('privacidad.parrafo.registrarte')}
-      </Text>
-      <Text style={styles.privacidadParrafo}>
-        <Text style={styles.privacidadNegrita}>{t('privacidad.negrita.calcularEnvio')}</Text>
-        {t('privacidad.parrafo.calcularEnvio')}
-      </Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.noRecopilamos')}</Text>
-
-      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.paraQueUsamos')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.usos')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.noPublicidad')}</Text>
-
-      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.dondeAlmacena')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.dondeAlmacena')}</Text>
-
-      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.terceros')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.terceros1')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.terceros2')}</Text>
-
-      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.derechos')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.derechos')}</Text>
-
-      <Text style={styles.privacidadSubtitulo}>{t('privacidad.subtitulo.cambios')}</Text>
-      <Text style={styles.privacidadParrafo}>{t('privacidad.parrafo.cambios')}</Text>
     </View>
   );
 }

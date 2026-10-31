@@ -213,6 +213,41 @@ export function generarExplicacion(recomendacion, alternativasConScore, t) {
   return t('recomendacion.explicacion.recomendada', { label: recomendacion.label, detalle });
 }
 
+// Factores de la variante "exprés" marítima: representa pagar el peaje de
+// un canal (Panamá/Suez) y prioridad de tránsito a cambio de llegar más
+// rápido, en vez de la ruta más económica (que a veces, por geografía real,
+// implica rodear un continente). Solo tiene sentido ofrecerla en rutas
+// largas, donde cruzar un canal realmente cambia el tiempo de tránsito.
+const EXPRES_FACTOR_COSTO = 1.18;
+const EXPRES_FACTOR_TIEMPO = 0.72;
+const EXPRES_FACTOR_CO2 = 0.95;
+const EXPRES_FACTOR_DISTANCIA = 0.82;
+
+// Genera la alternativa marítima "exprés" (vía canal) a partir de la
+// alternativa marítima normal, cuando aplica (ruta marítima disponible y de
+// largo recorrido). Es una variante informativa, no reemplaza a la
+// alternativa marítima en la comparación/score: se muestra como una opción
+// adicional para quien prefiera pagar más y llegar antes.
+export function generarAlternativaExpresMaritima(alternativaMaritima, t) {
+  if (!alternativaMaritima?.disponible || alternativaMaritima.key !== 'maritima') return null;
+  if (alternativaMaritima.zona !== 'largo') return null;
+
+  return {
+    ...alternativaMaritima,
+    key: 'maritima_express',
+    label: t ? t('modalidad.maritimaExpres') : 'Marítima exprés (vía canal)',
+    icono: '🚢⚡',
+    costoUsd: alternativaMaritima.costoUsd * EXPRES_FACTOR_COSTO,
+    costoPorKg: alternativaMaritima.costoPorKg * EXPRES_FACTOR_COSTO,
+    tiempoDias: Math.max(1, Math.round(alternativaMaritima.tiempoDias * EXPRES_FACTOR_TIEMPO)),
+    co2Kg: alternativaMaritima.co2Kg * EXPRES_FACTOR_CO2,
+    co2PorKg: alternativaMaritima.co2PorKg * EXPRES_FACTOR_CO2,
+    distanciaKm: Math.round(alternativaMaritima.distanciaKm * EXPRES_FACTOR_DISTANCIA),
+    esExpres: true,
+    score: null,
+  };
+}
+
 // Explicación para cuando el usuario eligió una modalidad específica en el
 // formulario (no "Comparar todas"): no dice que sea "la mejor", solo informa
 // su Score real frente a las demás alternativas disponibles para esa ruta.

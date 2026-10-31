@@ -15,7 +15,8 @@ import {
 import { obtenerTarifas } from '../firebase/tarifas';
 import { guardarEnvioEnHistorial } from '../firebase/historial';
 import { formatearUsd } from '../utils/format';
-import RouteMap from '../components/RouteMap';
+import ModalidadRouteMap from '../components/ModalidadRouteMap';
+import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
 import { useAppTheme } from '../context/ThemeContext';
 import { radius, shadow } from '../theme/colors';
 
@@ -37,8 +38,6 @@ export default function RecommendationScreen({ navigation }) {
   useEffect(() => {
     obtenerTarifas().then(setTarifas);
   }, []);
-
-  const [mostrarOtras, setMostrarOtras] = useState(false);
 
   const todasLasAlternativas = useMemo(
     () => (tarifas ? compararEnvio(envio, tarifas, t) : []),
@@ -119,41 +118,20 @@ export default function RecommendationScreen({ navigation }) {
       </View>
 
       <Text style={styles.seccionTitulo}>{t('recomendacion.mapaRuta')}</Text>
-      <RouteMap
-        origen={{
-          lat: envio.origenLat,
-          lng: envio.origenLng,
-          label: `${envio.origenCiudad}, ${envio.origenPaisNombre}`,
-        }}
-        destino={{
-          lat: envio.destinoLat,
-          lng: envio.destinoLng,
-          label: `${envio.destinoCiudad}, ${envio.destinoPaisNombre}`,
-        }}
-      />
+      <ModalidadRouteMap modalidadKey={recomendacion.key} envio={envio} />
 
       <Text style={styles.explicacion}>{explicacion}</Text>
 
+      {recomendacion.key === 'maritima' && (
+        <RutaExpresSugerencia alternativaMaritima={recomendacion} />
+      )}
+
       {!comparandoTodas && otrasDisponibles.length > 0 && (
         <View style={styles.otrasContainer}>
-          <PrimaryButton
-            title={
-              mostrarOtras
-                ? t('recomendacion.ocultarOtras')
-                : otrasDisponibles.length === 1
-                ? t('recomendacion.verSegundaOpcion')
-                : t('recomendacion.verOtras')
-            }
-            onPress={() => setMostrarOtras((v) => !v)}
-            variant="outline"
-          />
-          {mostrarOtras && (
-            <View style={styles.otrasLista}>
-              {otrasDisponibles.map((alt) => (
-                <TransportCard key={alt.key} alternativa={alt} />
-              ))}
-            </View>
-          )}
+          <Text style={styles.seccionTitulo}>{t('recomendacion.otrasAlternativas')}</Text>
+          {otrasDisponibles.map((alt) => (
+            <TransportCard key={alt.key} alternativa={alt} />
+          ))}
         </View>
       )}
 
@@ -262,9 +240,6 @@ function crearEstilos(colors) {
     },
     otrasContainer: {
       marginBottom: 20,
-    },
-    otrasLista: {
-      marginTop: 14,
     },
   });
 }

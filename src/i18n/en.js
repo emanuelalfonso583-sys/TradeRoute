@@ -73,6 +73,10 @@ export const en = {
   'registro.errorCamposVacios': 'Fill in all required fields.',
   'registro.errorContrasenaCorta': 'Password must be at least 6 characters.',
   'registro.errorContrasenasNoCoinciden': "Passwords don't match.",
+  'registro.terminos.texto': 'I have read and accept the processing of my personal data and the ',
+  'registro.terminos.link': 'terms and conditions',
+  'registro.terminos.modalTitulo': 'Terms and personal data processing',
+  'registro.terminos.errorNoAceptado': 'You must accept the personal data processing to create your account.',
 
   // Home
   'home.subtitulo': 'International logistics route comparator',
@@ -122,8 +126,12 @@ export const en = {
   'nuevoEnvio.error.general': 'Check the marked fields: required information is missing.',
 
   // Location picker
+  'ubicacion.pais': 'Country',
+  'ubicacion.ciudad': 'City',
   'ubicacion.seleccionaPais': 'Select a country',
   'ubicacion.seleccionaCiudad': 'Select the city ({{pais}})',
+  'ubicacion.seleccionaCiudadCorta': 'Select...',
+  'ubicacion.primeroPais': 'Choose the country first',
   'ubicacion.buscar': 'Search...',
   'ubicacion.sinResultados': 'No results found.',
   'ubicacion.cuidadEn': 'City in {{pais}}',
@@ -171,9 +179,7 @@ export const en = {
   'recomendacion.verAnalisis': 'View detailed analysis (ports, airports and maps)',
   'recomendacion.compararNuevo': 'Compare again',
   'recomendacion.nuevoEnvio': 'New shipment',
-  'recomendacion.verSegundaOpcion': 'View second recommended option',
-  'recomendacion.verOtras': 'View other available alternatives',
-  'recomendacion.ocultarOtras': 'Hide other alternatives',
+  'recomendacion.otrasAlternativas': 'Other available alternatives',
   'recomendacion.disclaimer': 'Values are academic estimates and do not represent real quotes. The recommendation recalculates automatically if the shipment data changes.',
   'recomendacion.explicacion.unicaAlternativa': '{{label}} is the only alternative available for this route with the data entered.',
   'recomendacion.explicacion.unicaAlternativaSinComparar': "{{label}} is the only alternative available for this route with the data entered, so there's nothing else to compare it to.",
@@ -184,6 +190,11 @@ export const en = {
   'recomendacion.explicacion.menorTiempo': 'the shortest transit time',
   'recomendacion.explicacion.menorCo2': 'the lowest CO₂ footprint',
   'recomendacion.explicacion.eligio': 'You chose {{label}} for this shipment. Here is how it compares to the other alternatives available for this route.',
+
+  // Express route (sea freight, via canal)
+  'modalidad.maritimaExpres': 'Sea freight express (via canal)',
+  'rutaExpres.titulo': 'Need it to arrive faster?',
+  'rutaExpres.descripcion': 'This variant pays a canal toll (Panama/Suez) and transit priority to arrive sooner, instead of the cheaper route. This is an estimate: the real cost and time depend on the carrier and the canal availability on the shipping date.',
 
   // Analysis
   'analisis.titulo': 'Route Analysis',

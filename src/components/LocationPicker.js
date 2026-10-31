@@ -83,9 +83,14 @@ function ListaBusqueda({ visible, titulo, datos, obtenerTexto, onSeleccionar, on
 }
 
 function nombrePais(pais, idioma) {
-  return idioma === 'en' ? pais.nameEn || pais.name : pais.name;
+  if (idioma === 'en') return pais.nameEn || pais.name;
+  if (idioma === 'pt') return pais.namePt || pais.name;
+  return pais.name;
 }
 
+// País y ciudad son dos campos independientes: cada uno abre su propia
+// lista directamente. Así, si el usuario solo quiere corregir la ciudad,
+// no tiene que volver a elegir el país (y viceversa).
 export default function LocationPicker({ label, value, onChange, error }) {
   const { t, idioma } = useLanguage();
   const { colors } = useAppTheme();
@@ -94,11 +99,21 @@ export default function LocationPicker({ label, value, onChange, error }) {
   const [modalCiudadVisible, setModalCiudadVisible] = useState(false);
 
   const ciudadesDelPais = value?.countryCode ? CITIES_BY_COUNTRY[value.countryCode] || [] : [];
+  const hayPais = !!value?.countryCode;
 
   function seleccionarPais(pais) {
     setModalPaisVisible(false);
-    onChange({ countryCode: pais.code, countryName: nombrePais(pais, idioma), city: '' });
-    setModalCiudadVisible(true);
+    // Si cambia a un país distinto, la ciudad anterior ya no aplica y se
+    // abre de una vez el selector de ciudad para completar el dato.
+    const esMismoPais = value?.countryCode === pais.code;
+    onChange({
+      countryCode: pais.code,
+      countryName: nombrePais(pais, idioma),
+      city: esMismoPais ? value.city : '',
+      lat: esMismoPais ? value.lat : undefined,
+      lng: esMismoPais ? value.lng : undefined,
+    });
+    if (!esMismoPais) setModalCiudadVisible(true);
   }
 
   function seleccionarCiudad(ciudad) {
@@ -106,25 +121,42 @@ export default function LocationPicker({ label, value, onChange, error }) {
     onChange({ ...value, city: ciudad.name, lat: ciudad.lat, lng: ciudad.lng });
   }
 
-  const textoMostrado = value?.city
-    ? `${value.city}, ${value.countryName}`
-    : value?.countryName
-    ? t('ubicacion.seleccionaCiudad', { pais: value.countryName })
-    : t('ubicacion.seleccionaPais');
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
 
-      <Pressable
-        style={[styles.campo, error && styles.campoError]}
-        onPress={() => setModalPaisVisible(true)}
-      >
-        <Text style={[styles.campoTexto, !value?.countryName && styles.campoPlaceholder]}>
-          {textoMostrado}
-        </Text>
-        <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
-      </Pressable>
+      <View style={styles.filaCampos}>
+        <View style={styles.campoMitad}>
+          <Text style={styles.subLabel}>{t('ubicacion.pais')}</Text>
+          <Pressable
+            style={[styles.campo, error && !value?.countryName && styles.campoError]}
+            onPress={() => setModalPaisVisible(true)}
+          >
+            <Text style={[styles.campoTexto, !value?.countryName && styles.campoPlaceholder]} numberOfLines={1}>
+              {value?.countryName || t('ubicacion.seleccionaPais')}
+            </Text>
+            <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
+          </Pressable>
+        </View>
+
+        <View style={styles.campoMitad}>
+          <Text style={styles.subLabel}>{t('ubicacion.ciudad')}</Text>
+          <Pressable
+            style={[
+              styles.campo,
+              !hayPais && styles.campoDeshabilitado,
+              error && hayPais && !value?.city && styles.campoError,
+            ]}
+            disabled={!hayPais}
+            onPress={() => setModalCiudadVisible(true)}
+          >
+            <Text style={[styles.campoTexto, !value?.city && styles.campoPlaceholder]} numberOfLines={1}>
+              {value?.city || (hayPais ? t('ubicacion.seleccionaCiudadCorta') : t('ubicacion.primeroPais'))}
+            </Text>
+            <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
+          </Pressable>
+        </View>
+      </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       <ListaBusqueda
@@ -159,6 +191,19 @@ function crearEstilos(colors) {
       color: colors.primaryDark,
       marginBottom: 6,
     },
+    filaCampos: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    campoMitad: {
+      flex: 1,
+    },
+    subLabel: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: colors.textMuted,
+      marginBottom: 4,
+    },
     campo: {
       borderWidth: 1,
       borderColor: colors.border,
@@ -170,11 +215,14 @@ function crearEstilos(colors) {
       alignItems: 'center',
       justifyContent: 'space-between',
     },
+    campoDeshabilitado: {
+      opacity: 0.5,
+    },
     campoError: {
       borderColor: colors.danger,
     },
     campoTexto: {
-      fontSize: 15,
+      fontSize: 14,
       color: colors.text,
       flex: 1,
     },

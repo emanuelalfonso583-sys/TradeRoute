@@ -2,8 +2,10 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { es } from '../i18n/es';
 import { en } from '../i18n/en';
+import { pt } from '../i18n/pt';
 
-const DICCIONARIOS = { es, en };
+const DICCIONARIOS = { es, en, pt };
+const IDIOMAS_VALIDOS = new Set(['es', 'en', 'pt']);
 const CLAVE_STORAGE = '@traderoute_idioma';
 
 const LanguageContext = createContext(null);
@@ -21,7 +23,7 @@ export function LanguageProvider({ children }) {
 
   useEffect(() => {
     AsyncStorage.getItem(CLAVE_STORAGE).then((valor) => {
-      if (valor === 'es' || valor === 'en') setIdiomaState(valor);
+      if (IDIOMAS_VALIDOS.has(valor)) setIdiomaState(valor);
     });
   }, []);
 

@@ -73,6 +73,10 @@ export const es = {
   'registro.errorCamposVacios': 'Completa todos los campos obligatorios.',
   'registro.errorContrasenaCorta': 'La contraseña debe tener al menos 6 caracteres.',
   'registro.errorContrasenasNoCoinciden': 'Las contraseñas no coinciden.',
+  'registro.terminos.texto': 'He leído y acepto el tratamiento de mis datos personales y los ',
+  'registro.terminos.link': 'términos y condiciones',
+  'registro.terminos.modalTitulo': 'Términos y tratamiento de datos personales',
+  'registro.terminos.errorNoAceptado': 'Debes aceptar el tratamiento de datos personales para crear tu cuenta.',
 
   // Home
   'home.subtitulo': 'Comparador de rutas logísticas internacionales',
@@ -122,8 +126,12 @@ export const es = {
   'nuevoEnvio.error.general': 'Revisa los campos marcados: falta información obligatoria.',
 
   // Selector de ubicación
+  'ubicacion.pais': 'País',
+  'ubicacion.ciudad': 'Ciudad',
   'ubicacion.seleccionaPais': 'Selecciona un país',
   'ubicacion.seleccionaCiudad': 'Selecciona la ciudad ({{pais}})',
+  'ubicacion.seleccionaCiudadCorta': 'Selecciona...',
+  'ubicacion.primeroPais': 'Primero elige el país',
   'ubicacion.buscar': 'Buscar...',
   'ubicacion.sinResultados': 'No se encontraron resultados.',
   'ubicacion.cuidadEn': 'Ciudad en {{pais}}',
@@ -171,9 +179,7 @@ export const es = {
   'recomendacion.verAnalisis': 'Ver análisis detallado (puertos, aeropuertos y mapas)',
   'recomendacion.compararNuevo': 'Comparar de nuevo',
   'recomendacion.nuevoEnvio': 'Nuevo envío',
-  'recomendacion.verSegundaOpcion': 'Ver segunda opción recomendada',
-  'recomendacion.verOtras': 'Ver otras alternativas disponibles',
-  'recomendacion.ocultarOtras': 'Ocultar otras alternativas',
+  'recomendacion.otrasAlternativas': 'Otras alternativas disponibles',
   'recomendacion.disclaimer': 'Los valores son estimaciones académicas y no representan cotizaciones reales. La recomendación se recalcula automáticamente si cambian los datos del envío.',
   'recomendacion.explicacion.unicaAlternativa': '{{label}} es la única alternativa disponible para esta ruta con los datos ingresados.',
   'recomendacion.explicacion.unicaAlternativaSinComparar': '{{label}} es la única alternativa disponible para esta ruta con los datos ingresados, así que no hay otras opciones con las que compararla.',
@@ -184,6 +190,11 @@ export const es = {
   'recomendacion.explicacion.menorTiempo': 'el menor tiempo de tránsito',
   'recomendacion.explicacion.menorCo2': 'la menor huella de CO₂',
   'recomendacion.explicacion.eligio': 'Elegiste {{label}} para este envío. Estos son sus datos frente a las demás alternativas disponibles para esta ruta.',
+
+  // Ruta exprés (marítima, vía canal)
+  'modalidad.maritimaExpres': 'Marítima exprés (vía canal)',
+  'rutaExpres.titulo': '¿Prefieres llegar más rápido?',
+  'rutaExpres.descripcion': 'Esta variante paga el peaje de un canal (Panamá/Suez) y prioridad de tránsito para llegar antes, en vez de la ruta más económica. Es una estimación: el costo y tiempo reales dependen de la naviera y el canal disponible en la fecha del envío.',
 
   // Análisis
   'analisis.titulo': 'Análisis de Ruta',
