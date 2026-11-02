@@ -213,7 +213,7 @@ export default function NewShipmentScreen({ navigation }) {
       valor: parseNumero(form.valor),
       modalidad: form.modalidad,
     });
-    navigation.navigate('Comparador');
+    navigation.navigate('Recomendacion');
   }
 
   return (

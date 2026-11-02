@@ -126,7 +126,7 @@ export default function RecommendationScreen({ navigation }) {
         <RutaExpresSugerencia envio={envio} alternativaMaritima={recomendacion} />
       )}
 
-      {!comparandoTodas && otrasDisponibles.length > 0 && (
+      {otrasDisponibles.length > 0 && (
         <View style={styles.otrasContainer}>
           <Text style={styles.seccionTitulo}>{t('recomendacion.otrasAlternativas')}</Text>
           {otrasDisponibles.map((alt) => (
