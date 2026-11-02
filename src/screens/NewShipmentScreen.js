@@ -30,6 +30,9 @@ function validar(form, t) {
   if (!form.origen?.city) errores.origen = t('nuevoEnvio.error.origen');
   if (!form.destino?.city) errores.destino = t('nuevoEnvio.error.destino');
   if (!form.tipoMercancia) errores.tipoMercancia = t('nuevoEnvio.error.tipoMercancia');
+  if (form.tipoMercancia === 'otro' && !form.tipoMercanciaOtro?.trim()) {
+    errores.tipoMercanciaOtro = t('nuevoEnvio.error.tipoMercanciaOtro');
+  }
 
   const peso = parseNumero(form.peso);
   if (form.peso === '' || Number.isNaN(peso)) {
@@ -106,6 +109,7 @@ export default function NewShipmentScreen({ navigation }) {
         }
       : null,
     tipoMercancia: envio.tipoMercancia || '',
+    tipoMercanciaOtro: envio.tipoMercanciaOtro || '',
     peso: envio.peso ? String(envio.peso) : '',
     volumen: envio.volumen ? String(envio.volumen) : '',
     unidades: envio.unidades ? String(envio.unidades) : '',
@@ -202,6 +206,7 @@ export default function NewShipmentScreen({ navigation }) {
       destinoLat: form.destino.lat,
       destinoLng: form.destino.lng,
       tipoMercancia: form.tipoMercancia,
+      tipoMercanciaOtro: form.tipoMercancia === 'otro' ? form.tipoMercanciaOtro.trim() : '',
       peso: parseNumero(form.peso),
       volumen: parseNumero(form.volumen),
       unidades: parseNumero(form.unidades),
@@ -252,6 +257,16 @@ export default function NewShipmentScreen({ navigation }) {
           </Picker>
         </View>
         {errores.tipoMercancia ? <Text style={styles.errorText}>{errores.tipoMercancia}</Text> : null}
+
+        {form.tipoMercancia === 'otro' && (
+          <Campo
+            label={t('nuevoEnvio.tipoMercanciaOtroLabel')}
+            placeholder={t('nuevoEnvio.tipoMercanciaOtroPlaceholder')}
+            value={form.tipoMercanciaOtro}
+            onChangeText={(v) => actualizarCampo('tipoMercanciaOtro', v)}
+            error={errores.tipoMercanciaOtro}
+          />
+        )}
 
         <Campo
           label={t('nuevoEnvio.peso')}

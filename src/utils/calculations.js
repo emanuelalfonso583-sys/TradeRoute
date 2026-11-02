@@ -224,13 +224,15 @@ const EXPRES_FACTOR_CO2 = 0.95;
 const EXPRES_FACTOR_DISTANCIA = 0.82;
 
 // Genera la alternativa marítima "exprés" (vía canal) a partir de la
-// alternativa marítima normal, cuando aplica (ruta marítima disponible y de
-// largo recorrido). Es una variante informativa, no reemplaza a la
-// alternativa marítima en la comparación/score: se muestra como una opción
-// adicional para quien prefiera pagar más y llegar antes.
+// alternativa marítima normal. Es una variante informativa, no reemplaza a
+// la alternativa marítima en la comparación/score: se muestra como una
+// opción adicional para quien prefiera pagar más y llegar antes. Quién
+// decide SI tiene sentido ofrecerla es quien llama a esta función (ver
+// RutaExpresSugerencia): solo aplica cuando la ruta real da un rodeo
+// importante frente a la línea recta entre los puertos, no en cualquier
+// envío largo.
 export function generarAlternativaExpresMaritima(alternativaMaritima, t) {
   if (!alternativaMaritima?.disponible || alternativaMaritima.key !== 'maritima') return null;
-  if (alternativaMaritima.zona !== 'largo') return null;
 
   return {
     ...alternativaMaritima,

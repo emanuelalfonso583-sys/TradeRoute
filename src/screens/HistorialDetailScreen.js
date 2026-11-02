@@ -74,7 +74,10 @@ export default function HistorialDetailScreen({ route, navigation }) {
       )}
 
       {(principal?.key === 'maritima' || (comparandoTodas && recomendacion?.key === 'maritima')) && (
-        <RutaExpresSugerencia alternativaMaritima={principal || disponibles.find((a) => a.key === 'maritima')} />
+        <RutaExpresSugerencia
+          envio={envio}
+          alternativaMaritima={principal || disponibles.find((a) => a.key === 'maritima')}
+        />
       )}
 
       {!comparandoTodas && otrasDisponibles.length > 0 && (

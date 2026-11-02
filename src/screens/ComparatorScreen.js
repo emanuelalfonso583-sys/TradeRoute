@@ -83,7 +83,7 @@ export default function ComparatorScreen({ navigation }) {
       ))}
 
       {alternativas.some((alt) => alt.key === 'maritima' && alt.disponible) && (
-        <RutaExpresSugerencia alternativaMaritima={alternativas.find((alt) => alt.key === 'maritima')} />
+        <RutaExpresSugerencia envio={envio} alternativaMaritima={alternativas.find((alt) => alt.key === 'maritima')} />
       )}
 
       <Text style={styles.disclaimer}>{t('comparador.disclaimer')}</Text>

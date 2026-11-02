@@ -14,6 +14,7 @@ const ENVIO_VACIO = {
   destinoLat: null,
   destinoLng: null,
   tipoMercancia: '',
+  tipoMercanciaOtro: '',
   peso: '',
   volumen: '',
   unidades: '',

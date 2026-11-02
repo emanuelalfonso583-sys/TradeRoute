@@ -73,7 +73,7 @@ function AnalisisMaritimo({ alternativa, envio }) {
             modoRuta={rutaMaritima ? 'coordenadas' : 'linea'}
             alto={260}
           />
-          <RutaExpresSugerencia alternativaMaritima={alternativa} />
+          <RutaExpresSugerencia envio={envio} alternativaMaritima={alternativa} />
         </>
       )}
     </View>

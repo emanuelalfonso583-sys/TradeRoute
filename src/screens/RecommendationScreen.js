@@ -123,7 +123,7 @@ export default function RecommendationScreen({ navigation }) {
       <Text style={styles.explicacion}>{explicacion}</Text>
 
       {recomendacion.key === 'maritima' && (
-        <RutaExpresSugerencia alternativaMaritima={recomendacion} />
+        <RutaExpresSugerencia envio={envio} alternativaMaritima={recomendacion} />
       )}
 
       {!comparandoTodas && otrasDisponibles.length > 0 && (
