@@ -17,6 +17,7 @@ import { guardarEnvioEnHistorial } from '../firebase/historial';
 import { formatearUsd, formatearLugar } from '../utils/format';
 import ModalidadRouteMap from '../components/ModalidadRouteMap';
 import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
+import DocumentosRequeridos from '../components/DocumentosRequeridos';
 import { useAppTheme } from '../context/ThemeContext';
 import { radius, shadow } from '../theme/colors';
 
@@ -125,6 +126,8 @@ export default function RecommendationScreen({ navigation }) {
       {recomendacion.key === 'maritima' && (
         <RutaExpresSugerencia envio={envio} alternativaMaritima={recomendacion} />
       )}
+
+      <DocumentosRequeridos modalidadKey={recomendacion.key} tipoMercancia={envio.tipoMercancia} />
 
       {otrasDisponibles.length > 0 && (
         <View style={styles.otrasContainer}>

@@ -5,6 +5,7 @@ import PrimaryButton from '../components/PrimaryButton';
 import TransportCard from '../components/TransportCard';
 import ModalidadRouteMap from '../components/ModalidadRouteMap';
 import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
+import DocumentosRequeridos from '../components/DocumentosRequeridos';
 import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAppTheme } from '../context/ThemeContext';
@@ -78,6 +79,13 @@ export default function HistorialDetailScreen({ route, navigation }) {
         <RutaExpresSugerencia
           envio={envio}
           alternativaMaritima={principal || disponibles.find((a) => a.key === 'maritima')}
+        />
+      )}
+
+      {(principal || disponibles[0]) && (
+        <DocumentosRequeridos
+          modalidadKey={(principal || disponibles[0]).key}
+          tipoMercancia={envio.tipoMercancia}
         />
       )}
 
