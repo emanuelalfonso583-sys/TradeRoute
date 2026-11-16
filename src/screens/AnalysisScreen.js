@@ -7,6 +7,7 @@ import { compararEnvio } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { puertosCercanos, aeropuertosCercanos } from '../utils/nearestHubs';
 import { calcularRutaMaritima } from '../utils/seaRoute';
+import { formatearLugar } from '../utils/format';
 import RouteMap from '../components/RouteMap';
 import HubCard from '../components/HubCard';
 import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
@@ -123,12 +124,19 @@ function AnalisisTerrestre({ envio }) {
   return (
     <View>
       <Text style={styles.subtitulo}>
-        {t('analisis.rutaCarretera', { origen: envio.origenCiudad, destino: envio.destinoCiudad })}
+        {t('analisis.rutaCarretera', {
+          origen: envio.origenCiudad,
+          destino: envio.destinoCiudad || envio.destinoPaisNombre,
+        })}
       </Text>
       <Text style={styles.rutaDetalle}>{t('analisis.rutaCarreteraDetalle')}</Text>
       <RouteMap
         origen={{ lat: envio.origenLat, lng: envio.origenLng, label: envio.origenCiudad }}
-        destino={{ lat: envio.destinoLat, lng: envio.destinoLng, label: envio.destinoCiudad }}
+        destino={{
+          lat: envio.destinoLat,
+          lng: envio.destinoLng,
+          label: envio.destinoCiudad || envio.destinoPaisNombre,
+        }}
         modoRuta="carretera"
         alto={260}
       />
@@ -203,7 +211,7 @@ export default function AnalysisScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.titulo}>{t('analisis.titulo')}</Text>
         <Text style={styles.ruta}>
-          {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
+          {formatearLugar(envio.origenCiudad, envio.origenPaisNombre)} → {formatearLugar(envio.destinoCiudad, envio.destinoPaisNombre)}
         </Text>
 
         {principales.length === 0 ? (

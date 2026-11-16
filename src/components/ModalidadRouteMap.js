@@ -57,7 +57,11 @@ export default function ModalidadRouteMap({ modalidadKey, envio, alto = 260 }) {
     return (
       <RouteMap
         origen={{ lat: envio.origenLat, lng: envio.origenLng, label: envio.origenCiudad }}
-        destino={{ lat: envio.destinoLat, lng: envio.destinoLng, label: envio.destinoCiudad }}
+        destino={{
+          lat: envio.destinoLat,
+          lng: envio.destinoLng,
+          label: envio.destinoCiudad || envio.destinoPaisNombre,
+        }}
         modoRuta="carretera"
         alto={alto}
       />

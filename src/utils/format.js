@@ -8,3 +8,10 @@ export function formatearUsd(valor) {
     maximumFractionDigits: 2,
   });
 }
+
+// La ciudad de destino es opcional (el usuario puede ingresar solo el país),
+// así que "ciudad, país" se reduce a solo "país" cuando no hay ciudad, en
+// vez de dejar una coma colgando ("→ , Panamá").
+export function formatearLugar(ciudad, pais) {
+  return ciudad ? `${ciudad}, ${pais}` : pais;
+}

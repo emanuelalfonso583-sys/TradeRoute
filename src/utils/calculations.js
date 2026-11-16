@@ -1,4 +1,4 @@
-import { hayConexionTerrestreEntrePaises } from './routeGroups';
+import { evaluarConexionTerrestre } from './routeGroups';
 import { distanciaKm as calcularDistanciaKm } from './geo';
 
 // ---------------------------------------------------------------------------
@@ -73,11 +73,11 @@ export function calcularAlternativas(envio, tarifas, t) {
     terrestre: calcularModalidad('terrestre', peso, volumen, distancia, tarifas.terrestre),
   };
 
-  const terrestreDisponible = hayConexionTerrestreEntrePaises(envio.origenPais, envio.destinoPais);
+  const conexionTerrestre = evaluarConexionTerrestre(envio.origenPais, envio.destinoPais);
 
   return MODALIDADES.map(({ key, label: labelEstatico, icono }) => {
     const label = t ? t(`modalidad.${key}`) : labelEstatico;
-    const disponible = key !== 'terrestre' || terrestreDisponible;
+    const disponible = key !== 'terrestre' || conexionTerrestre.disponible;
 
     if (!disponible) {
       return {
@@ -85,6 +85,7 @@ export function calcularAlternativas(envio, tarifas, t) {
         label,
         icono,
         disponible: false,
+        motivoNoDisponible: conexionTerrestre.motivo,
       };
     }
 

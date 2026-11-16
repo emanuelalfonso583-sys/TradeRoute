@@ -8,6 +8,7 @@ import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
 import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAppTheme } from '../context/ThemeContext';
+import { formatearLugar } from '../utils/format';
 
 function formatearFecha(timestamp, idioma) {
   if (!timestamp?.toDate) return '';
@@ -46,7 +47,7 @@ export default function HistorialDetailScreen({ route, navigation }) {
     <ScrollView style={styles.flex} contentContainerStyle={styles.container}>
       <Text style={styles.fecha}>{formatearFecha(creadoEn, idioma)}</Text>
       <Text style={styles.ruta}>
-        {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
+        {formatearLugar(envio.origenCiudad, envio.origenPaisNombre)} → {formatearLugar(envio.destinoCiudad, envio.destinoPaisNombre)}
       </Text>
       <Text style={styles.detalle}>
         {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} {t('comparador.unidades')}

@@ -13,7 +13,7 @@ import PrimaryButton from '../components/PrimaryButton';
 import LocationPicker from '../components/LocationPicker';
 import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
-import { hayConexionTerrestreEntrePaises } from '../utils/routeGroups';
+import { evaluarConexionTerrestre } from '../utils/routeGroups';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { useAppTheme } from '../context/ThemeContext';
@@ -28,7 +28,7 @@ function validar(form, t) {
   const errores = {};
 
   if (!form.origen?.city) errores.origen = t('nuevoEnvio.error.origen');
-  if (!form.destino?.city) errores.destino = t('nuevoEnvio.error.destino');
+  if (!form.destino?.countryCode) errores.destino = t('nuevoEnvio.error.destinoPais');
   if (!form.tipoMercancia) errores.tipoMercancia = t('nuevoEnvio.error.tipoMercancia');
   if (form.tipoMercancia === 'otro' && !form.tipoMercanciaOtro?.trim()) {
     errores.tipoMercanciaOtro = t('nuevoEnvio.error.tipoMercanciaOtro');
@@ -130,10 +130,13 @@ export default function NewShipmentScreen({ navigation }) {
 
   // En cuanto hay origen y destino, se sabe si terrestre aplica para esa
   // distancia real (sin necesidad de calcular todo lo demás).
-  const terrestreDisponible = useMemo(() => {
-    if (!form.origen?.countryCode || !form.destino?.countryCode) return true;
-    return hayConexionTerrestreEntrePaises(form.origen.countryCode, form.destino.countryCode);
+  const conexionTerrestre = useMemo(() => {
+    if (!form.origen?.countryCode || !form.destino?.countryCode) {
+      return { disponible: true, motivo: null };
+    }
+    return evaluarConexionTerrestre(form.origen.countryCode, form.destino.countryCode);
   }, [form.origen?.countryCode, form.destino?.countryCode]);
+  const terrestreDisponible = conexionTerrestre.disponible;
 
   // Si ya hay origen, destino y peso, se calcula de una vez cuál sería la
   // mejor opción, para mostrarlo directamente en el selector de modalidad
@@ -243,6 +246,7 @@ export default function NewShipmentScreen({ navigation }) {
           value={form.destino}
           onChange={(v) => actualizarCampo('destino', v)}
           error={errores.destino}
+          cityOptional
         />
 
         <Text style={styles.label}>{t('nuevoEnvio.tipoMercancia')}</Text>
@@ -317,6 +321,11 @@ export default function NewShipmentScreen({ navigation }) {
         </View>
         {!form.origen?.lat || !form.destino?.lat || Number.isNaN(pesoPreview) || pesoPreview <= 0 ? (
           <Text style={styles.ayudaTexto}>{t('nuevoEnvio.ayudaModalidad')}</Text>
+        ) : null}
+        {!terrestreDisponible && conexionTerrestre.motivo ? (
+          <Text style={styles.ayudaTexto}>
+            {t(`nuevoEnvio.motivoTerrestre.${conexionTerrestre.motivo}`)}
+          </Text>
         ) : null}
 
         <View style={styles.spacer} />

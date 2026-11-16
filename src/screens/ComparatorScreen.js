@@ -8,6 +8,7 @@ import { useShipment } from '../context/ShipmentContext';
 import { useLanguage } from '../context/LanguageContext';
 import { compararEnvio, obtenerRecomendacion } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
+import { formatearLugar } from '../utils/format';
 import { useAppTheme } from '../context/ThemeContext';
 
 export default function ComparatorScreen({ navigation }) {
@@ -66,7 +67,7 @@ export default function ComparatorScreen({ navigation }) {
         {comparandoTodas ? t('comparador.tituloTodas') : t('comparador.tituloUna')}
       </Text>
       <Text style={styles.ruta}>
-        {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
+        {formatearLugar(envio.origenCiudad, envio.origenPaisNombre)} → {formatearLugar(envio.destinoCiudad, envio.destinoPaisNombre)}
       </Text>
       <Text style={styles.detalle}>
         {envio.peso} kg · {envio.volumen} m³ · {envio.unidades} {t('comparador.unidades')}

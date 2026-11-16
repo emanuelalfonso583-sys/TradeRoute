@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { obtenerHistorial } from '../firebase/historial';
-import { formatearUsd } from '../utils/format';
+import { formatearUsd, formatearLugar } from '../utils/format';
 import { useAppTheme } from '../context/ThemeContext';
 import { radius, shadow } from '../theme/colors';
 
@@ -30,7 +30,7 @@ function TarjetaHistorial({ item, onPress }) {
     >
       <View style={styles.cardHeader}>
         <Text style={styles.ruta}>
-          {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
+          {formatearLugar(envio.origenCiudad, envio.origenPaisNombre)} → {formatearLugar(envio.destinoCiudad, envio.destinoPaisNombre)}
         </Text>
         <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
       </View>

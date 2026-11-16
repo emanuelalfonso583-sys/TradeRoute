@@ -51,7 +51,7 @@ function Metric({ label, value, info }) {
 }
 
 export default function TransportCard({ alternativa, destacada = false }) {
-  const { icono, label, disponible } = alternativa;
+  const { icono, label, disponible, motivoNoDisponible } = alternativa;
   const { t, idioma } = useLanguage();
   const { colors } = useAppTheme();
   const styles = useMemo(() => crearEstilos(colors), [colors]);
@@ -88,7 +88,11 @@ export default function TransportCard({ alternativa, destacada = false }) {
       {!disponible ? (
         <View style={styles.noDisponibleBox}>
           <Text style={styles.noDisponibleText}>{t('tarjeta.noDisponible')}</Text>
-          <Text style={styles.noDisponibleSubtext}>{t('tarjeta.noDisponibleSub')}</Text>
+          <Text style={styles.noDisponibleSubtext}>
+            {motivoNoDisponible
+              ? t(`nuevoEnvio.motivoTerrestre.${motivoNoDisponible}`)
+              : t('tarjeta.noDisponibleSub')}
+          </Text>
         </View>
       ) : (
         <View>

@@ -15,6 +15,7 @@ import { CITIES_BY_COUNTRY } from '../data/cities';
 import { useLanguage } from '../context/LanguageContext';
 import { useAppTheme } from '../context/ThemeContext';
 import { radius } from '../theme/colors';
+import { banderaDesdePais } from '../utils/flags';
 
 function normalizar(texto) {
   return (texto || '')
@@ -91,7 +92,7 @@ function nombrePais(pais, idioma) {
 // País y ciudad son dos campos independientes: cada uno abre su propia
 // lista directamente. Así, si el usuario solo quiere corregir la ciudad,
 // no tiene que volver a elegir el país (y viceversa).
-export default function LocationPicker({ label, value, onChange, error }) {
+export default function LocationPicker({ label, value, onChange, error, cityOptional = false }) {
   const { t, idioma } = useLanguage();
   const { colors } = useAppTheme();
   const styles = useMemo(() => crearEstilos(colors), [colors]);
@@ -103,17 +104,23 @@ export default function LocationPicker({ label, value, onChange, error }) {
 
   function seleccionarPais(pais) {
     setModalPaisVisible(false);
-    // Si cambia a un país distinto, la ciudad anterior ya no aplica y se
-    // abre de una vez el selector de ciudad para completar el dato.
+    // Si cambia a un país distinto, la ciudad anterior ya no aplica. Mientras
+    // no se elija una ciudad, se usan las coordenadas del país (centroide)
+    // para que el resto de la app (distancia, mapas, puertos/aeropuertos
+    // cercanos) siempre tenga un lat/lng con el que trabajar; si luego se
+    // elige una ciudad, esas coordenadas más precisas las reemplazan.
     const esMismoPais = value?.countryCode === pais.code;
     onChange({
       countryCode: pais.code,
       countryName: nombrePais(pais, idioma),
       city: esMismoPais ? value.city : '',
-      lat: esMismoPais ? value.lat : undefined,
-      lng: esMismoPais ? value.lng : undefined,
+      lat: esMismoPais ? value.lat : pais.lat,
+      lng: esMismoPais ? value.lng : pais.lng,
     });
-    if (!esMismoPais) setModalCiudadVisible(true);
+    // Si la ciudad es obligatoria (origen), se abre de una vez el selector
+    // para completar el dato. Si es opcional (destino), se deja que el
+    // usuario decida si quiere precisar la ciudad o no.
+    if (!esMismoPais && !cityOptional) setModalCiudadVisible(true);
   }
 
   function seleccionarCiudad(ciudad) {
@@ -133,14 +140,18 @@ export default function LocationPicker({ label, value, onChange, error }) {
             onPress={() => setModalPaisVisible(true)}
           >
             <Text style={[styles.campoTexto, !value?.countryName && styles.campoPlaceholder]} numberOfLines={1}>
-              {value?.countryName || t('ubicacion.seleccionaPais')}
+              {value?.countryName
+                ? `${banderaDesdePais(value.countryCode)} ${value.countryName}`.trim()
+                : t('ubicacion.seleccionaPais')}
             </Text>
             <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
           </Pressable>
         </View>
 
         <View style={styles.campoMitad}>
-          <Text style={styles.subLabel}>{t('ubicacion.ciudad')}</Text>
+          <Text style={styles.subLabel}>
+            {cityOptional ? t('ubicacion.ciudadOpcional') : t('ubicacion.ciudad')}
+          </Text>
           <Pressable
             style={[
               styles.campo,
@@ -163,7 +174,7 @@ export default function LocationPicker({ label, value, onChange, error }) {
         visible={modalPaisVisible}
         titulo={t('ubicacion.seleccionaPais')}
         datos={COUNTRIES}
-        obtenerTexto={(pais) => nombrePais(pais, idioma)}
+        obtenerTexto={(pais) => `${banderaDesdePais(pais.code)} ${nombrePais(pais, idioma)}`.trim()}
         onSeleccionar={seleccionarPais}
         onCerrar={() => setModalPaisVisible(false)}
       />

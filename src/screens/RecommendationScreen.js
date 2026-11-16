@@ -14,7 +14,7 @@ import {
 } from '../utils/calculations';
 import { obtenerTarifas } from '../firebase/tarifas';
 import { guardarEnvioEnHistorial } from '../firebase/historial';
-import { formatearUsd } from '../utils/format';
+import { formatearUsd, formatearLugar } from '../utils/format';
 import ModalidadRouteMap from '../components/ModalidadRouteMap';
 import RutaExpresSugerencia from '../components/RutaExpresSugerencia';
 import { useAppTheme } from '../context/ThemeContext';
@@ -101,7 +101,7 @@ export default function RecommendationScreen({ navigation }) {
         {comparandoTodas ? t('recomendacion.tituloConComparacion') : t('recomendacion.tituloSinComparacion')}
       </Text>
       <Text style={styles.ruta}>
-        {envio.origenCiudad}, {envio.origenPaisNombre} → {envio.destinoCiudad}, {envio.destinoPaisNombre}
+        {formatearLugar(envio.origenCiudad, envio.origenPaisNombre)} → {formatearLugar(envio.destinoCiudad, envio.destinoPaisNombre)}
       </Text>
 
       <View style={styles.tarjetaPrincipal}>
