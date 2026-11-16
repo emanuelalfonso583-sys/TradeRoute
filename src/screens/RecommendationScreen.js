@@ -63,6 +63,10 @@ export default function RecommendationScreen({ navigation }) {
     () => todasLasAlternativas.filter((a) => a.disponible && a.key !== recomendacion?.key),
     [todasLasAlternativas, recomendacion]
   );
+  const disponiblesParaComparar = useMemo(
+    () => todasLasAlternativas.filter((a) => a.disponible),
+    [todasLasAlternativas]
+  );
 
   // Guarda el resultado en el historial del usuario una sola vez por envío
   // (se identifica por sus datos + la modalidad elegida).
@@ -105,18 +109,24 @@ export default function RecommendationScreen({ navigation }) {
         {formatearLugar(envio.origenCiudad, envio.origenPaisNombre)} → {formatearLugar(envio.destinoCiudad, envio.destinoPaisNombre)}
       </Text>
 
-      <View style={styles.tarjetaPrincipal}>
-        <Text style={styles.trofeo}>{comparandoTodas ? '🏆' : recomendacion.icono}</Text>
-        <Text style={styles.rutaRecomendadaLabel}>
-          {comparandoTodas ? t('recomendacion.rutaRecomendada') : t('recomendacion.modalidadSeleccionada')}
-        </Text>
-        <Text style={styles.rutaRecomendadaValor}>
-          {recomendacion.icono} {recomendacion.label}
-        </Text>
+      {comparandoTodas ? (
+        <View style={styles.comparacionContainer}>
+          {disponiblesParaComparar.map((alt) => (
+            <TransportCard key={alt.key} alternativa={alt} destacada={alt.key === recomendacion.key} />
+          ))}
+        </View>
+      ) : (
+        <View style={styles.tarjetaPrincipal}>
+          <Text style={styles.trofeo}>{recomendacion.icono}</Text>
+          <Text style={styles.rutaRecomendadaLabel}>{t('recomendacion.modalidadSeleccionada')}</Text>
+          <Text style={styles.rutaRecomendadaValor}>
+            {recomendacion.icono} {recomendacion.label}
+          </Text>
 
-        <Text style={styles.costoRecomendadoValor}>US$ {formatearUsd(recomendacion.costoUsd)}</Text>
-        <Text style={styles.costoRecomendadoLabel}>{t('tarjeta.costo')}</Text>
-      </View>
+          <Text style={styles.costoRecomendadoValor}>US$ {formatearUsd(recomendacion.costoUsd)}</Text>
+          <Text style={styles.costoRecomendadoLabel}>{t('tarjeta.costo')}</Text>
+        </View>
+      )}
 
       <Text style={styles.seccionTitulo}>{t('recomendacion.mapaRuta')}</Text>
       <ModalidadRouteMap modalidadKey={recomendacion.key} envio={envio} />
@@ -129,7 +139,7 @@ export default function RecommendationScreen({ navigation }) {
 
       <DocumentosRequeridos modalidadKey={recomendacion.key} tipoMercancia={envio.tipoMercancia} />
 
-      {otrasDisponibles.length > 0 && (
+      {!comparandoTodas && otrasDisponibles.length > 0 && (
         <View style={styles.otrasContainer}>
           <Text style={styles.seccionTitulo}>{t('recomendacion.otrasAlternativas')}</Text>
           {otrasDisponibles.map((alt) => (
@@ -243,6 +253,9 @@ function crearEstilos(colors) {
     },
     otrasContainer: {
       marginBottom: 20,
+    },
+    comparacionContainer: {
+      marginBottom: 18,
     },
   });
 }
