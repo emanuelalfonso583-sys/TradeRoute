@@ -63,10 +63,9 @@ export default function RecommendationScreen({ navigation }) {
     () => todasLasAlternativas.filter((a) => a.disponible && a.key !== recomendacion?.key),
     [todasLasAlternativas, recomendacion]
   );
-  const disponiblesParaComparar = useMemo(
-    () => todasLasAlternativas.filter((a) => a.disponible),
-    [todasLasAlternativas]
-  );
+  // Al comparar todas, se muestran las 3 modalidades por igual, incluida
+  // la que no esté disponible (con su motivo) — no se oculta, se explica.
+  const todasParaComparar = todasLasAlternativas;
 
   // Guarda el resultado en el historial del usuario una sola vez por envío
   // (se identifica por sus datos + la modalidad elegida).
@@ -111,7 +110,7 @@ export default function RecommendationScreen({ navigation }) {
 
       {comparandoTodas ? (
         <View style={styles.comparacionContainer}>
-          {disponiblesParaComparar.map((alt) => (
+          {todasParaComparar.map((alt) => (
             <TransportCard key={alt.key} alternativa={alt} destacada={alt.key === recomendacion.key} />
           ))}
         </View>

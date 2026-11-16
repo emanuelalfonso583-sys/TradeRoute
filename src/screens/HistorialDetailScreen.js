@@ -30,13 +30,18 @@ export default function HistorialDetailScreen({ route, navigation }) {
   const styles = useMemo(() => crearEstilos(colors), [colors]);
 
   const disponibles = alternativas.filter((a) => a.disponible).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  // Al comparar todas, se muestran las 3 modalidades por igual, incluida
+  // la que no esté disponible (con su motivo) — no se oculta, se explica.
+  const todasOrdenadas = alternativas
+    .slice()
+    .sort((a, b) => (b.disponible ? 1 : 0) - (a.disponible ? 1 : 0) || (b.score ?? 0) - (a.score ?? 0));
 
   // Si el envío se guardó con una sola modalidad elegida (no "comparar
   // todas"), se destaca solo esa y el resto queda detrás de "ver segunda
   // opción", igual que en la pantalla de Recomendación.
   const comparandoTodas = !envio.modalidad || envio.modalidad === 'todas';
   const principal = !comparandoTodas ? disponibles.find((a) => a.key === envio.modalidad) : null;
-  const tarjetasPrincipales = principal ? [principal] : disponibles;
+  const tarjetasPrincipales = principal ? [principal] : todasOrdenadas;
   const otrasDisponibles = principal ? disponibles.filter((a) => a.key !== principal.key) : [];
 
   function handleVerAnalisis() {

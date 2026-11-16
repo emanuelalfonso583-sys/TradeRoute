@@ -17,6 +17,16 @@ export const DOCUMENTO_POR_MERCANCIA = {
   peligrosa: 'declaracionMercanciaPeligrosa',
 };
 
+// Enlaces oficiales verificados, solo para los documentos que de verdad
+// tienen una entidad única que los expide (los demás los tramitas
+// directamente con tu naviera, aerolínea, transportista o aseguradora,
+// así que no tienen un solo sitio "oficial" al cual enlazar).
+export const LINK_POR_DOCUMENTO = {
+  certificadoFitosanitario: 'https://www.ica.gov.co',
+  certificadoOrigen: 'https://www.vuce.gov.co',
+  certificadoConformidad: 'https://onac.org.co',
+};
+
 export function documentosRequeridos(modalidadKey, tipoMercancia) {
   const docs = [...DOCUMENTOS_BASE];
   const docModalidad = DOCUMENTO_POR_MODALIDAD[modalidadKey];
